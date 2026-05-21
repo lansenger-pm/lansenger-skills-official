@@ -1,0 +1,111 @@
+{
+  "version": "1.0.0",
+  "format": "cli-agent-skills",
+  "cli": "lansenger",
+  "description": "AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python and Go CLI",
+  "structure": "<name>/SKILL.md",
+  "shared": "lansenger-shared/SKILL.md",
+  "skills": [
+    {
+      "id": "lansenger-shared",
+      "name": "Lansenger Shared Rules",
+      "category": "shared",
+      "description": "Authentication, config setup, error handling, security rules — auto-loaded by all other skills",
+      "path": "lansenger-shared/SKILL.md"
+    },
+    {
+      "id": "lansenger-messaging",
+      "name": "Lansenger Messaging Strategy",
+      "category": "messaging",
+      "description": "Lansenger messaging strategy — understand 4 messaging channels (bot/private/account/group), text/formatText/appCard/linkCard/appArticles capability boundaries, @mention rules, and CLI method selection",
+      "path": "lansenger-messaging/SKILL.md",
+      "references": [
+        "lansenger-messaging/references/lansenger-messaging-send-text.md",
+        "lansenger-messaging/references/lansenger-messaging-send-markdown.md",
+        "lansenger-messaging/references/lansenger-messaging-send-file.md",
+        "lansenger-messaging/references/lansenger-messaging-send-link-card.md",
+        "lansenger-messaging/references/lansenger-messaging-send-app-card.md",
+        "lansenger-messaging/references/lansenger-messaging-send-oacard.md",
+        "lansenger-messaging/references/lansenger-messaging-send-app-articles.md",
+        "lansenger-messaging/references/lansenger-messaging-send-image-url.md",
+        "lansenger-messaging/references/lansenger-messaging-send-bot-message.md",
+        "lansenger-messaging/references/lansenger-messaging-send-group-message.md",
+        "lansenger-messaging/references/lansenger-messaging-send-account-message.md",
+        "lansenger-messaging/references/lansenger-messaging-send-user-message.md",
+        "lansenger-messaging/references/lansenger-messaging-update-dynamic-card.md",
+        "lansenger-messaging/references/lansenger-messaging-revoke.md"
+      ]
+    },
+    {
+      "id": "lansenger-chat",
+      "name": "Lansenger Chat Reading APIs",
+      "category": "messaging",
+      "description": "Lansenger chat reading APIs — fetch personal chat list (private + group conversations) and pull messages from a specific conversation",
+      "path": "lansenger-chat/SKILL.md"
+    },
+    {
+      "id": "lansenger-group",
+      "name": "Lansenger Groups V2 API",
+      "category": "groups",
+      "description": "Lansenger group V2 APIs — create groups, fetch group info/members, list groups, check membership, update group settings and members",
+      "path": "lansenger-group/SKILL.md"
+    },
+    {
+      "id": "lansenger-staff",
+      "name": "Lansenger Contacts & Staff API",
+      "category": "contacts",
+      "description": "Lansenger staff/contacts APIs — fetch staff basic/detailed info, department ancestors, ID mapping (phone/email→staffId), org extra fields, and staff search",
+      "path": "lansenger-staff/SKILL.md"
+    },
+    {
+      "id": "lansenger-department",
+      "name": "Lansenger Departments API",
+      "category": "org_structure",
+      "description": "Lansenger department APIs — navigate org hierarchy, fetch department detail/children, and list department staff",
+      "path": "lansenger-department/SKILL.md"
+    },
+    {
+      "id": "lansenger-calendar",
+      "name": "Lansenger Calendar & Schedule",
+      "category": "calendar",
+      "description": "Lansenger calendar/schedule APIs — fetch primary calendar, create/query/delete schedules, manage attendees",
+      "path": "lansenger-calendar/SKILL.md",
+      "references": [
+        "lansenger-calendar/references/lansenger-calendar-primary.md",
+        "lansenger-calendar/references/lansenger-calendar-create-schedule.md",
+        "lansenger-calendar/references/lansenger-calendar-fetch-schedule.md",
+        "lansenger-calendar/references/lansenger-calendar-delete-schedule.md",
+        "lansenger-calendar/references/lansenger-calendar-list-schedules.md",
+        "lansenger-calendar/references/lansenger-calendar-attendees.md"
+      ]
+    },
+    {
+      "id": "lansenger-todo",
+      "name": "Lansenger Unified Todo",
+      "category": "todo",
+      "description": "Lansenger unified todo/task APIs — create, update, query, delete todo tasks, manage executors, and track status counts",
+      "path": "lansenger-todo/SKILL.md"
+    },
+    {
+      "id": "lansenger-oauth",
+      "name": "Lansenger OAuth2 & User Authentication",
+      "category": "auth",
+      "description": "Lansenger OAuth2 user authentication flow — build authorize URL, exchange code for userToken, refresh userToken, fetch user info, and the appToken/userToken hierarchy",
+      "path": "lansenger-oauth/SKILL.md"
+    },
+    {
+      "id": "lansenger-streaming",
+      "name": "Lansenger Streaming Messages (AI-Agent SSE)",
+      "category": "streaming",
+      "description": "Lansenger streaming message APIs for AI-agent real-time message delivery — create and fetch stream messages",
+      "path": "lansenger-streaming/SKILL.md"
+    },
+    {
+      "id": "lansenger-callback",
+      "name": "Lansenger Callback Events (Webhook)",
+      "category": "callbacks",
+      "description": "Lansenger callback event parsing — 24 event types across 13 categories, structured dataclass parsing, payload parsing, signature verification",
+      "path": "lansenger-callback/SKILL.md"
+    }
+  ]
+}

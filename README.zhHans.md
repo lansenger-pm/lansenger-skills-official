@@ -1,0 +1,169 @@
+[English](README.md) | [简体中文](README.zhHans.md) | [繁体中文](README.zhHant.md) | [繁体中文（香港）](README.zhHantHK.md) | [Français](README.fr.md)
+
+# lansenger-skills-official
+
+蓝信 CLI 的 AI Agent Skills — 为 Python 和 Go CLI 提供结构化 Markdown Skill 文档，涵盖消息、日历、群组、联系人、部门、待办、流式消息、回调、OAuth 等。
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## 什么是 Skills？
+
+Skills 是结构化的 Markdown 文档，用于教会 AI Agent 如何使用 `lansenger` CLI。每个 Skill 覆盖一个业务领域（消息、日历、群组等），包含：
+
+- **核心概念**和术语
+- **CLI 命令参考**，含参数和示例
+- **关键约束**，防止 Agent 出错
+- **常见错误**表格
+- **详细参考文档**，用于复杂操作
+
+## 快速安装
+
+### 方法 1 — `npx skills`（推荐）
+
+最快的安装方式。支持 **OpenCode**、**Claude Code**、**Cursor**、**Codex**、**Cline** 及 [50+ 其他 Agent](https://github.com/vercel-labs/skills#supported-agents)。
+
+```bash
+# 安装所有 Skills 到所有检测到的 Agent（交互式）
+npx skills add lansenger-pm/lansenger-skills-official
+
+# 安装到指定 Agent（例如 opencode）
+npx skills add lansenger-pm/lansenger-skills-official -a opencode
+
+# 全局安装到 Claude Code
+npx skills add lansenger-pm/lansenger-skills-official -a claude-code -g
+
+# 安装到多个 Agent
+npx skills add lansenger-pm/lansenger-skills-official -a opencode -a claude-code -a cursor
+
+# 只安装指定的 Skills
+npx skills add lansenger-pm/lansenger-skills-official --skill lansenger-messaging --skill lansenger-calendar
+
+# 安装前查看可用 Skills 列表
+npx skills add lansenger-pm/lansenger-skills-official --list
+
+# 非交互式 / CI 友好
+npx skills add lansenger-pm/lansenger-skills-official --all -y
+```
+
+### 方法 2 — opencode `.opencode/skills/`
+
+对于 **opencode** 用户，复制或符号链接 `skills/` 目录：
+
+```bash
+# 符号链接（推荐 — 单一来源，便于更新）
+ln -s $(pwd)/skills ~/.config/opencode/skills/lansenger-skills-official
+
+# 或复制
+cp -r skills ~/.config/opencode/skills/lansenger-skills-official
+```
+
+### 方法 3 — Claude Code `.claude/skills/`
+
+```bash
+# 符号链接到 Claude Code 的 skills 目录
+ln -s $(pwd)/skills .claude/skills/lansenger-skills-official
+
+# 全局安装
+ln -s $(pwd)/skills ~/.claude/skills/lansenger-skills-official
+```
+
+### 方法 4 — 手动安装（任意 Agent）
+
+克隆此仓库，然后让 Agent 指向 `skills/` 目录：
+
+```bash
+git clone https://github.com/lansenger-pm/lansenger-skills-official.git
+# 然后指示 Agent 先读取 skill_manifest.json，
+# 再根据用户需求读取相关的 SKILL.md 文件。
+```
+
+### 方法 5 — `.agents/skills/`（通用路径）
+
+许多 Agent（Amp、Cline、Codex、Cursor、Gemini CLI 等）共享 `.agents/skills/` 作为标准路径：
+
+```bash
+ln -s $(pwd)/skills .agents/skills/lansenger-skills-official
+```
+
+## 更新 Skills
+
+```bash
+# 如果通过 npx skills 安装
+npx skills update lansenger-skills-official
+
+# 如果使用符号链接 — 只需 git pull
+cd lansenger-skills-official && git pull
+```
+
+## 目录结构
+
+```
+skills/
+  lansenger-shared/SKILL.md              # 共享规则（认证、配置、安全、错误处理）
+  lansenger-messaging/SKILL.md           # 消息策略 + references/
+  lansenger-chat/SKILL.md               # 聊天读取 API
+  lansenger-group/SKILL.md              # 群组管理
+  lansenger-staff/SKILL.md              # 联系人与员工
+  lansenger-department/SKILL.md         # 部门层级
+  lansenger-calendar/SKILL.md           # 日历与日程 + references/
+  lansenger-todo/SKILL.md               # 统一待办
+  lansenger-oauth/SKILL.md              # OAuth2 用户认证
+  lansenger-streaming/SKILL.md          # 流式消息（AI-Agent SSE）
+  lansenger-callback/SKILL.md           # 回调事件与 Webhook
+skill_manifest.json                      # 所有 Skills 的索引
+skill-template/                          # 创建新 Skill 的模板
+```
+
+## Skills 索引
+
+| Skill | 说明 |
+|-------|------|
+| `lansenger-shared` | 认证、配置、错误处理、安全规则（其他 Skill 自动加载） |
+| `lansenger-messaging` | 4 种消息通道、消息类型矩阵、@提及规则、CLI 方法选择 |
+| `lansenger-chat` | 获取聊天列表（私聊 + 群聊）并拉取对话消息 |
+| `lansenger-group` | 创建群组、获取信息/成员、列出群组、检查成员关系、更新设置 |
+| `lansenger-staff` | 获取员工信息、ID 映射（手机/邮箱→staffId）、组织扩展字段、搜索 |
+| `lansenger-department` | 浏览组织层级、获取部门详情/子部门、列出部门员工 |
+| `lansenger-calendar` | 主日历、日程 CRUD、参会人管理 |
+| `lansenger-todo` | 创建、更新、查询、删除待办任务，管理执行人，状态统计 |
+| `lansenger-oauth` | OAuth2 用户认证流程、授权 URL、Code 交换、Token 刷新 |
+| `lansenger-streaming` | 基于 SSE 的 AI Agent 实时消息推送 |
+| `lansenger-callback` | 24 种事件类型、结构化解析、签名验证 |
+
+## CLI 兼容性
+
+这些 Skills 同时兼容 Python CLI 和 Go CLI：
+
+```bash
+# Python CLI
+pip install lansenger-cli
+lansenger message send-text staff123 "Hello"
+
+# Go CLI
+go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
+lansenger message send-text staff123 "Hello"
+```
+
+两个 CLI 共享相同的命令结构、参数名称和输出格式，因此一套 Skills 即可同时服务两者。
+
+## 多应用 / 多机器人配置
+
+CLI 支持多个配置档案（每个对应一个 appID），凭证按 appID 隔离存储。详见 `lansenger-shared/SKILL.md`：
+
+```bash
+# 按档案名配置多个应用
+lansenger config set --profile "my-personal-bot"
+lansenger config set --profile "my-lansenger-app"
+
+# 通过 --profile 切换身份
+lansenger message send-text staff123 "Hello" --profile "my-personal-bot"
+lansenger calendar primary --profile "my-lansenger-app" --user-token "ut1"
+```
+
+## 贡献
+
+创建新 Skill 时，请参考 `skill-template/` 目录中的模板。
+
+## 许可证
+
+MIT
