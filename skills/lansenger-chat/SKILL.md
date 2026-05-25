@@ -93,7 +93,7 @@ lansenger chat messages --staff-id staff123 --user-token "ut1" --json
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
 | `--staff-id` | str | "" | 私聊对方 staffId |
-| `--group-id` | str | "" | 聊 openId |
+| `--group-id` | str | "" | 群 openId |
 | `--size` / `-s` | int | 100 | 每页条数（最大 100） |
 | `--version` | str | "0" | 深分页游标，首次调用传 0 |
 | `--start` | int | 0 | 起始时间（微秒级时间戳） |

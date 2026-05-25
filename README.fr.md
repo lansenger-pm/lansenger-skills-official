@@ -128,7 +128,7 @@ skill-template/                          # Templates pour créer de nouveaux ski
 | `lansenger-todo` | Créer, mettre à jour, interroger, supprimer des tâches todo, gérer les exécutants, compter les statuts |
 | `lansenger-oauth` | Flux d'authentification utilisateur OAuth2, URL d'autorisation, échange de code, renouvellement de token |
 | `lansenger-streaming` | Diffusion de messages en temps réel via SSE pour les Agents IA |
-| `lansenger-callback` | 24 types d'événements, parsing structuré, vérification de signature |
+| `lansenger-callback` | 25 types d'événements, parsing structuré, décryptage AES, vérification de signature |
 
 ## Compatibilité CLI
 

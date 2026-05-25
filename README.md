@@ -128,7 +128,7 @@ skill-template/                          # Templates for creating new skills
 | `lansenger-todo` | Create, update, query, delete todo tasks, manage executors, status counts |
 | `lansenger-oauth` | OAuth2 user auth flow, authorize URL, code exchange, token refresh |
 | `lansenger-streaming` | SSE-based real-time message delivery for AI agents |
-| `lansenger-callback` | 24 event types, structured parsing, signature verification |
+| `lansenger-callback` | 25 event types, structured parsing, AES decryption, signature verification |
 
 ## CLI Compatibility
 

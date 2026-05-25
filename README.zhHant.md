@@ -128,7 +128,7 @@ skill-template/                          # 建立新 Skills 的模板
 | `lansenger-todo` | 建立、更新、查詢、刪除待辦事項、管理執行者、狀態統計 |
 | `lansenger-oauth` | OAuth2 使用者認證流程、授權 URL、程式碼交換、憑證刷新 |
 | `lansenger-streaming` | SSE 即時訊息傳遞，適用於 AI Agent |
-| `lansenger-callback` | 24 種事件類型、結構化解析、簽章驗證 |
+| `lansenger-callback` | 25 種事件類型、結構化解析、AES 解密、簽章驗證 |
 
 ## CLI 相容性
 

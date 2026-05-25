@@ -104,7 +104,7 @@
       "id": "lansenger-callback",
       "name": "Lansenger Callback Events (Webhook)",
       "category": "callbacks",
-      "description": "Lansenger callback event parsing — 24 event types across 13 categories, structured dataclass parsing, payload parsing, signature verification",
+      "description": "Lansenger callback event parsing — 25 event types across 13 categories, structured dataclass parsing, AES decryption, payload parsing, signature verification",
       "path": "lansenger-callback/SKILL.md"
     }
   ]

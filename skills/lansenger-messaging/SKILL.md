@@ -93,6 +93,7 @@ metadata:
 | `send-user-message` | 人→人私聊发消息（需userToken） | [`references/lansenger-messaging-send-user-message.md`](references/lansenger-messaging-send-user-message.md) |
 | `update-dynamic-card` | 更新动态卡片 | [`references/lansenger-messaging-update-dynamic-card.md`](references/lansenger-messaging-update-dynamic-card.md) |
 | `revoke` | 撤回消息 | [`references/lansenger-messaging-revoke.md`](references/lansenger-messaging-revoke.md) |
+| `query-groups` | 查询机器人可发消息的群列表 | — |
 
 ## CLI 命令速查
 
@@ -153,6 +154,19 @@ lansenger message send-oacard staff123 "Leave Approval" --head "OA审批" --staf
 lansenger message send-app-articles staff123 '{"title":"News","url":"https://..."}'
 ```
 
+### 查询可发消息的群
+
+```bash
+# 查询机器人可发消息的群列表
+lansenger message query-groups
+
+# 分页查询
+lansenger message query-groups --page 1 --size 50
+
+# JSON 输出
+lansenger message query-groups --json
+```
+
 ### 消息管理
 
 ```bash
@@ -174,6 +188,7 @@ lansenger message update-dynamic-card msg123 --last --status-desc "Approved ✓"
 | appCard 群聊中用 --mention-all | appCard/linkCard/appArticles **不支持** @mention，reminder参数被静默忽略 |
 | Bot发群聊消息但Bot不在群里 | Bot必须先加入群聊才能发消息 |
 | 群聊不加 `--group` 参数 | 群聊必须加 `--group` 或使用 `send-group-message` |
+| 不知道Bot能在哪些群发消息 | 用 `query-groups` 查询机器人可发消息的群列表 |
 
 ## 卡片类型对比
 
