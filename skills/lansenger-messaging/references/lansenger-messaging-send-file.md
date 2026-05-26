@@ -12,7 +12,7 @@ Send a file attachment to a chat.
 |-----------|------|----------|-------------|
 | chat_id | arg | yes | Target chat ID |
 | file_path | arg | yes | Local path to the file to send |
-| --caption / -c | option | no | Text caption accompanying the file |
+| --content / -c | option | no | Text content accompanying the file |
 | --media-type | option | no | Media type hint (e.g., image, video, document) |
 | --group / -g | option | no | Send to a group chat (interprets chat_id as group ID) |
 | --user-token | option | no | User token for user-token channel messaging |
@@ -23,7 +23,7 @@ Send a file attachment to a chat.
 ```bash
 lansenger message send-file user_123 /path/to/report.pdf
 
-lansenger message send-file grp_456 /path/to/image.png --group --caption "Screenshot of the dashboard"
+lansenger message send-file grp_456 /path/to/image.png --group --content "Screenshot of the dashboard"
 
 lansenger message send-file user_123 /path/to/video.mp4 --media-type video --user-token $TOKEN
 
@@ -34,7 +34,7 @@ lansenger message send-file grp_456 /path/to/data.csv --group --sender-id staff_
 
 - Using a group ID without `--group` flag — the command treats it as a private chat ID.
 - Providing a non-existent file path — the command will fail with a file-not-found error.
-- Forgetting `--caption` when context is needed — the file arrives without explanation.
+- Forgetting `--content` when context is needed — the file arrives without explanation.
 - Using wrong `--media-type` — may cause incorrect rendering on the recipient side.
 
 ## Return Value
