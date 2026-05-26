@@ -156,6 +156,19 @@ lansenger calendar primary -j
 
 **Agent 建议**：始终使用 `--json` 输出，便于结构化解析。
 
+## CLI 命令名差异（Python vs Go）
+
+Python CLI 和 Go CLI 有少数子命令名称不同，功能完全一致：
+
+| Python CLI | Go CLI | 说明 |
+|------------|--------|------|
+| `group dismiss` | `group dissolve` | 解散群 |
+| `calendar attendee-meta` | `calendar update-attendee-meta` | 更新参会人元数据 |
+| `media path` | `media fetch-path` | 获取媒体文件路径 |
+| `send-file --caption` | `send-file --content` | 文件消息文案参数名 |
+
+其他所有子命令和参数名称在两个 CLI 之间完全一致。
+
 ## 安全规则
 
 - **禁止输出密钥**（appSecret、accessToken）到终端明文
