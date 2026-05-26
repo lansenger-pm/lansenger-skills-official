@@ -112,6 +112,12 @@ lansenger message send-markdown staff123 "**Bold**"
 # Bot → 用户 带附件
 lansenger message send-text staff123 "Report" --file /path/to/file.pdf
 
+# Bot → 用户 发视频（必须提供封面图片）
+lansenger message send-text staff123 "Video" --file /path/to/video.mp4 --cover-image /path/to/cover.jpg --media-type 1
+
+# Bot → 用户 发图片
+lansenger message send-text staff123 "Photo" --file /path/to/photo.png --media-type 2
+
 # Bot → 多人（每人独立私聊）
 lansenger message send-bot-message text '{"text":{"content":"Notice"}}' --chat-id staff1 --chat-id staff2
 
@@ -209,7 +215,7 @@ lansenger message send-reminder msg123 --type 1 --user staff456 --json
 | 群聊不加 `--group` 参数 | 群聊必须加 `--group` 或使用 `send-group-message` |
 | 不知道Bot能在哪些群发消息 | 用 `query-groups` 查询机器人可发消息的群列表 |
 | 私聊中使用 send-reminder | reminder 只在群聊中有效 — 私聊无群语境 |
-| 发视频消息只传一个 mediaId | 视频消息 mediaIds **必须为2**：[视频mediaId, 封面图片mediaId]，缺少封面图片会导致发送失败 |
+| 发视频消息只传一个 mediaId | 视频消息 **必须** 用 `--cover-image` 提供封面图片；CLI 会自动上传封面并构造 `[视频mediaId, 封面mediaId]` |
 
 ## 卡片类型对比
 
