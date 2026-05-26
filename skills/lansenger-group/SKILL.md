@@ -1,14 +1,14 @@
 ---
 name: lansenger-group
-version: 1.0.0
-description: "蓝信群组管理：创建群、查看群信息、群成员列表、群列表、成员检查、更新群设置、添加/移除成员。当用户需要管理群组时使用。"
+version: 1.1.0
+description: "蓝信群组管理：创建群、查看群信息、群成员列表、群列表、成员检查、更新群设置、添加/移除成员、解散群。当用户需要管理群组时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
   cliHelp: "lansenger group --help"
 ---
 
-# group (v1)
+# group (v1.1)
 
 **CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md)，其中包含认证、权限处理、安全规则。**
 
@@ -128,7 +128,24 @@ lansenger group update-members group456 --add staff4 --remove staff5
 lansenger group update-members group456 --add staff1 --json
 ```
 
+### 解散群
+
+```bash
+# 解散群（高风险操作，必须先确认）
+lansenger group dismiss group456
+
+# 以用户身份解散
+lansenger group dismiss group456 --user-token "ut1"
+```
+
 ## 参数说明
+
+### group dismiss
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `group_id` (位置参数) | str | — | 群 ID（必需） |
+| `--user-token` | str | "" | 用户 Token |
 
 ### group create
 
@@ -203,5 +220,6 @@ lansenger group update-members group456 --add staff1 --json
 | 机器人身份用 --dept 添加部门成员 | 必须传 `--user-token` 以用户身份添加部门成员 |
 | 转让群主不传 --user-token | 转让群主操作必须传 `--user-token` |
 | 不确认就添加/移除群成员 | 添加/移除成员属于高风险操作，必须先确认 |
+| 不确认就解散群 | 解散群属于高风险操作（不可恢复），必须先确认 |
 | 群名/org_id 不传位置参数 | `create` 的 name 和 org_id 是必需位置参数 |
 | group_id 不传位置参数 | `info`/`members`/`check`/`update`/`update-members` 的 group_id 是必需位置参数 |

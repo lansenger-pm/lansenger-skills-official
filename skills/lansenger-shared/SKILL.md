@@ -235,4 +235,5 @@ lansenger --version
 | 待办 | `../lansenger-todo/SKILL.md` | 创建/查询/更新/删除待办任务 |
 | OAuth2 | `../lansenger-oauth/SKILL.md` | 用户授权流程、userToken获取 |
 | 流式消息 | `../lansenger-streaming/SKILL.md` | AI Agent 实时消息推送 |
-| 回调事件 | `../lansenger-callback/SKILL.md` | Webhook 事件解析、签名验证 |
+| 回调事件 | `../lansenger-callback/SKILL.md` | Webhook 事件解析、AES解密、签名验证 |
+| 媒体文件 | `../lansenger-media/SKILL.md` | 上传/下载文件、图片、视频、音频 |

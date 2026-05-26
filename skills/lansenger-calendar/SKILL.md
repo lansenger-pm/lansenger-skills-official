@@ -1,7 +1,7 @@
 ---
 name: lansenger-calendar
-version: 1.0.0
-description: "蓝信日历/日程（4.23）：主日历查询、日程CRUD、参会人管理。注意：日历容器CRUD暂不开放，仅日程操作可用。涉及创建日程必须先确认用户意图（新建 vs 编辑已有）。"
+version: 1.1.0
+description: "蓝信日历/日程（4.23）：主日历查询、日程CRUD、参会人管理、参会人元数据更新。注意：日历容器CRUD暂不开放，仅日程操作可用。涉及创建/修改日程必须先确认用户意图（新建 vs 编辑已有）。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -16,7 +16,7 @@ metadata:
 
 **CRITICAL — 所有日程操作需 appToken + 至少一个 userToken 或 userId。无 userToken/userId → 使用机器人自身日历。**
 
-**CRITICAL — 创建/删除日程为高风险操作，执行前 MUST 向用户确认。**
+**CRITICAL — 创建/删除/修改日程为高风险操作，执行前 MUST 向用户确认。**
 
 **CRITICAL — 删除/修改日程后若需二次查询验证，MUST 等待至少 2 秒后再查询，防止数据同步延迟。**
 
@@ -86,6 +86,25 @@ lansenger calendar fetch-schedule calOpenId schOpenId --user-token "ut1"
 lansenger calendar delete-schedule calOpenId schOpenId --user-token "ut1"
 ```
 
+### 更新日程
+
+```bash
+# 修改日程标题
+lansenger calendar update-schedule calOpenId schOpenId --summary "新标题" --user-token "ut1"
+
+# 修改日程描述
+lansenger calendar update-schedule calOpenId schOpenId --desc "新描述" --user-token "ut1"
+
+# 修改重复日程仅当前这次
+lansenger calendar update-schedule calOpenId schOpenId --summary "新标题" --op modify_current --current-time 1656468000 --user-token "ut1"
+
+# 修改日程时间
+lansenger calendar update-schedule calOpenId schOpenId --start-time '{"time":"1656468000","date":"","timeZone":"Asia/Shanghai"}' --end-time '{"time":"1656475200","date":"","timeZone":"Asia/Shanghai"}' --user-token "ut1"
+
+# JSON 输出
+lansenger calendar update-schedule calOpenId schOpenId --summary "新标题" --user-token "ut1" --json
+```
+
 ### 查询日程列表（时间范围）
 
 ```bash
@@ -104,6 +123,25 @@ lansenger calendar add-attendees calOpenId schOpenId '["staff1","staff2"]' --use
 
 # 删除参会人
 lansenger calendar delete-attendees calOpenId schOpenId '["staff2"]' --user-token "ut1"
+```
+
+### 更新参会人元数据
+
+```bash
+# 更新RSVP状态
+lansenger calendar attendee-meta calOpenId schOpenId --rsvp accept --user-token "ut1"
+
+# 更新颜色标记
+lansenger calendar attendee-meta calOpenId schOpenId --color "#FF347AFC" --user-token "ut1"
+
+# 更新可见性
+lansenger calendar attendee-meta calOpenId schOpenId --permissions private --user-token "ut1"
+
+# 更新忙/闲状态
+lansenger calendar attendee-meta calOpenId schOpenId --busy-free busy --user-token "ut1"
+
+# 更新提醒时间（多个偏移分钟数）
+lansenger calendar attendee-meta calOpenId schOpenId --remind-times '[5,15]' --user-token "ut1"
 ```
 
 ## startTime/endTime 格式
@@ -134,6 +172,7 @@ lansenger calendar delete-attendees calOpenId schOpenId '["staff2"]' --user-toke
 | 不传userToken查日程 | 日历操作必须传 --user-token 或 --user-id |
 | 用户说"日历"就查Calendar容器 | 用户意图通常是"日程"，用 list-schedules |
 | 时间范围超42天 | 拆分多次查询，每次 ≤ 42天 |
+| 修改重复日程不指定 --op | 默认 modify_all 影响所有实例；仅改当前用 modify_current + --current-time |
 
 ## 参数速查
 
@@ -147,3 +186,5 @@ lansenger calendar delete-attendees calOpenId schOpenId '["staff2"]' --user-toke
 | `attendees` | calendar_id, schedule_id | --page, --size, --user-token, --user-id |
 | `add-attendees` | calendar_id, schedule_id, attendees (JSON) | --user-token, --user-id |
 | `delete-attendees` | calendar_id, schedule_id, attendees (JSON) | --user-token, --user-id |
+| `update-schedule` | calendar_id, schedule_id | --summary, --desc, --op, --current-time, --reminder, --repeat, --rule, --expire, --all-day, --permissions, --start-time, --end-time, --user-token, --user-id |
+| `attendee-meta` | calendar_id, schedule_id | --rsvp, --color, --permissions, --busy-free, --remind-times, --user-token, --user-id |

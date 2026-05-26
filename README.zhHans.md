@@ -110,6 +110,7 @@ skills/
   lansenger-oauth/SKILL.md              # OAuth2 用户认证
   lansenger-streaming/SKILL.md          # 流式消息（AI-Agent SSE）
   lansenger-callback/SKILL.md           # 回调事件与 Webhook
+  lansenger-media/SKILL.md              # 媒体文件上传/下载
 skill_manifest.json                      # 所有 Skills 的索引
 skill-template/                          # 创建新 Skill 的模板
 ```
@@ -119,16 +120,17 @@ skill-template/                          # 创建新 Skill 的模板
 | Skill | 说明 |
 |-------|------|
 | `lansenger-shared` | 认证、配置、错误处理、安全规则（其他 Skill 自动加载） |
-| `lansenger-messaging` | 4 种消息通道、消息类型矩阵、@提及规则、CLI 方法选择 |
+| `lansenger-messaging` | 4 种消息通道、消息类型矩阵、@提及规则、提醒、CLI 方法选择 |
 | `lansenger-chat` | 获取聊天列表（私聊 + 群聊）并拉取对话消息 |
-| `lansenger-group` | 创建群组、获取信息/成员、列出群组、检查成员关系、更新设置 |
+| `lansenger-group` | 创建群组、获取信息/成员、列出群组、检查成员关系、更新设置、解散群 |
 | `lansenger-staff` | 获取员工信息、ID 映射（手机/邮箱→staffId）、组织扩展字段、搜索 |
 | `lansenger-department` | 浏览组织层级、获取部门详情/子部门、列出部门员工 |
-| `lansenger-calendar` | 主日历、日程 CRUD、参会人管理 |
+| `lansenger-calendar` | 主日历、日程 CRUD、参会人管理、参会人元数据 |
 | `lansenger-todo` | 创建、更新、查询、删除待办任务，管理执行人，状态统计 |
 | `lansenger-oauth` | OAuth2 用户认证流程、授权 URL、Code 交换、Token 刷新 |
 | `lansenger-streaming` | 基于 SSE 的 AI Agent 实时消息推送 |
 | `lansenger-callback` | 25 种事件类型、结构化解析、AES 解密、签名验证 |
+| `lansenger-media` | 上传/下载文件、图片、视频、音频，获取媒体路径 |
 
 ## CLI 兼容性
 

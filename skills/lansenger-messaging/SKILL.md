@@ -1,14 +1,14 @@
 ---
 name: lansenger-messaging
-version: 1.0.0
-description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles），@mention规则，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片时使用。"
+version: 1.1.0
+description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
   cliHelp: "lansenger message --help"
 ---
 
-# messaging (v1)
+# messaging (v1.1)
 
 **CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md)，其中包含认证、权限处理**
 
@@ -94,6 +94,7 @@ metadata:
 | `update-dynamic-card` | 更新动态卡片 | [`references/lansenger-messaging-update-dynamic-card.md`](references/lansenger-messaging-update-dynamic-card.md) |
 | `revoke` | 撤回消息 | [`references/lansenger-messaging-revoke.md`](references/lansenger-messaging-revoke.md) |
 | `query-groups` | 查询机器人可发消息的群列表 | — |
+| `send-reminder` | 对消息发送提醒（弹窗/SMS/电话） | — |
 
 ## CLI 命令速查
 
@@ -177,6 +178,22 @@ lansenger message revoke msg123 --chat-type bot
 lansenger message update-dynamic-card msg123 --last --status-desc "Approved ✓" --status-colour "#00FF00"
 ```
 
+### 发送提醒
+
+```bash
+# 对消息发送弹窗提醒
+lansenger message send-reminder msg123 --type 1 --user staff456
+
+# 对消息发送SMS提醒
+lansenger message send-reminder msg123 --type 2 --user staff456 --user staff789
+
+# 对消息发送电话提醒
+lansenger message send-reminder msg123 --type 3 --user staff456
+
+# JSON 输出
+lansenger message send-reminder msg123 --type 1 --user staff456 --json
+```
+
 ## 常见错误
 
 | 错误 | 正确做法 |
@@ -189,6 +206,7 @@ lansenger message update-dynamic-card msg123 --last --status-desc "Approved ✓"
 | Bot发群聊消息但Bot不在群里 | Bot必须先加入群聊才能发消息 |
 | 群聊不加 `--group` 参数 | 群聊必须加 `--group` 或使用 `send-group-message` |
 | 不知道Bot能在哪些群发消息 | 用 `query-groups` 查询机器人可发消息的群列表 |
+| 私聊中使用 send-reminder | reminder 只在群聊中有效 — 私聊无群语境 |
 
 ## 卡片类型对比
 
