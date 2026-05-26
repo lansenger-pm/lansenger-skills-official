@@ -73,6 +73,8 @@ metadata:
 | linkCard | ✗ | ✗ | ✗ | ✓ | 全部 |
 | verifyCard | ✗ | ✗ | ✗ | ✓ | 全部 |
 
+**CRITICAL — 视频消息（mediaType=1）必须同时提供视频文件和封面图片两个 mediaId。mediaIds 数组长度必须为2：[视频mediaId, 封面图片mediaId]。其他类型（image/file）仅支持单个 mediaId。**
+
 ## Shortcuts（推荐优先使用）
 
 以下是对常用操作的高级封装命令。有 Shortcut 的操作优先使用。
@@ -207,6 +209,7 @@ lansenger message send-reminder msg123 --type 1 --user staff456 --json
 | 群聊不加 `--group` 参数 | 群聊必须加 `--group` 或使用 `send-group-message` |
 | 不知道Bot能在哪些群发消息 | 用 `query-groups` 查询机器人可发消息的群列表 |
 | 私聊中使用 send-reminder | reminder 只在群聊中有效 — 私聊无群语境 |
+| 发视频消息只传一个 mediaId | 视频消息 mediaIds **必须为2**：[视频mediaId, 封面图片mediaId]，缺少封面图片会导致发送失败 |
 
 ## 卡片类型对比
 
