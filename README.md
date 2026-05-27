@@ -150,16 +150,40 @@ Both CLIs share the same command structure, parameter names, and output formats,
 
 ## Multi-App / Multi-Bot Configuration
 
-The CLI supports multiple profiles (each corresponding to an appID). See `lansenger-shared/SKILL.md` for details:
+The CLI supports multiple profiles (each corresponding to an appID). Credentials are isolated per profile and stored in `~/.lansenger/sdk_state.json` (0600 permissions). See `lansenger-shared/SKILL.md` for details:
+
+### Credential fields
+
+| Field | Required? | When needed | Env var |
+|-------|-----------|-------------|---------|
+| `app_id` | **Always** | All API calls | `LANSENGER_APP_ID` |
+| `app_secret` | **Always** | All API calls | `LANSENGER_APP_SECRET` |
+| `api_gateway_url` | **Always** | API gateway (change for private deploy) | `LANSENGER_API_GATEWAY_URL` |
+| `passport_url` | OAuth2 | Getting userTokens | `LANSENGER_PASSPORT_URL` |
+| `encoding_key` | Callbacks | AES decryption of callback data (Base64-encoded) | `LANSENGER_ENCODING_KEY` |
+| `callback_token` | Callbacks | Signature verification (falls back to encoding_key) | `LANSENGER_CALLBACK_TOKEN` |
 
 ```bash
-# Configure multiple apps by profile name
-lansenger config set --profile "my-personal-bot"
-lansenger config set --profile "my-lansenger-app"
+# Basic credentials (all users)
+lansenger config set app_id YOUR_APP_ID
+lansenger config set app_secret YOUR_APP_SECRET
+lansenger config set api_gateway_url https://apigw.lx.qianxin.com/open/apigw
+
+# For OAuth2 user auth
+lansenger config set passport_url https://passport.lx.qianxin.com
+
+# For callback decryption & signature verification
+lansenger config set encoding_key YOUR_ENCODING_KEY
+lansenger config set callback_token YOUR_CALLBACK_TOKEN
+
+# Configure multiple apps by profile
+lansenger config set app_id xxx1 --profile "my-bot"
+lansenger config set app_id xxx2 --profile "my-app"
+lansenger config set encoding_key yyy2 --profile "my-app"  # this app needs callbacks
 
 # Switch identity via --profile
-lansenger message send-text staff123 "Hello" --profile "my-personal-bot"
-lansenger calendar primary --profile "my-lansenger-app" --user-token "ut1"
+lansenger message send-text staff123 "Hello" --profile "my-bot"
+lansenger callback parse-payload DATA --profile "my-app"
 ```
 
 ## Contributing

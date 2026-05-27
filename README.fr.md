@@ -150,16 +150,40 @@ Les deux CLIs partageant la même structure de commandes, les mêmes noms de par
 
 ## Configuration Multi-App / Multi-Bot
 
-Le CLI supporte plusieurs profils (chaque profil correspondant à un appID). Les credentials sont isolés par appID. Voir `lansenger-shared/SKILL.md` pour plus de détails :
+Le CLI supporte plusieurs profils ( chaque profil correspondant à un appID). Les identifiants sont isolés par profil et stockés dans `~/.lansenger/sdk_state.json` (permissions 0600). Voir `lansenger-shared/SKILL.md` pour plus de détails :
+
+### Champs d'identifiants
+
+| Champ | Obligatoire ? | Quand nécessaire | Variable d'environnement |
+|-------|---------------|------------------|--------------------------|
+| `app_id` | **Obligatoire** | Tous les appels API | `LANSENGER_APP_ID` |
+| `app_secret` | **Obligatoire** | Tous les appels API | `LANSENGER_APP_SECRET` |
+| `api_gateway_url` | **Obligatoire** | URL de la passerelle API (modifier pour déploiement privé) | `LANSENGER_API_GATEWAY_URL` |
+| `passport_url` | OAuth2 | Page d'autorisation OAuth2 (modifier pour déploiement privé) | `LANSENGER_PASSPORT_URL` |
+| `encoding_key` | Callbacks | Clé AES de décryptage des callbacks (Base64) | `LANSENGER_ENCODING_KEY` |
+| `callback_token` | Callbacks | Token de vérification de signature (fallback vers encoding_key) | `LANSENGER_CALLBACK_TOKEN` |
 
 ```bash
-# Configurer plusieurs apps par nom de profil
-lansenger config set --profile "my-personal-bot"
-lansenger config set --profile "my-lansenger-app"
+# Identifiants de base (tous les utilisateurs)
+lansenger config set app_id YOUR_APP_ID
+lansenger config set app_secret YOUR_APP_SECRET
+lansenger config set api_gateway_url https://apigw.lx.qianxin.com/open/apigw
+
+# Authentification utilisateur OAuth2 (pour obtenir des userTokens)
+lansenger config set passport_url https://passport.lx.qianxin.com
+
+# Réception de callbacks (décryptage et vérification de signature)
+lansenger config set encoding_key YOUR_ENCODING_KEY
+lansenger config set callback_token YOUR_CALLBACK_TOKEN
+
+# Configurer plusieurs applications par profil
+lansenger config set app_id xxx1 --profile "my-bot"
+lansenger config set app_id xxx2 --profile "my-app"
+lansenger config set encoding_key yyy2 --profile "my-app"
 
 # Changer d'identité via --profile
-lansenger message send-text staff123 "Hello" --profile "my-personal-bot"
-lansenger calendar primary --profile "my-lansenger-app" --user-token "ut1"
+lansenger message send-text staff123 "Hello" --profile "my-bot"
+lansenger callback parse-payload DATA --profile "my-app"
 ```
 
 ## Contribuer

@@ -150,16 +150,40 @@ lansenger message send-text staff123 "Hello"
 
 ## 多應用 / 多機械人設定
 
-CLI 支援多個設定檔（每個對應一個 appID）。憑證按 appID 隔離儲存。詳見 `lansenger-shared/SKILL.md`：
+CLI 支援多個設定檔（每個對應一個 appID），憑證按 appID 隔離儲存在 `~/.lansenger/sdk_state.json`（0600 權限）。詳見 `lansenger-shared/SKILL.md`：
+
+### 憑證欄位
+
+|欄位 | 是否必填 | 適用場景 | 環境變數 |
+|------|----------|----------|----------|
+| `app_id` | **必填** | 所有 API 請求 | `LANSENGER_APP_ID` |
+| `app_secret` | **必填** | 所有 API 請求 | `LANSENGER_APP_SECRET` |
+| `api_gateway_url` | **必填** | API 網關地址（私有部署需修改） | `LANSENGER_API_GATEWAY_URL` |
+| `passport_url` | 需 OAuth2 時填 | OAuth2 授權頁地址（私有部署需修改） | `LANSENGER_PASSPORT_URL` |
+| `encoding_key` | 霈接收回呼時填 | 回呼資料 AES 解密密鑰（Base64 編碼） | `LANSENGER_ENCODING_KEY` |
+| `callback_token` | 霈接收回呼時填 | 回呼簽名驗證 token（未填時回退到 encoding_key） | `LANSENGER_CALLBACK_TOKEN` |
 
 ```bash
+# 基本憑證（所有用戶必填）
+lansenger config set app_id YOUR_APP_ID
+lansenger config set app_secret YOUR_APP_SECRET
+lansenger config set api_gateway_url https://apigw.lx.qianxin.com/open/apigw
+
+# OAuth2 用戶認證（需要取得 userToken 時填寫）
+lansenger config set passport_url https://passport.lx.qianxin.com
+
+# 回呼接收（需要解析/驗簽回呼 Webhook 時填寫）
+lansenger config set encoding_key YOUR_ENCODING_KEY
+lansenger config set callback_token YOUR_CALLBACK_TOKEN
+
 # 按設定檔名稱設定多個應用
-lansenger config set --profile "my-personal-bot"
-lansenger config set --profile "my-lansenger-app"
+lansenger config set app_id xxx1 --profile "my-bot"
+lansenger config set app_id xxx2 --profile "my-app"
+lansenger config set encoding_key yyy2 --profile "my-app"
 
 # 透過 --profile 切換身份
-lansenger message send-text staff123 "Hello" --profile "my-personal-bot"
-lansenger calendar primary --profile "my-lansenger-app" --user-token "ut1"
+lansenger message send-text staff123 "Hello" --profile "my-bot"
+lansenger callback parse-payload DATA --profile "my-app"
 ```
 
 ## 參與貢獻

@@ -19,13 +19,31 @@ metadata:
 
 **CRITICAL — 凭证按 appID 隔离存储，每个 appID 对应一个 profile。多应用/多机器人场景下，务必通过 `--profile` 指定目标应用，避免用错凭证。**
 
-```bash
-# 交互式配置（引导输入 app_id、app_secret 等）
-lansenger config set
+所有凭证存储在 `~/.lansenger/sdk_state.json`（文件权限 0600），密钥类字段在 `config show` 中脱敏显示（`***`）。
 
-# 设置单个字段
-lansenger config set --key app_id --value "your_app_id"
-lansenger config set --key app_secret --value "your_app_secret"
+### 凭证字段一览
+
+| 字段 | 是否必填 | 场景 | 环境变量 |
+|------|----------|------|----------|
+| `app_id` | **必填** | 所有 API 调用都需要 | `LANSENGER_APP_ID` |
+| `app_secret` | **必填** | 所有 API 调用都需要 | `LANSENGER_APP_SECRET` |
+| `api_gateway_url` | **必填** | API 网关地址（私有部署需修改，默认为蓝信公共云） | `LANSENGER_API_GATEWAY_URL` |
+| `passport_url` | 需 OAuth2 时填 | OAuth2 授权页地址（私有部署需修改） | `LANSENGER_PASSPORT_URL` |
+| `encoding_key` | 需接收回调时填 | 回调数据 AES 解密密钥（Base64 编码，来自开发者中心） | `LANSENGER_ENCODING_KEY` |
+| `callback_token` | 需接收回调时填 | 回调签名验证 token（未填时回退到 encoding_key） | `LANSENGER_CALLBACK_TOKEN` |
+
+```bash
+# 基本凭证（所有用户必填）
+lansenger config set app_id YOUR_APP_ID
+lansenger config set app_secret YOUR_APP_SECRET
+lansenger config set api_gateway_url https://apigw.lx.qianxin.com/open/apigw
+
+# OAuth2 用户认证（需要获取 userToken 时填写）
+lansenger config set passport_url https://passport.lx.qianxin.com
+
+# 回调接收（需要解析/验签回调 Webhook 时填写）
+lansenger config set encoding_key YOUR_ENCODING_KEY
+lansenger config set callback_token YOUR_CALLBACK_TOKEN
 
 # 查看当前配置
 lansenger config show
