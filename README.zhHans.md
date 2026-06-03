@@ -134,7 +134,7 @@ skill-template/                          # 创建新 Skill 的模板
 
 ## CLI 兼容性
 
-这些 Skills 同时兼容 Python CLI 和 Go CLI：
+这些 Skills 同时兼容 Python CLI、Go CLI 和 TypeScript CLI：
 
 ```bash
 # Python CLI
@@ -144,9 +144,13 @@ lansenger message send-text staff123 "Hello"
 # Go CLI
 go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
 lansenger message send-text staff123 "Hello"
+
+# TypeScript CLI
+npm install -g lansenger-cli
+lansenger message send-text staff123 "Hello"
 ```
 
-两个 CLI 共享相同的命令结构、参数名称和输出格式，因此一套 Skills 即可同时服务两者。
+三个 CLI 共享相同的命令结构、参数名称和输出格式，因此一套 Skills 即可同时服务三者。
 
 ## 多应用 / 多机器人配置
 

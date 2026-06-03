@@ -2,7 +2,7 @@
 
 # lansenger-skills-official
 
-藍信 CLI 的 AI Agent Skills — 結構化 Markdown Skill 文件，適用於 Python 和 Go CLI，涵蓋訊息傳送、行事曆、群組、聯絡人、部門、待辦事項、串流訊息、回呼事件、OAuth 等。
+藍信 CLI 的 AI Agent Skills — 結構化 Markdown Skill 文件，適用於 Python、Go 和 TypeScript CLI，涵蓋訊息傳送、行事曆、群組、聯絡人、部門、待辦事項、串流訊息、回呼事件、OAuth 等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -134,7 +134,7 @@ skill-template/                          # 建立新 Skills 的模板
 
 ## CLI 相容性
 
-這些 Skills 同時適用於 Python CLI 和 Go CLI：
+這些 Skills 同時適用於 Python CLI、Go CLI 和 TypeScript CLI：
 
 ```bash
 # Python CLI
@@ -144,9 +144,13 @@ lansenger message send-text staff123 "Hello"
 # Go CLI
 go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
 lansenger message send-text staff123 "Hello"
+
+# TypeScript CLI
+npm install -g lansenger-cli
+lansenger message send-text staff123 "Hello"
 ```
 
-兩個 CLI 共用相同的命令結構、參數名稱與輸出格式，因此一組 Skills 即可同時適用。
+三個 CLI 共用相同的命令結構、參數名稱與輸出格式，因此一組 Skills 即可同時適用。
 
 ## 多應用 / 多 Bot 設定
 
