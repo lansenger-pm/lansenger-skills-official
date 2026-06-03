@@ -13,7 +13,8 @@ Send a file attachment to a chat.
 | chat_id | arg | yes | Target chat ID |
 | file_path | arg | yes | Local path to the file to send |
 | --content / -c | option | no | Text content accompanying the file |
-| --media-type | option | no | Media type hint (e.g., image, video, document) |
+| --media-type | option | no | Media type: 1=video, 2=image, 3=file |
+| --cover-image | option | no | Cover image path (required when sending video files) |
 | --group / -g | option | no | Send to a group chat (interprets chat_id as group ID) |
 | --user-token | option | no | User token for user-token channel messaging |
 | --sender-id | option | no | Sender staff ID |
@@ -25,7 +26,7 @@ lansenger message send-file user_123 /path/to/report.pdf
 
 lansenger message send-file grp_456 /path/to/image.png --group --content "Screenshot of the dashboard"
 
-lansenger message send-file user_123 /path/to/video.mp4 --media-type video --user-token $TOKEN
+lansenger message send-file user_123 /path/to/video.mp4 --media-type 1 --cover-image /path/to/cover.jpg --user-token $TOKEN
 
 lansenger message send-file grp_456 /path/to/data.csv --group --sender-id staff_001
 ```

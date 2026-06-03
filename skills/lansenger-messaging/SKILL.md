@@ -186,6 +186,22 @@ lansenger message revoke msg123 --chat-type bot
 lansenger message update-dynamic-card msg123 --last --status-desc "Approved ✓" --status-colour "#00FF00"
 ```
 
+### 公号私聊和人→人私聊
+
+```bash
+# 公号 → 多人
+lansenger message send-account-message text '{"text":"Notice from ops account"}' --chat-id staff1 --chat-id staff2 --account-id acct_ops
+
+# 公号 → 部门
+lansenger message send-account-message text '{"text":"Team update"}' --dept dept1 --account-id acct_ops
+
+# 用户 → 用户（需userToken，OAuth2获取）
+lansenger message send-user-message staff456 text '{"text":"Private message"}' --user-token $TOKEN
+
+# 用户 → 用户 带 common 配置
+lansenger message send-user-message staff456 formatText '{"content":"**Bold** text"}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
+```
+
 ### 发送提醒
 
 ```bash

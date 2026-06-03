@@ -71,10 +71,16 @@ lansenger message send-text staff123 "Hello" --profile "my-personal-bot"
 lansenger calendar primary --profile "my-lansenger-app" --user-token "ut1"
 
 # 查看所有已配置的 profile
-lansenger config list
+lansenger config list-profiles
 
 # 查看某个 profile 的配置
 lansenger config show --profile "my-personal-bot"
+
+# 清除某个 profile 的凭证
+lansenger config clear --profile "my-personal-bot"
+
+# 清除所有 profile（删除整个 state 文件）
+lansenger config clear --all
 ```
 
 ### 获取凭证
@@ -151,10 +157,16 @@ lansenger message send-text staff123 "Hello"
 lansenger message send-text staff123 "Hello" --profile "org-bot"
 
 # 查看所有已配置 profile
-lansenger config list
+lansenger config list-profiles
 
 # 查看某个 profile 详情
 lansenger config show --profile "my-personal-bot"
+
+# 清除某个 profile 的凭证
+lansenger config clear --profile "org-bot"
+
+# 清除所有 profile
+lansenger config clear --all
 ```
 
 **CRITICAL — 多应用场景下，不同 appID 对应不同机器人/应用身份。切换 profile 即切换身份，务必确认 profile 与目标身份一致。**
