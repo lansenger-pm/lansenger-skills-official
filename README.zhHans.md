@@ -2,7 +2,7 @@
 
 # lansenger-skills-official
 
-蓝信 CLI 的 AI Agent Skills — 为 Python 和 Go CLI 提供结构化 Markdown Skill 文档，涵盖消息、日历、群组、联系人、部门、待办、流式消息、回调、OAuth 等。
+蓝信 CLI 的 AI Agent Skills — 为 Python、Go 和 TypeScript CLI 提供结构化 Markdown Skill 文档，涵盖消息、日历、群组、联系人、部门、待办、流式消息、回调、OAuth 等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

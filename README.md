@@ -2,7 +2,7 @@
 
 # lansenger-skills-official
 
-AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python and Go CLI, covering messaging, calendar, groups, contacts, departments, todos, streaming, callbacks, OAuth, and more.
+AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python, Go, and TypeScript CLI, covering messaging, calendar, groups, contacts, departments, todos, streaming, callbacks, OAuth, and more.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -134,7 +134,7 @@ skill-template/                          # Templates for creating new skills
 
 ## CLI Compatibility
 
-These Skills work with both the Python CLI and Go CLI:
+These Skills work with the Python CLI, Go CLI, and TypeScript CLI:
 
 ```bash
 # Python CLI
@@ -144,9 +144,13 @@ lansenger message send-text staff123 "Hello"
 # Go CLI
 go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
 lansenger message send-text staff123 "Hello"
+
+# TypeScript CLI
+npm install -g lansenger-cli
+lansenger message send-text staff123 "Hello"
 ```
 
-Both CLIs share the same command structure, parameter names, and output formats, so one set of Skills serves both.
+All three CLIs share the same command structure, parameter names, and output formats, so one set of Skills serves all.
 
 ## Multi-App / Multi-Bot Configuration
 

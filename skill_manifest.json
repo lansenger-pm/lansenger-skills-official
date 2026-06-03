@@ -2,7 +2,7 @@
   "version": "1.0.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
-  "description": "AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python and Go CLI",
+  "description": "AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python, Go, and TypeScript CLI",
   "structure": "<name>/SKILL.md",
   "shared": "lansenger-shared/SKILL.md",
   "skills": [

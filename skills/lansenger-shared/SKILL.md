@@ -234,6 +234,9 @@ pip install --upgrade lansenger-cli
 # Go CLI
 go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
 
+# TypeScript CLI
+npm install -g lansenger-cli
+
 # 查看版本
 lansenger --version
 ```
