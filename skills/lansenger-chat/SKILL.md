@@ -1,6 +1,6 @@
 ---
 name: lansenger-chat
-version: 1.1.0
+version: 1.2.0
 description: "蓝信聊天列表与消息历史：查看聊天列表（私聊+群聊）、拉取聊天消息记录。当用户需要查看聊天记录、浏览聊天列表时使用。"
 metadata:
   requires:
@@ -8,7 +8,7 @@ metadata:
   cliHelp: "lansenger chat --help"
 ---
 
-# chat (v1.1)
+# chat (v1.2)
 
 **CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md)，其中包含认证、权限处理、安全规则。**
 
@@ -66,6 +66,18 @@ metadata:
 | linkCard | `{"linkCard": {...}}` | `.linkCard.title` + `.linkCard.desc` |
 | oacard | `{"oacard": {...}}` | 需按 oaCard 结构提取 |
 | 其他 | 字符串或嵌套dict | 直接取字符串或需自定义解析 |
+
+**SDK 提取方法**：Python SDK v1.5+ 的 `ChatMessageInfo` 提供 `plain_text()` 方法，自动处理所有格式并返回纯文本字符串：
+
+```python
+# Python SDK
+msg = chat_messages[0]  # ChatMessageInfo 对象
+text = msg.plain_text()  # 自动提取纯文本，无论 content 是哪种格式
+
+# CLI --json 输出后用 jq 提取
+# text 类型: .content.text
+# formatText 类型: .content.formatText.content
+```
 
 ## CLI 命令
 

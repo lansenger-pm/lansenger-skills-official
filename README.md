@@ -121,13 +121,13 @@ skill-template/                          # Templates for creating new skills
 |-------|-------------|
 | `lansenger-shared` | Auth, config, error handling, security rules (auto-loaded by all others) |
 | `lansenger-messaging` | 4 messaging channels, message type matrix, @mention rules, reminder, CLI method selection |
-| `lansenger-chat` | Fetch chat list (private + group) and pull messages from conversations |
+| `lansenger-chat` | Fetch chat list (private + group) and pull messages; `--split-month`, `--progress`, `plain_text()` SDK helper |
 | `lansenger-group` | Create groups, fetch info/members, list groups, check membership, update settings, dismiss groups |
 | `lansenger-staff` | Fetch staff info, ID mapping (phone/email→staffId), org extra fields, search |
 | `lansenger-department` | Navigate org hierarchy, fetch department detail/children, list department staff |
 | `lansenger-calendar` | Primary calendar, schedule CRUD, attendee management, attendee metadata |
 | `lansenger-todo` | Create, update, query, delete todo tasks, manage executors, status counts |
-| `lansenger-oauth` | OAuth2 user auth flow, authorize URL, code exchange, token refresh |
+| `lansenger-oauth` | OAuth2 user auth flow, authorize URL, code exchange, token refresh, `local-callback` command, UserTokenManager auto-refresh |
 | `lansenger-streaming` | SSE-based real-time message delivery for AI agents |
 | `lansenger-callback` | 25 event types, structured parsing, AES decryption, signature verification |
 | `lansenger-media` | Upload/download files, images, videos, audio, get media path |
@@ -150,7 +150,7 @@ npm install -g lansenger-cli
 lansenger message send-text staff123 "Hello"
 ```
 
-All three CLIs share the same command structure, parameter names, and output formats, so one set of Skills serves all.
+All three CLIs share the same command structure, parameter names, and output formats, so one set of Skills serves all. Requires SDK v1.5+ and CLI v0.10+.
 
 ## Multi-App / Multi-Bot Configuration
 

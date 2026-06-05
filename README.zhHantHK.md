@@ -121,13 +121,13 @@ skill-template/                          # 建立新 Skills 的範本
 |-------|------|
 | `lansenger-shared` | 認證、設定、錯誤處理、安全規則（由其他所有 Skill 自動載入） |
 | `lansenger-messaging` | 4 個訊息頻道、訊息類型對照表、@提及規則、提醒、CLI 方法選擇 |
-| `lansenger-chat` | 讀取聯絡對話列表（私聊 + 群組）及從對話中拉取訊息 |
+| `lansenger-chat` | 讀取聯絡對話列表（私聊 + 群組）及從對話中拉取訊息；`--split-month`、`--progress`、`plain_text()` SDK 輔助函式 |
 | `lansenger-group` | 建立群組、讀取資訊/成員、列出群組、檢查成員資格、更新設定、解散群 |
 | `lansenger-staff` | 讀取員工資訊、ID 映射（電話/電郵→staffId）、組織額外欄位、搜尋 |
 | `lansenger-department` | 瀏覽組織架構、讀取部門詳情/子部門、列出部門員工 |
 | `lansenger-calendar` | 主要行事曆、日程 CRUD、與會者管理、與會者元資料 |
 | `lansenger-todo` | 建立、更新、查詢、刪除待辦事項、管理執行人、狀態計數 |
-| `lansenger-oauth` | OAuth2 用戶認證流程、授權 URL、code 交換、憑證刷新 |
+| `lansenger-oauth` | OAuth2 用戶認證流程、授權 URL、code 交換、憑證刷新、`local-callback` 命令、UserTokenManager 自動刷新 |
 | `lansenger-streaming` | SSE 即時訊息傳遞，適用於 AI Agent |
 | `lansenger-callback` | 25 種事件類型、結構化解析、AES 解密、簽名驗證 |
 | `lansenger-media` | 上傳/下載檔案、圖片、影片、音訊，取得媒體路徑 |
@@ -150,7 +150,7 @@ npm install -g lansenger-cli
 lansenger message send-text staff123 "Hello"
 ```
 
-三個 CLI 共用相同的命令結構、參數名稱及輸出格式，因此一套 Skills 即可同時適用。
+三個 CLI 共用相同的命令結構、參數名稱及輸出格式，因此一套 Skills 即可同時適用。需要 SDK v1.5+ 及 CLI v0.10+。
 
 ## 多應用 / 多機械人設定
 

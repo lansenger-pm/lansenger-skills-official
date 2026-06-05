@@ -40,7 +40,7 @@
       "id": "lansenger-chat",
       "name": "Lansenger Chat Reading APIs",
       "category": "messaging",
-      "description": "Lansenger chat reading APIs — fetch personal chat list (private + group conversations) and pull messages from a specific conversation",
+      "description": "Lansenger chat reading APIs — fetch personal chat list (private + group conversations), pull messages from a specific conversation, auto monthly split, plain_text() helper",
       "path": "lansenger-chat/SKILL.md"
     },
     {
@@ -90,7 +90,7 @@
       "id": "lansenger-oauth",
       "name": "Lansenger OAuth2 & User Authentication",
       "category": "auth",
-      "description": "Lansenger OAuth2 user authentication flow — build authorize URL, exchange code for userToken, refresh userToken, fetch user info, and the appToken/userToken hierarchy",
+      "description": "Lansenger OAuth2 user authentication flow — build authorize URL, exchange code for userToken, refresh userToken, fetch user info, local callback server, UserTokenManager auto-refresh, and the appToken/userToken hierarchy",
       "path": "lansenger-oauth/SKILL.md"
     },
     {

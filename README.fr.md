@@ -121,13 +121,13 @@ skill-template/                          # Templates pour créer de nouveaux ski
 |-------|-------------|
 | `lansenger-shared` | Auth, config, gestion des erreurs, règles de sécurité (auto-chargé par tous les autres) |
 | `lansenger-messaging` | 4 canaux de messagerie, matrice des types de messages, règles @mention, rappels, sélection des méthodes CLI |
-| `lansenger-chat` | Récupérer la liste des chats (privés + groupes) et extraire les messages des conversations |
+| `lansenger-chat` | Récupérer la liste des chats (privés + groupes) et extraire les messages ; `--split-month`, `--progress`, assistant SDK `plain_text()` |
 | `lansenger-group` | Créer des groupes, récupérer info/membres, lister les groupes, vérifier l'appartenance, modifier les paramètres, dissoudre des groupes |
 | `lansenger-staff` | Récupérer les infos du personnel, mapping d'ID (téléphone/email→staffId), champs org supplémentaires, recherche |
 | `lansenger-department` | Naviguer la hiérarchie org, récupérer détail/enfants de département, lister le personnel d'un département |
 | `lansenger-calendar` | Calendrier principal, CRUD de planifications, gestion des participants, métadonnées des participants |
 | `lansenger-todo` | Créer, mettre à jour, interroger, supprimer des tâches todo, gérer les exécutants, compter les statuts |
-| `lansenger-oauth` | Flux d'authentification utilisateur OAuth2, URL d'autorisation, échange de code, renouvellement de token |
+| `lansenger-oauth` | Flux d'authentification utilisateur OAuth2, URL d'autorisation, échange de code, renouvellement de token, commande `local-callback`, auto-refresh UserTokenManager |
 | `lansenger-streaming` | Diffusion de messages en temps réel via SSE pour les Agents IA |
 | `lansenger-callback` | 25 types d'événements, parsing structuré, décryptage AES, vérification de signature |
 | `lansenger-media` | Upload/download de fichiers, images, vidéos, audio, récupérer le chemin média |
@@ -150,7 +150,7 @@ npm install -g lansenger-cli
 lansenger message send-text staff123 "Hello"
 ```
 
-Les trois CLIs partageant la même structure de commandes, les mêmes noms de paramètres et les mêmes formats de sortie, un seul ensemble de Skills les couvre tous.
+Les trois CLIs partageant la même structure de commandes, les mêmes noms de paramètres et les mêmes formats de sortie, un seul ensemble de Skills les couvre tous. Requiert SDK v1.5+ et CLI v0.10+.
 
 ## Configuration Multi-App / Multi-Bot
 

@@ -1,14 +1,14 @@
 ---
 name: lansenger-oauth
-version: 1.1.0
-description: "蓝信OAuth2用户授权：构建授权URL、兑换授权码、刷新Token、获取用户信息、解析回调、验证State。当用户需要获取userToken或进行OAuth2授权流程时使用。"
+version: 1.2.0
+description: "蓝信OAuth2用户授权：构建授权URL、兑换授权码、刷新Token、获取用户信息、解析回调、验证State、本地回调服务器、自动刷新Token。当用户需要获取userToken或进行OAuth2授权流程时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
   cliHelp: "lansenger oauth --help"
 ---
 
-# oauth (v1.1)
+# oauth (v1.2)
 
 **CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md），其中包含认证、权限处理、安全规则。**
 
@@ -16,7 +16,7 @@ metadata:
 
 **CRITICAL — 授权码（code）有效期 5 分钟且只能使用一次。刷新 Token 后旧 refreshToken 立即失效，必须使用新返回的 refreshToken。**
 
-**CRITICAL — redirect_uri 域名必须在蓝信开发者后台的信任域名列表中。非信任域名无法接收回调，localhost 也不被信任。用户需手动从浏览器地址栏复制 code 给 Agent。**
+**CRITICAL — redirect_uri 域名必须在蓝信开发者后台的信任域名列表中。localhost 不在默认信任列表中，但 `local-callback` 命令在本地启动 HTTP 服务器捕获浏览器重定向（即使页面报错，URL 中仍含 code）。**
 
 ## 核心概念
 
@@ -40,14 +40,34 @@ metadata:
 
 | Token | 有效期 | 过期后 | 刷新方式 |
 |-------|--------|--------|---------|
-| **appToken** | 2小时 | CLI 自动刷新 | 无需手动处理 |
-| **userToken** | 2小时 | 需手动刷新 | `lansenger oauth refresh-token <refreshToken>` |
+| **appToken** | 2小时 | SDK/CLI 自动刷新 | 无需手动处理 |
+| **userToken** | 2小时 | SDK UserTokenManager 自动刷新（提前5分钟） | SDK: `client.get_user_token()` 自动刷新；CLI: 手动 `lansenger oauth refresh-token` |
 | **refreshToken** | 30天 | 需重新 OAuth2 授权 | 无法刷新，过期后必须重新走完整授权流程 |
 
+### SDK 自动刷新（UserTokenManager）
+
+SDK v1.5+ 提供 `UserTokenManager`，在 `exchange_code` 后自动注册 token，后续调用 `get_user_token()` 时自动检查过期并刷新：
+
+```python
+# Async client
+client = LansengerClient.from_env()
+result = await client.exchange_code("AUTH_CODE")
+# tokens auto-registered in UserTokenManager
+
+# Later — auto-refreshes if expired
+user_token = await client.get_user_token()
+
+# Sync client
+client = LansengerSyncClient.from_env()
+result = client.exchange_code("AUTH_CODE")
+user_token = client.get_user_token()  # auto-refreshes
+```
+
+**关键**：refreshToken 是单次使用的（每次刷新后旧 token 立即失效），UserTokenManager 自动保存新 refreshToken。
+
 **批量脚本注意事项**：运行超过2小时的脚本，userToken 可能中途过期。建议：
-1. 在脚本开始时同时保存 userToken 和 refreshToken
-2. 遇到 token 过期错误时，用 refreshToken 刷新并继续
-3. refreshToken 也过期（>30天），则需重新走 OAuth2 授权
+1. SDK 用户：直接用 `client.get_user_token()` — 自动刷新，无需手动处理
+2. CLI 用户：在脚本开始时同时保存 userToken 和 refreshToken，遇到过期时用 refreshToken 刷新
 
 ```bash
 # 刷新过期 userToken
@@ -62,7 +82,22 @@ NEW_REFRESH_TOKEN=$(echo "$NEW_TOKENS" | jq -r '.refresh_token')
 
 ### OAuth2 授权流程对 Agent 场景
 
-蓝信 OAuth2 需要用户在浏览器手动操作，不支持 localhost 回调：
+有两种方式完成授权：
+
+**方式一：本地回调服务器（推荐）**
+
+```bash
+# 一条命令完成授权+兑换
+lansenger oauth local-callback --port 8765
+# → 自动启动本地 HTTP 服务器
+# → 输出授权 URL，用户在浏览器打开
+# → 浏览器重定向到 localhost:8765（即使页面报错，code 已被捕获）
+# → 自动兑换 code 获取 userToken + refreshToken
+```
+
+**方式二：手动复制 code**
+
+蓝信 OAuth2 需要用户在浏览器手动操作：
 
 1. Agent 构建授权 URL：`lansenger oauth authorize-url "https://trusted-domain.com/callback"`
 2. 用户在浏览器打开该 URL 并授权
@@ -142,6 +177,27 @@ lansenger oauth parse-callback "code=XXX&state=YYY"
 lansenger oauth validate-state "callback_state_value" "expected_state_value"
 ```
 
+### 本地回调服务器（一键授权+兑换）
+
+```bash
+# 默认端口 8765，自动兑换 code
+lansenger oauth local-callback
+
+# 指定端口
+lansenger oauth local-callback --port 9000
+
+# 仅捕获 code，不自动兑换
+lansenger oauth local-callback --no-exchange
+
+# JSON 输出
+lansenger oauth local-callback --json
+
+# 自定义超时（默认120秒）
+lansenger oauth local-callback --timeout 300
+```
+
+原理：启动本地 HTTP 服务器监听 `http://localhost:<port>`，浏览器授权后重定向到该地址，服务器自动捕获 code。即使 localhost 不在蓝信信任域名列表中，浏览器仍会重定向到该 URL（页面可能报错，但 URL 中包含 code 参数），本地服务器从 URL 中提取 code 并自动兑换。
+
 ## 参数说明
 
 ### oauth authorize-url
@@ -185,6 +241,16 @@ lansenger oauth validate-state "callback_state_value" "expected_state_value"
 | `callback_state` (位置参数) | str | — | 回调中的 state 值（必需） |
 | `expected_state` (位置参数) | str | — | 预期的 state 值（必需） |
 
+### oauth local-callback
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `--port` / `-p` | int | 8765 | 本地 HTTP 服务器端口 |
+| `--scope` / `-s` | str | "basic_userinfor" | OAuth2 scope |
+| `--state` | str | "" | CSRF state（空则自动生成） |
+| `--exchange` / `--no-exchange` | bool | True | 是否自动兑换 code 为 userToken |
+| `--timeout` / `-t` | int | 120 | 等待回调最大秒数 |
+
 ## 常见错误
 
 | 错误 | 正确做法 |
@@ -192,10 +258,9 @@ lansenger oauth validate-state "callback_state_value" "expected_state_value"
 | 用 appToken 替代 userToken | appToken 是机器人身份，userToken 通过 OAuth2 获取 |
 | 未配置 passport_url | OAuth2 需要 passport_url（与 api_gateway_url 不同的域名） |
 | 兑换码超过5分钟或重复使用 | 授权码5分钟有效且只能使用一次 |
-| 刷新后继续用旧 refreshToken | 刷新后旧 refreshToken 立即失效，必须用新返回的 |
-| 不验证回调 state（CSRF 风险） | 始终用 `validate-state` 验证回调 state |
 | redirect_uri 域名不在信任列表 | 必须在蓝信开发者后台配置信任域名（地址因私有部署而异） |
 | 不验证回调 state（CSRF 风险） | 始终用 `validate-state` 验证回调 state |
-| 期望 localhost 自动接收回调 | 蓝信不支持 localhost 回调，用户需手动从浏览器复制 code |
-| 只保存 userToken 不保存 refreshToken | refreshToken 是续期的唯一途径，必须同时保存 |
-| 批量脚本不考虑 token 中途过期 | 运行超2小时的脚本需实现 refresh_token 自动刷新逻辑 |
+| 期望 localhost 自动接收回调 | 用 `local-callback` 启动本地 HTTP 服务器捕获 |
+| 只保存 userToken 不保存 refreshToken | refreshToken 是续期的唯一途径，必须同时保存；SDK UserTokenManager 自动保存 |
+| 批量脚本不考虑 token 中途过期 | SDK 用户用 `get_user_token()` 自动刷新；CLI 用户手动 `refresh-token` |
+| 刷新后继续用旧 refreshToken | 刷新后旧 refreshToken 立即失效，必须用新返回的 |

@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.1.0
+version: 1.2.0
 description: "Authentication, config setup, error handling, security rules — auto-loaded by all other skills. Use when first setting up lansenger CLI, running auth login, handling permission or token errors, or needing to update the CLI."
 metadata:
   requires:
@@ -98,11 +98,11 @@ lansenger config clear --all
 | Token | 用途 | 获取方式 | 有效期 |
 |-------|------|---------|--------|
 | **appToken** | 所有 API 调用必须 | 自动管理，appID + appSecret 换取 | 2小时，自动刷新 |
-| **userToken** | 特定用户级操作（日历、员工查询等） | OAuth2 流程获取 | 2小时，可刷新 |
+| **userToken** | 特定用户级操作（日历、员工查询等） | OAuth2 流程获取 | 2小时，SDK自动刷新 |
 
 **关键规则**：
 - **appToken 自动管理** — CLI 内部自动获取和刷新，你不需要手动操作
-- **userToken 需 OAuth2 授权** — 涉及用户级数据时必须传入 `--user-token` 参数
+- **userToken 自动刷新** — SDK v1.5+ 的 `UserTokenManager` 在过期前5分钟自动刷新；CLI 仍需手动 `lansenger oauth refresh-token`
 
 ### Token 传递方式
 
