@@ -14,7 +14,7 @@ metadata:
 
 **CRITICAL — 聊天读取是用户级操作，必须传入 `--user-token` 参数（通过 OAuth2 获取）。机器人身份无法访问用户的聊天列表和消息记录。**
 
-**CRITICAL — 消息查询时间跨度不宜超过约1个月。超过1个月时，API 只返回最近的数据，更早消息会丢失。需要按月拆分查询才能完整拉取历史数据（见下方"批量拉取"章节）。**
+**CRITICAL — 消息查询时间跨度不宜超过约1个月。超过1个月时，API 只返回最近的数据，更早消息会丢失。需要按月拆分查询才能完整拉取历史数据（见下方"批量操作与限制说明"章节）。**
 
 **CRITICAL — 消息返回的 `sender` 字段是**姓名**（如"王洋胜腾"），不是 staffId。同名员工无法区分。如需确认发送者身份，需用姓名反查 `staff search`。**
 
@@ -44,20 +44,28 @@ metadata:
 
 ### 聊天列表字段限制
 
-聊天列表返回的 `staff_infos` 仅包含 `staffId` 和 `staffName`，不含部门、职位等信息。如需判断私聊对方的部门/角色，需额外调用 `lansenger staff detail <staffId> --user-token $TOKEN` 补充。
+聊天列表返回的 `staff_infos` 只包含 `staffId` 和 `staffName`，不含部门、职位等信息。如需判断私聊对方的部门/角色，需额外调用 `lansenger staff detail <staffId> --user-token $TOKEN` 补充。
 
-### 消息 content 格式对照表
+### sender 字段说明
+
+消息返回的 `sender` 字段是**姓名**而非 staffId（如 `"王洋胜腾"`），同名员工无法区分。API 也会返回 `sender_id`（如果有的话），可用于精确定位发送者。如需确认身份：
+
+1. 若 API 返回了 `sender_id`，直接调用 `lansenger staff detail <sender_id> --user-token $TOKEN` 获取完整信息
+2. 若只有 `sender`（姓名），用 `lansenger staff search --keyword "王洋胜腾" --user-token $TOKEN` 反查，再从结果中确认对应 staffId
+
+### 消息 content 格式说明
 
 不同 msgType 的 `content` 字段格式不同，解析时需按类型区分：
 
-| msgType | content 格式 | 提取纯文本方法 |
-|---------|-------------|--------------|
-| text | `{"text": "消息内容"}` | `.text` |
-| formatText | `{"formatText": {"content": "**Bold** text"}}` | `.formatText.content` |
-| 附件类 | `{"text": "", "attachments": [...], "mediaIds": [...]}` | `.text`（正文可能为空） |
+| 消息类型 | content 格式 | plain_text 提取方式 |
+|---------|-------------|-------------------|
+| text | `{"text": "xxx"}` | `content.text` |
+| formatText | `{"formatText": {"content": "xxx"}}` | `content.formatText.content` |
+| 附件 | `{"text": "", "attachments": [...], "mediaIds": [...]}` | `content.text`（正文可能为空） |
 | appCard | `{"appCard": {...}}` | 需按 div 结构逐段提取 |
 | linkCard | `{"linkCard": {...}}` | `.linkCard.title` + `.linkCard.desc` |
 | oacard | `{"oacard": {...}}` | 需按 oaCard 结构提取 |
+| 其他 | 字符串或嵌套dict | 直接取字符串或需自定义解析 |
 
 ## CLI 命令
 
@@ -97,6 +105,24 @@ lansenger chat messages --group-id group456 --start 1700000000000000 --end 17100
 
 # JSON 输出（便于结构化解析）
 lansenger chat messages --staff-id staff123 --user-token "ut1" --json
+
+# --json 输出示例
+# [
+#   {
+#     "msgType": "text",
+#     "content": {"text": "你好"},
+#     "sender": "王洋胜腾",
+#     "sender_id": "staff123",
+#     "createTime": 1700000000000000,
+#     "version": "v1"
+#   }
+# ]
+
+# 自动按月拆分拉取（跨多个月时使用）
+lansenger chat messages --staff-id staff123 --start 1700000000000000 --end 1715000000000000 --split-month --user-token "ut1"
+
+# 显示拉取进度
+lansenger chat messages --staff-id staff123 --split-month --progress --user-token "ut1"
 ```
 
 ## 参数说明
@@ -122,24 +148,33 @@ lansenger chat messages --staff-id staff123 --user-token "ut1" --json
 | `--start` | int | 0 | 起始时间（微秒级时间戳） |
 | `--end` | int | 0 | 结束时间（微秒级时间戳） |
 | `--sender-id` | str | "" | 按发送者 staffId 过滤 |
+| `--split-month` | flag | false | 自动按月拆分拉取（时间跨度超过1个月时必须使用） |
+| `--progress` | flag | false | 显示拉取进度（配合 --split-month 使用） |
+| `--json` | flag | false | JSON 格式输出，便于结构化解析 |
 | `--user-token` | str | "" | 用户 Token（必需） |
 
 **注意**：`--staff-id` 和 `--group-id` 二选一，必须提供其中一个。
 
-## 批量拉取（多聊天 × 多月份）
+## 批量操作与限制说明
 
 拉取大量聊天历史时，必须遵循以下最佳实践：
 
-### 按月拆分（必须）
+### 消息查询时间范围限制
+
+消息查询时间范围不宜超过1个月，超过1个月需按月拆分查询（API只返回最近数据）。使用 `--split-month` 选项可自动按月拆分拉取，无需手动计算月份边界：
 
 ```bash
-# 单次查询时间跨度不超过1个月
-# 错误：跨5个月一次性查询 → 历史数据丢失
-# 正确：按月拆分
+# 手动按月拆分
+# 第1个月
 lansenger chat messages --staff-id staff123 --start 1700000000000000 --end 1703000000000000 --user-token $TOKEN
-
 # 第2个月
 lansenger chat messages --staff-id staff123 --start 1703000000000000 --end 1706000000000000 --user-token $TOKEN
+
+# 自动按月拆分（推荐）
+lansenger chat messages --staff-id staff123 --start 1700000000000000 --end 1715000000000000 --split-month --user-token $TOKEN
+
+# 自动拆分 + 显示进度
+lansenger chat messages --staff-id staff123 --start 1700000000000000 --end 1715000000000000 --split-month --progress --user-token $TOKEN
 ```
 
 ### 深分页逐页翻取
@@ -158,17 +193,17 @@ lansenger chat messages --staff-id staff123 --version v1 --size 100 --user-token
 
 ### 断点续传
 
-建议将每个聊天的拉取进度保存到文件，中断后可恢复：
+建议将每个聊天的拉取进度（`last_version`）保存到文件，中断后可恢复：
 
-```
-progress.json 示例：
+```json
+// progress.json 示例
 {
   "staff123": {"last_version": "v5", "month": "2026-01", "count": 500},
   "group456": {"last_version": "v3", "month": "2026-02", "count": 300}
 }
 ```
 
-### 并发控制
+### 并发控制与限流
 
 - 建议每次 API 调用间隔 ≥ 50ms，避免被限流
 - 参考耗时：单聊天单月约 0.2–0.5 秒（视消息密度）
@@ -184,6 +219,6 @@ progress.json 示例：
 | `--staff-id` 和 `--group-id` 同时传入 | 二选一，私聊用 `--staff-id`，群聊用 `--group-id` |
 | keyword 在 type=0（全部）时使用 | keyword 仅在 type=1 或 type=2 时有效 |
 | 传秒级时间戳而非微秒级 | 时间参数必须用微秒级（毫秒 × 1000） |
-| 时间跨度超过1个月 | **必须按月拆分**，超过1个月历史数据会丢失 |
-| 以为 sender 是 staffId | sender 是**姓名**，不是 staffId，同名员工无法区分 |
+| 时间跨度超过1个月 | **必须按月拆分**，超过1个月历史数据会丢失；使用 `--split-month` |
+| 以为 sender 是 staffId | sender 是**姓名**，不是 staffId，同名员工无法区分；结合 `sender_id` 或用 `staff search` 反查 |
 | 需要对方部门/职位但只看 chat list | chat list 的 staff_infos 只含 staffId+staffName，需额外调 `staff detail` |
