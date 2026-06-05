@@ -7,3 +7,4 @@ build/
 .env
 .agents/
 skills-lock.json
+CROSS_SDK_SPEC*.md
