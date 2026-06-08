@@ -175,22 +175,18 @@ lansenger config clear --all
 
 ## 输出格式
 
-**CRITICAL — `--json/-j` 是全局选项，必须放在子命令之前，不能放在命令末尾。**
+**CRITICAL — `--json/-j` 是全局选项，必须放在最前面（子命令之前），不能放在命令末尾。**
 
 ```bash
-# ✅ 正确：全局 flag 在子命令之前
+# ✅ 正确：全局 flag 在最前面
 lansenger -j calendar primary
 lansenger --json health check
-
-# ✅ 正确：子组 flag 在命令名之前
-lansenger calendar --json primary
-lansenger health -j check
 
 # ❌ 错误：放在命令末尾（会报 "No such option: --json"）
 lansenger calendar primary --json
 lansenger health check -j
 
-# ✅ 正确：环境变量方式（放在任意位置都行）
+# ✅ 正确：环境变量方式（不依赖参数位置）
 LANSENGER_JSON=1 lansenger calendar primary
 ```
 
