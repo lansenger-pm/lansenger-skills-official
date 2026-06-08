@@ -171,10 +171,11 @@ The CLI supports multiple profiles (each corresponding to an appID). Credentials
 # Basic credentials (all users)
 lansenger config set app_id YOUR_APP_ID
 lansenger config set app_secret YOUR_APP_SECRET
-lansenger config set api_gateway_url https://apigw.lx.qianxin.com/open/apigw
+# api_gateway_url defaults to Lansenger public cloud; private deployment requires manual setup
+# lansenger config set api_gateway_url YOUR_PRIVATE_GATEWAY_URL
 
-# For OAuth2 user auth
-lansenger config set passport_url https://passport.lx.qianxin.com
+# For OAuth2 user auth (private deployment requires manual setup)
+# lansenger config set passport_url YOUR_PRIVATE_PASSPORT_URL
 
 # For callback decryption & signature verification
 lansenger config set encoding_key YOUR_ENCODING_KEY

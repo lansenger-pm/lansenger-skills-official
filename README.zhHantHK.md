@@ -171,10 +171,11 @@ CLI 支援多個設定檔（每個對應一個 appID），憑證按 appID 隔離
 # 基本憑證（所有用戶必填）
 lansenger config set app_id YOUR_APP_ID
 lansenger config set app_secret YOUR_APP_SECRET
-lansenger config set api_gateway_url https://apigw.lx.qianxin.com/open/apigw
+# api_gateway_url 預設為藍信公有雲地址，私有部署需手動設定
+# lansenger config set api_gateway_url YOUR_PRIVATE_GATEWAY_URL
 
-# OAuth2 用戶認證（需要取得 userToken 時填寫）
-lansenger config set passport_url https://passport.lx.qianxin.com
+# OAuth2 用戶認證（私有部署需手動設定 passport_url）
+# lansenger config set passport_url YOUR_PRIVATE_PASSPORT_URL
 
 # 回呼接收（需要解析/驗簽回呼 Webhook 時填寫）
 lansenger config set encoding_key YOUR_ENCODING_KEY

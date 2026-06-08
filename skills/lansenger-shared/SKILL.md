@@ -27,8 +27,8 @@ metadata:
 |------|----------|------|----------|
 | `app_id` | **必填** | 所有 API 调用都需要 | `LANSENGER_APP_ID` |
 | `app_secret` | **必填** | 所有 API 调用都需要 | `LANSENGER_APP_SECRET` |
-| `api_gateway_url` | **必填** | API 网关地址（私有部署需修改，默认为蓝信公共云） | `LANSENGER_API_GATEWAY_URL` |
-| `passport_url` | 需 OAuth2 时填 | OAuth2 授权页地址（私有部署需修改） | `LANSENGER_PASSPORT_URL` |
+| `api_gateway_url` | 私有部署时必填 | API 网关地址（默认为蓝信公有云，私有部署需修改） | `LANSENGER_API_GATEWAY_URL` |
+| `passport_url` | 需 OAuth2 + 私有部署时填 | OAuth2 授权页地址（公有云自动推断，私有部署需手动设置） | `LANSENGER_PASSPORT_URL` |
 | `encoding_key` | 需接收回调时填 | 回调数据 AES 解密密钥（Base64 编码，来自开发者中心） | `LANSENGER_ENCODING_KEY` |
 | `callback_token` | 需接收回调时填 | 回调签名验证 token（未填时回退到 encoding_key） | `LANSENGER_CALLBACK_TOKEN` |
 
@@ -36,10 +36,12 @@ metadata:
 # 基本凭证（所有用户必填）
 lansenger config set app_id YOUR_APP_ID
 lansenger config set app_secret YOUR_APP_SECRET
-lansenger config set api_gateway_url https://apigw.lx.qianxin.com/open/apigw
+# api_gateway_url 默认为蓝信公有云地址，私有部署需手动设置
+# lansenger config set api_gateway_url YOUR_PRIVATE_GATEWAY_URL
 
 # OAuth2 用户认证（需要获取 userToken 时填写）
-lansenger config set passport_url https://passport.lx.qianxin.com
+# passport_url 私有部署需手动设置
+# lansenger config set passport_url YOUR_PRIVATE_PASSPORT_URL
 
 # 回调接收（需要解析/验签回调 Webhook 时填写）
 lansenger config set encoding_key YOUR_ENCODING_KEY
