@@ -1,5 +1,5 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python, Go, and TypeScript CLI",
