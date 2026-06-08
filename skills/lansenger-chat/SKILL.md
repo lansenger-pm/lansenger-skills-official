@@ -16,7 +16,7 @@ metadata:
 
 **CRITICAL — 消息查询时间跨度不宜超过约1个月。超过1个月时，API 只返回最近的数据，更早消息会丢失。需要按月拆分查询才能完整拉取历史数据（见下方"批量操作与限制说明"章节）。**
 
-**CRITICAL — 消息返回的 `sender` 字段是**姓名**（如"王洋胜腾"），不是 staffId。同名员工无法区分。如需确认发送者身份，需用姓名反查 `staff search`。**
+**CRITICAL — 消息返回的 `sender` 字段是**姓名**（如"张三"），不是 staffId。同名员工无法区分。如需确认发送者身份，需用姓名反查 `staff search`。**
 
 ## 核心概念
 
@@ -48,10 +48,10 @@ metadata:
 
 ### sender 字段说明
 
-消息返回的 `sender` 字段是**姓名**而非 staffId（如 `"王洋胜腾"`），同名员工无法区分。API 也会返回 `sender_id`（如果有的话），可用于精确定位发送者。如需确认身份：
+消息返回的 `sender` 字段是**姓名**而非 staffId（如 `"张三"`），同名员工无法区分。API 也会返回 `sender_id`（如果有的话），可用于精确定位发送者。如需确认身份：
 
 1. 若 API 返回了 `sender_id`，直接调用 `lansenger staff detail <sender_id> --user-token $TOKEN` 获取完整信息
-2. 若只有 `sender`（姓名），用 `lansenger staff search --keyword "王洋胜腾" --user-token $TOKEN` 反查，再从结果中确认对应 staffId
+2. 若只有 `sender`（姓名），用 `lansenger staff search --keyword "张三" --user-token $TOKEN` 反查，再从结果中确认对应 staffId
 
 ### 消息 content 格式说明
 
@@ -123,7 +123,7 @@ lansenger chat messages --staff-id staff123 --user-token "ut1" --json
 #   {
 #     "msgType": "text",
 #     "content": {"text": "你好"},
-#     "sender": "王洋胜腾",
+#     "sender": "张三",
 #     "sender_id": "staff123",
 #     "createTime": 1700000000000000,
 #     "version": "v1"

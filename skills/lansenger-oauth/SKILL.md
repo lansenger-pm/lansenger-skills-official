@@ -98,7 +98,7 @@ open "$(lansenger oauth local-callback --port 8765 --json | jq -r '.authorize_ur
 # 流程：
 # → 自动启动本地 HTTP 服务器
 # → Agent 自动在浏览器打开授权 URL
-# → 用户在浏览器中点击授权
+# → 用户在蓝信手机端扫码授权
 # → 浏览器重定向到 localhost:8765（即使页面报错，code 已被捕获）
 # → 自动兑换 code 获取 userToken + refreshToken
 ```
