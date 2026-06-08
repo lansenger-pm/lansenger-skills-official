@@ -16,7 +16,7 @@ metadata:
 
 **CRITICAL — 授权码（code）有效期 5 分钟且只能使用一次。刷新 Token 后旧 refreshToken 立即失效，必须使用新返回的 refreshToken。**
 
-**CRITICAL — redirect_uri 域名必须在蓝信开发者后台的信任域名列表中。localhost 不在默认信任列表中，但 `local-callback` 命令在本地启动 HTTP 服务器捕获浏览器重定向（即使页面报错，URL 中仍含 code）。**
+**CRITICAL — redirect_uri 域名必须在蓝信开发者后台的信任域名列表中。使用 `local-callback` 时，需将 `http://localhost:<port>` 加入蓝信开发者后台的信任域名列表，并等待缓存生效（约10分钟）。若未加入信任域名，浏览器重定向可能失败。**
 
 ## 核心概念
 
