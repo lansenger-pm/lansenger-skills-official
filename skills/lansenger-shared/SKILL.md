@@ -175,18 +175,26 @@ lansenger config clear --all
 
 ## 输出格式
 
+**CRITICAL — `--json/-j` 是全局选项，必须放在子命令之前，不能放在命令末尾。**
+
 ```bash
-# 默认：格式化表格输出
-lansenger calendar primary
+# ✅ 正确：全局 flag 在子命令之前
+lansenger -j calendar primary
+lansenger --json health check
 
-# JSON 输出（适合 Agent 解析）
+# ✅ 正确：子组 flag 在命令名之前
+lansenger calendar --json primary
+lansenger health -j check
+
+# ❌ 错误：放在命令末尾（会报 "No such option: --json"）
 lansenger calendar primary --json
+lansenger health check -j
 
-# 简写
-lansenger calendar primary -j
+# ✅ 正确：环境变量方式（放在任意位置都行）
+LANSENGER_JSON=1 lansenger calendar primary
 ```
 
-**Agent 建议**：始终使用 `--json` 输出，便于结构化解析。
+**Agent 建议**：始终使用 JSON 输出，便于结构化解析。推荐用 `lansenger -j <子命令>` 或 `LANSENGER_JSON=1`。
 
 ## 安全规则
 
