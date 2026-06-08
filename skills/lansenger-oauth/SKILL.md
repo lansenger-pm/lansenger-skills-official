@@ -1,6 +1,6 @@
 ---
 name: lansenger-oauth
-version: 1.2.0
+version: 1.3.0
 description: "蓝信OAuth2用户授权：构建授权URL、兑换授权码、刷新Token、获取用户信息、解析回调、验证State、本地回调服务器、自动刷新Token。当用户需要获取userToken或进行OAuth2授权流程时使用。"
 metadata:
   requires:
@@ -16,7 +16,7 @@ metadata:
 
 **CRITICAL — 授权码（code）有效期 5 分钟且只能使用一次。刷新 Token 后旧 refreshToken 立即失效，必须使用新返回的 refreshToken。**
 
-**CRITICAL — redirect_uri 域名必须在蓝信开发者后台的信任域名列表中。使用 `local-callback` 时，需将 `http://localhost:<port>` 加入蓝信开发者后台的信任域名列表，并等待缓存生效（约10分钟）。若未加入信任域名，浏览器重定向可能失败。**
+**CRITICAL — Agent MUST 优先使用 `local-callback` 模式，并用 `open` 命令自动在浏览器中打开授权 URL。禁止让用户手动复制 URL 到浏览器（复制时容易带入空格/回车导致失败）。**
 
 ## 核心概念
 
@@ -84,13 +84,21 @@ NEW_REFRESH_TOKEN=$(echo "$NEW_TOKENS" | jq -r '.refresh_token')
 
 有两种方式完成授权：
 
-**方式一：本地回调服务器（推荐）**
+**方式一：本地回调服务器（推荐，Agent MUST 优先使用）**
 
 ```bash
-# 一条命令完成授权+兑换
-lansenger oauth local-callback --port 8765
+# Agent 应自动执行以下两步，无需用户手动复制链接：
+# Step 1: 启动 local-callback（自动监听 localhost 回调）
+lansenger oauth local-callback --port 8765 --json
+
+# Step 2: 从 --json 输出中提取 authorize_url，自动在浏览器打开
+open "$(lansenger oauth local-callback --port 8765 --json | jq -r '.authorize_url')"
+# macOS 用 open，Linux 用 xdg-open，Windows 用 start
+
+# 流程：
 # → 自动启动本地 HTTP 服务器
-# → 输出授权 URL，用户在浏览器打开
+# → Agent 自动在浏览器打开授权 URL
+# → 用户在浏览器中点击授权
 # → 浏览器重定向到 localhost:8765（即使页面报错，code 已被捕获）
 # → 自动兑换 code 获取 userToken + refreshToken
 ```
@@ -261,6 +269,7 @@ lansenger oauth local-callback --timeout 300
 | redirect_uri 域名不在信任列表 | 必须在蓝信开发者后台配置信任域名（地址因私有部署而异） |
 | 不验证回调 state（CSRF 风险） | 始终用 `validate-state` 验证回调 state |
 | 期望 localhost 自动接收回调 | 用 `local-callback` 启动本地 HTTP 服务器捕获 |
+| 让用户手动复制 URL 到浏览器 | **禁止**——手动复制容易带入空格/回车导致失败；Agent MUST 用 `open`/`xdg-open` 自动打开 |
 | 只保存 userToken 不保存 refreshToken | refreshToken 是续期的唯一途径，必须同时保存；SDK UserTokenManager 自动保存 |
 | 批量脚本不考虑 token 中途过期 | SDK 用户用 `get_user_token()` 自动刷新；CLI 用户手动 `refresh-token` |
 | 刷新后继续用旧 refreshToken | 刷新后旧 refreshToken 立即失效，必须用新返回的 |
