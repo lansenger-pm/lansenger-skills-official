@@ -110,7 +110,7 @@ skills/
   lansenger-oauth/SKILL.md              # OAuth2 用戶認證
   lansenger-streaming/SKILL.md          # 串流訊息（AI-Agent SSE）
   lansenger-callback/SKILL.md           # 回呼事件及 webhook
-  lansenger-media/SKILL.md              # 媒體檔案上傳/下載
+  lansenger-media/SKILL.md              # 媒體檔案上載/下載
 skill_manifest.json                      # 所有 Skills 的索引
 skill-template/                          # 建立新 Skills 的範本
 ```
@@ -130,7 +130,7 @@ skill-template/                          # 建立新 Skills 的範本
 | `lansenger-oauth` | OAuth2 用戶認證流程、授權 URL、code 交換、憑證刷新、`local-callback` 命令、UserTokenManager 自動刷新 |
 | `lansenger-streaming` | SSE 即時訊息傳遞，適用於 AI Agent |
 | `lansenger-callback` | 25 種事件類型、結構化解析、AES 解密、簽名驗證 |
-| `lansenger-media` | 上傳/下載檔案、圖片、影片、音訊，取得媒體路徑 |
+| `lansenger-media` | 上載/下載檔案、圖片、影片、音訊，取得媒體路徑 |
 
 ## CLI 相容性
 
