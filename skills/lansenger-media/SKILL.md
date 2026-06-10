@@ -1,6 +1,6 @@
 ---
 name: lansenger-media
-version: 1.0.0
+version: 1.1.0
 description: "蓝信媒体文件管理：上传文件/图片/视频/音频、下载媒体文件、获取媒体路径。当用户需要上传附件、下载媒体、获取媒体URL时使用。"
 metadata:
   requires:
@@ -59,6 +59,9 @@ lansenger media upload-app /path/to/video.mp4 --media-type video --width 1920 --
 # 上传音频
 lansenger media upload-app /path/to/audio.mp3 --media-type audio --duration 30
 
+# 上传文件并指定 context（OpenAPI 4.5.4）
+lansenger media upload-app /path/to/file.pdf --context '{"key":"value"}'
+
 # JSON 输出
 lansenger media upload-app /path/to/file.pdf --json
 ```
@@ -68,6 +71,9 @@ lansenger media upload-app /path/to/file.pdf --json
 ```bash
 # 下载到 stdout（JSON 输出）
 lansenger media download media123 --json
+
+# 下载媒体文件（带 userToken，OpenAPI 4.5.2）
+lansenger media download media123 --user-token "ut1" --json
 ```
 
 ### 下载到本地文件
@@ -108,12 +114,14 @@ lansenger media path media123 --user-token "ut1"
 | `--width` | int | 0 | 宽度（video/image） |
 | `--height` | int | 0 | 高度（video/image） |
 | `--duration` | int | 0 | 时长（秒，video/audio） |
+| `--context` | str | "" | 上下文参数（OpenAPI 4.5.4） |
 
 ### media download
 
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
 | `media_id` (位置参数) | str | — | 媒体 ID（必需） |
+| `--user-token` | str | "" | 用户 Token（OpenAPI 4.5.2） |
 
 ### media download-to-file
 

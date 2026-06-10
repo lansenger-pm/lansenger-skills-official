@@ -134,23 +134,24 @@ skill-template/                          # 创建新 Skill 的模板
 
 ## CLI 兼容性
 
-这些 Skills 同时兼容 Python CLI、Go CLI 和 TypeScript CLI：
+**推荐**：Python SDK 和 CLI。Go 和 TypeScript 作为备选。
 
 ```bash
-# Python CLI
+# Python CLI（推荐）
 pip install lansenger-cli
+pip install lansenger-sdk  # 编程调用时安装
 lansenger message send-text staff123 "Hello"
 
-# Go CLI
+# Go CLI（备选）
 go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
 lansenger message send-text staff123 "Hello"
 
-# TypeScript CLI
+# TypeScript CLI（备选）
 npm install -g lansenger-cli
 lansenger message send-text staff123 "Hello"
 ```
 
-三个 CLI 共享相同的命令结构、参数名称和输出格式，因此一套 Skills 即可同时服务三者。需要 SDK v1.5+ 及 CLI v0.10+。
+三个 CLI 共享相同的命令结构、参数名称和输出格式，因此一套 Skills 即可同时服务三者。需要 Python SDK v1.5+ 及 CLI v0.10+。
 
 ## 多应用 / 多机器人配置
 
@@ -164,6 +165,7 @@ CLI 支持多个配置档案（每个对应一个 appID），凭证按 appID 隔
 | `app_secret` | **必填** | 所有 API 调用 | `LANSENGER_APP_SECRET` |
 | `api_gateway_url` | **必填** | API 网关地址（私有部署需修改） | `LANSENGER_API_GATEWAY_URL` |
 | `passport_url` | 需 OAuth2 时填 | OAuth2 授权页地址（私有部署需修改） | `LANSENGER_PASSPORT_URL` |
+| `redirect_uri` | 需 OAuth2 时填 | OAuth2 回调地址（需在蓝信开发者中心配置为可信域名，含协议头和端口号；CLI 默认 http://localhost:8765 也需配置，约10分钟生效） | `LANSENGER_REDIRECT_URI` |
 | `encoding_key` | 需接收回调时填 | 回调数据 AES 解密密钥（Base64 编码） | `LANSENGER_ENCODING_KEY` |
 | `callback_token` | 需接收回调时填 | 回调签名验证 token（未填时回退到 encoding_key） | `LANSENGER_CALLBACK_TOKEN` |
 

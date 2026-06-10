@@ -1,6 +1,6 @@
 ---
 name: lansenger-calendar
-version: 1.1.0
+version: 1.1.1
 description: "蓝信日历/日程（4.23）：主日历查询、日程CRUD、参会人管理、参会人元数据更新。注意：日历容器CRUD暂不开放，仅日程操作可用。涉及创建/修改日程必须先确认用户意图（新建 vs 编辑已有）。"
 metadata:
   requires:
@@ -123,7 +123,19 @@ lansenger calendar add-attendees calOpenId schOpenId '["staff1","staff2"]' --use
 
 # 删除参会人
 lansenger calendar delete-attendees calOpenId schOpenId '["staff2"]' --user-token "ut1"
+
+# 重复日程添加参会人（仅影响当前实例）
+lansenger calendar add-attendees calOpenId schOpenId '["staff3"]' --op modify_current --current-time 1656468000 --user-token "ut1"
 ```
+
+### 重复日程操作参数（OpenAPI 4.23.16/18）
+
+对于重复日程的参会人增删操作，可使用以下参数控制影响范围：
+
+| 参数 | 说明 | 可选值 |
+|------|------|--------|
+| `--op` / `--operation-type` | 操作类型 | `modify_all`（默认，影响所有实例）, `modify_current`（仅当前实例）, `modify_future`（当前及后续实例） |
+| `--current-time` | 当前时间戳（秒），配合 `modify_current` 使用 | Unix 秒级时间戳 |
 
 ### 更新参会人元数据
 
@@ -184,7 +196,7 @@ lansenger calendar attendee-meta calOpenId schOpenId --remind-times '[5,15]' --u
 | `delete-schedule` | calendar_id, schedule_id | --user-token, --user-id |
 | `list-schedules` | calendar_id, start_time, end_time | --user-token, --user-id |
 | `attendees` | calendar_id, schedule_id | --page, --size, --user-token, --user-id |
-| `add-attendees` | calendar_id, schedule_id, attendees (JSON) | --user-token, --user-id |
-| `delete-attendees` | calendar_id, schedule_id, attendees (JSON) | --user-token, --user-id |
+| `add-attendees` | calendar_id, schedule_id, attendees (JSON) | --user-token, --user-id, --op, --current-time |
+| `delete-attendees` | calendar_id, schedule_id, attendees (JSON) | --user-token, --user-id, --op, --current-time |
 | `update-schedule` | calendar_id, schedule_id | --summary, --desc, --op, --current-time, --reminder, --repeat, --rule, --expire, --all-day, --permissions, --start-time, --end-time, --user-token, --user-id |
 | `attendee-meta` | calendar_id, schedule_id | --rsvp, --color, --permissions, --busy-free, --remind-times, --user-token, --user-id |

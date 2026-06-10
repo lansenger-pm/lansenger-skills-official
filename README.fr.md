@@ -134,23 +134,24 @@ skill-template/                          # Templates pour créer de nouveaux ski
 
 ## Compatibilité CLI
 
-Ces Skills sont compatibles avec le CLI Python, le CLI Go et le CLI TypeScript :
+**Recommandé** : Python SDK et CLI. Go et TypeScript comme alternatives.
 
 ```bash
-# CLI Python
+# CLI Python (Recommandé)
 pip install lansenger-cli
+pip install lansenger-sdk  # pour l'usage programmatique
 lansenger message send-text staff123 "Hello"
 
-# CLI Go
+# CLI Go (Alternative)
 go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
 lansenger message send-text staff123 "Hello"
 
-# CLI TypeScript
+# CLI TypeScript (Alternative)
 npm install -g lansenger-cli
 lansenger message send-text staff123 "Hello"
 ```
 
-Les trois CLIs partageant la même structure de commandes, les mêmes noms de paramètres et les mêmes formats de sortie, un seul ensemble de Skills les couvre tous. Requiert SDK v1.5+ et CLI v0.10+.
+Les trois CLIs partageant la même structure de commandes, les mêmes noms de paramètres et les mêmes formats de sortie, un seul ensemble de Skills les couvre tous. Requiert Python SDK v1.5+ et CLI v0.10+.
 
 ## Configuration Multi-App / Multi-Bot
 
@@ -164,6 +165,7 @@ Le CLI supporte plusieurs profils ( chaque profil correspondant à un appID). Le
 | `app_secret` | **Obligatoire** | Tous les appels API | `LANSENGER_APP_SECRET` |
 | `api_gateway_url` | **Obligatoire** | URL de la passerelle API (modifier pour déploiement privé) | `LANSENGER_API_GATEWAY_URL` |
 | `passport_url` | OAuth2 | Page d'autorisation OAuth2 (modifier pour déploiement privé) | `LANSENGER_PASSPORT_URL` |
+| `redirect_uri` | OAuth2 | URL de rappel OAuth2 (doit être configuré dans la console Lansenger comme domaine de confiance, inclure le protocole et le port ; CLI par défaut http://localhost:8765 nécessite aussi config, ~10min de cache) | `LANSENGER_REDIRECT_URI` |
 | `encoding_key` | Callbacks | Clé AES de décryptage des callbacks (Base64) | `LANSENGER_ENCODING_KEY` |
 | `callback_token` | Callbacks | Token de vérification de signature (fallback vers encoding_key) | `LANSENGER_CALLBACK_TOKEN` |
 

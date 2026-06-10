@@ -134,23 +134,24 @@ skill-template/                          # Templates for creating new skills
 
 ## CLI Compatibility
 
-These Skills work with the Python CLI, Go CLI, and TypeScript CLI:
+**Recommended**: Python SDK and CLI. Go and TypeScript as alternatives.
 
 ```bash
-# Python CLI
+# Python CLI (Recommended)
 pip install lansenger-cli
+pip install lansenger-sdk  # for programmatic use
 lansenger message send-text staff123 "Hello"
 
-# Go CLI
+# Go CLI (Alternative)
 go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
 lansenger message send-text staff123 "Hello"
 
-# TypeScript CLI
+# TypeScript CLI (Alternative)
 npm install -g lansenger-cli
 lansenger message send-text staff123 "Hello"
 ```
 
-All three CLIs share the same command structure, parameter names, and output formats, so one set of Skills serves all. Requires SDK v1.5+ and CLI v0.10+.
+All three CLIs share the same command structure, parameter names, and output formats, so one set of Skills serves all. Requires Python SDK v1.5+ and CLI v0.10+.
 
 ## Multi-App / Multi-Bot Configuration
 
@@ -164,6 +165,7 @@ The CLI supports multiple profiles (each corresponding to an appID). Credentials
 | `app_secret` | **Always** | All API calls | `LANSENGER_APP_SECRET` |
 | `api_gateway_url` | **Always** | API gateway (change for private deploy) | `LANSENGER_API_GATEWAY_URL` |
 | `passport_url` | OAuth2 | Getting userTokens | `LANSENGER_PASSPORT_URL` |
+| `redirect_uri` | OAuth2 | OAuth2 callback URL (must be configured in Lansenger console as trusted domain, include protocol & port; CLI default http://localhost:8765 also needs config, ~10min cache) | `LANSENGER_REDIRECT_URI` |
 | `encoding_key` | Callbacks | AES decryption of callback data (Base64-encoded) | `LANSENGER_ENCODING_KEY` |
 | `callback_token` | Callbacks | Signature verification (falls back to encoding_key) | `LANSENGER_CALLBACK_TOKEN` |
 

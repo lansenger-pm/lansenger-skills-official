@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.2.0
+version: 1.3.1
 description: "Authentication, config setup, error handling, security rules — auto-loaded by all other skills. Use when first setting up lansenger CLI, running auth login, handling permission or token errors, or needing to update the CLI."
 metadata:
   requires:
@@ -12,6 +12,33 @@ metadata:
 本技能指导你如何通过 `lansenger` CLI 操作蓝信平台资源，以及有哪些注意事项。
 
 **CRITICAL — 所有其他 Skill 在使用前 MUST 先用 Read 工具读取本文件（`../lansenger-shared/SKILL.md`），其中包含认证、权限处理、安全规则。**
+
+## 安装指南
+
+### 推荐：Python CLI（优先使用）
+
+```bash
+# 安装 CLI
+pip install lansenger-cli
+
+# 安装 Python SDK（如需编程调用）
+pip install lansenger-sdk
+
+# 验证安装
+lansenger --version
+```
+
+### 备选：Go CLI
+
+```bash
+go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
+```
+
+### 备选：TypeScript CLI
+
+```bash
+npm install -g lansenger-cli
+```
 
 ## 配置初始化
 
@@ -29,6 +56,7 @@ metadata:
 | `app_secret` | **必填** | 所有 API 调用都需要 | `LANSENGER_APP_SECRET` |
 | `api_gateway_url` | 私有部署时必填 | API 网关地址（默认为蓝信公有云，私有部署需修改） | `LANSENGER_API_GATEWAY_URL` |
 | `passport_url` | 需 OAuth2 + 私有部署时填 | OAuth2 授权页地址（公有云自动推断，私有部署需手动设置） | `LANSENGER_PASSPORT_URL` |
+| `redirect_uri` | OAuth2 时填 | OAuth2 回调地址（需在蓝信开发者中心配置为可信域名，含协议头和端口号；CLI 默认 http://localhost:8765 也需配置，约10分钟生效） | `LANSENGER_REDIRECT_URI` |
 | `encoding_key` | 需接收回调时填 | 回调数据 AES 解密密钥（Base64 编码，来自开发者中心） | `LANSENGER_ENCODING_KEY` |
 | `callback_token` | 需接收回调时填 | 回调签名验证 token（未填时回退到 encoding_key） | `LANSENGER_CALLBACK_TOKEN` |
 
@@ -100,11 +128,11 @@ lansenger config clear --all
 | Token | 用途 | 获取方式 | 有效期 |
 |-------|------|---------|--------|
 | **appToken** | 所有 API 调用必须 | 自动管理，appID + appSecret 换取 | 2小时，自动刷新 |
-| **userToken** | 特定用户级操作（日历、员工查询等） | OAuth2 流程获取 | 2小时，SDK自动刷新 |
+| **userToken** | 特定用户级操作（日历、员工查询等） | OAuth2 流程获取 | 2小时，Python SDK自动刷新 |
 
 **关键规则**：
 - **appToken 自动管理** — CLI 内部自动获取和刷新，你不需要手动操作
-- **userToken 自动刷新** — SDK v1.5+ 的 `UserTokenManager` 在过期前5分钟自动刷新；CLI 仍需手动 `lansenger oauth refresh-token`
+- **userToken 自动刷新** — Python SDK v1.5+ 的 `UserTokenManager` 在过期前5分钟自动刷新；CLI 仍需手动 `lansenger oauth refresh-token`
 
 ### Token 传递方式
 
@@ -258,6 +286,30 @@ npm install -g lansenger-cli
 # 查看版本
 lansenger --version
 ```
+
+## 技能核心配置
+
+> **推荐**：本技能优先使用 **Python SDK 和 CLI**，其他语言（Go、TypeScript）作为备选。
+
+### App/Bot 文件接口媒体类型
+
+本技能使用 **App/Bot 文件接口**，媒体类型为字符串：
+
+| 媒体类型 | 字符串值 |
+|----------|----------|
+| 文件 | `"file"` |
+| 视频 | `"video"` |
+| 图片 | `"image"` |
+| 音频 | `"audio"` |
+
+### 新增 API 参数
+
+| 命令/API | 新增参数 | 说明 |
+|----------|----------|------|
+| `calendar add-attendees` | `--op`, `--current-time` | 支持重复日程操作 |
+| `calendar delete-attendees` | `--op`, `--current-time` | 支持重复日程操作 |
+| `media download` | `--user-token` | 用户身份下载 |
+| `media upload-app` | `--context` | 上下文参数 |
 
 ## 能力索引
 

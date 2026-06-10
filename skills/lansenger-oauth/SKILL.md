@@ -1,6 +1,6 @@
 ---
 name: lansenger-oauth
-version: 1.4.0
+version: 1.4.2
 description: "蓝信OAuth2用户授权：构建授权URL、兑换授权码、刷新Token、获取用户信息、解析回调、验证State、本地回调服务器、自动刷新Token。当用户需要获取userToken或进行OAuth2授权流程时使用。"
 metadata:
   requires:
@@ -44,9 +44,9 @@ metadata:
 | **userToken** | 2小时 | SDK UserTokenManager 自动刷新（提前5分钟） | SDK: `client.get_user_token()` 自动刷新；CLI: 手动 `lansenger oauth refresh-token` |
 | **refreshToken** | 30天 | 需重新 OAuth2 授权 | 无法刷新，过期后必须重新走完整授权流程 |
 
-### SDK 自动刷新（UserTokenManager）
+### Python SDK 自动刷新（UserTokenManager）
 
-SDK v1.5+ 提供 `UserTokenManager`，在 `exchange_code` 后自动注册 token，后续调用 `get_user_token()` 时自动检查过期并刷新：
+Python SDK v1.5+ 提供 `UserTokenManager`，在 `exchange_code` 后自动注册 token，后续调用 `get_user_token()` 时自动检查过期并刷新：
 
 ```python
 # Async client
@@ -63,7 +63,16 @@ result = client.exchange_code("AUTH_CODE")
 user_token = client.get_user_token()  # auto-refreshes
 ```
 
-**关键**：refreshToken 是单次使用的（每次刷新后旧 token 立即失效），UserTokenManager 自动保存新 refreshToken。
+**关键特性**：
+
+| 特性 | 说明 |
+|------|------|
+| **refreshToken 单次使用** | 每次刷新后旧 refreshToken 立即失效，UserTokenManager 自动保存新 refreshToken |
+| **并发安全** | Python SDK v1.6.3 添加 `asyncio.Lock`，防止并发请求时多次刷新 token 的竞态条件 |
+| **refreshToken 持久化** | `refresh_token` 独立于 `user_token` 过期时间加载，重启后不会丢失 |
+| **过期检查** | 刷新前先检查 `refresh_token` 过期时间，提供清晰错误信息 |
+| **redirect_uri 持久化** | redirect_uri 配置保存到 `sdk_state.json`，CLI 复用 |
+| **staff_id 持久化** | 用户 staff_id 保存到 `sdk_state.json`，重启后可复用 |
 
 **批量脚本注意事项**：运行超过2小时的脚本，userToken 可能中途过期。建议：
 1. SDK 用户：直接用 `client.get_user_token()` — 自动刷新，无需手动处理
@@ -99,7 +108,7 @@ open "$(lansenger oauth local-callback --port 8765 --json | jq -r '.authorize_ur
 # → 自动启动本地 HTTP 服务器
 # → Agent 自动在浏览器打开授权 URL
 # → 用户在蓝信手机端扫码授权
-# → 浏览器重定向到 localhost:8765（即使页面报错，code 已被捕获）
+# → 浏览器重定向到 localhost:8765（前提：已配置 http://localhost:8765 到信任域名）
 # → 自动兑换 code 获取 userToken + refreshToken
 ```
 
@@ -112,7 +121,11 @@ open "$(lansenger oauth local-callback --port 8765 --json | jq -r '.authorize_ur
 3. 用户从浏览器地址栏手动复制 `code=XXX&state=YYY` 给 Agent
 4. Agent 解析并兑换：`lansenger oauth parse-callback "code=XXX&state=YYY"` → `lansenger oauth exchange-code "XXX"`
 
-**限制**：redirect_uri 域名必须在蓝信开发者后台信任列表中。如果没有可信回调服务器，可用任意信任域名（页面会报错但 URL 中仍含 code），用户复制 code 即可。
+**redirect_uri 要求**：
+1. **必须是可信域名** — redirect_uri 域名必须在蓝信开发者后台信任列表中，非可信域名会直接报错，无法获取 code
+2. **协议头必须一致** — 如使用 `https`，redirect_uri 和信任域名配置中都必须带 `https`；端口号可选，如有端口号则必须一致
+3. **必须拼接有效路径** — 如果只写域名（如 `https://myapp.com`），授权后蓝信会直接跳转到该页面，URL 中的 code 参数会丢失。正确做法是拼接一个符合路由规则但实际不存在的页面路径（如 `https://myapp.com/oauth/callback`、`https://myapp.com/#/cb`），这样页面会报404但 URL 中仍保留 code，用户可从地址栏复制
+4. **CLI 默认值** — `http://localhost:8765` 也需要配置到信任域名中，配置后约10分钟生效
 
 ### passport_url 与 api_gateway_url
 
@@ -125,7 +138,10 @@ open "$(lansenger oauth local-callback --port 8765 --json | jq -r '.authorize_ur
 ### 构建授权 URL
 
 ```bash
-# 构建基本授权 URL
+# 构建授权 URL（redirect_uri 自动从配置加载）
+lansenger oauth authorize-url
+
+# 指定 redirect_uri
 lansenger oauth authorize-url "https://myapp.com/callback"
 
 # 指定 scope
@@ -134,6 +150,8 @@ lansenger oauth authorize-url "https://myapp.com/callback" --scope "basic_userin
 # 指定 state 参数（CSRF 防护）
 lansenger oauth authorize-url "https://myapp.com/callback" --state "random-state-string"
 ```
+
+**redirect_uri 持久化**：CLI 会自动保存 redirect_uri，下次调用 `authorize-url` 时可省略参数。
 
 ### 兑换授权码
 
@@ -204,7 +222,7 @@ lansenger oauth local-callback --json
 lansenger oauth local-callback --timeout 300
 ```
 
-原理：启动本地 HTTP 服务器监听 `http://localhost:<port>`，浏览器授权后重定向到该地址，服务器自动捕获 code。即使 localhost 不在蓝信信任域名列表中，浏览器仍会重定向到该 URL（页面可能报错，但 URL 中包含 code 参数），本地服务器从 URL 中提取 code 并自动兑换。
+原理：启动本地 HTTP 服务器监听 `http://localhost:<port>`，浏览器授权后重定向到该地址，服务器自动捕获 code。**前提**：必须先将 `http://localhost:<port>`（如 `http://localhost:8765`）配置到蓝信开发者后台信任域名中，否则会报错无法获取 code。
 
 ## 参数说明
 
@@ -268,7 +286,7 @@ lansenger oauth local-callback --timeout 300
 | 兑换码超过5分钟或重复使用 | 授权码5分钟有效且只能使用一次 |
 | redirect_uri 域名不在信任列表 | 必须在蓝信开发者后台配置信任域名（地址因私有部署而异） |
 | 不验证回调 state（CSRF 风险） | 始终用 `validate-state` 验证回调 state |
-| 期望 localhost 自动接收回调 | 用 `local-callback` 启动本地 HTTP 服务器捕获 |
+| 期望 localhost 自动接收回调 | 用 `local-callback` 启动本地 HTTP 服务器捕获，但需先配置 `http://localhost:<port>` 到信任域名 |
 | 让用户手动复制 URL 到浏览器 | **禁止**——手动复制容易带入空格/回车导致失败；Agent MUST 用 `open`/`xdg-open` 自动打开 |
 | 只保存 userToken 不保存 refreshToken | refreshToken 是续期的唯一途径，必须同时保存；SDK UserTokenManager 自动保存 |
 | 批量脚本不考虑 token 中途过期 | SDK 用户用 `get_user_token()` 自动刷新；CLI 用户手动 `refresh-token` |

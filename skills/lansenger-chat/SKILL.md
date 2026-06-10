@@ -67,7 +67,7 @@ metadata:
 | oacard | `{"oacard": {...}}` | 需按 oaCard 结构提取 |
 | 其他 | 字符串或嵌套dict | 直接取字符串或需自定义解析 |
 
-**SDK 提取方法**：Python SDK v1.5+ 的 `ChatMessageInfo` 提供 `plain_text()` 方法，自动处理所有格式并返回纯文本字符串：
+**Python SDK 提取方法**：Python SDK v1.5+ 的 `ChatMessageInfo` 提供 `plain_text()` 方法，自动处理所有格式并返回纯文本字符串：
 
 ```python
 # Python SDK

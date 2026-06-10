@@ -1,6 +1,6 @@
 ---
 name: lansenger-messaging
-version: 1.2.0
+version: 1.2.1
 description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
@@ -73,7 +73,18 @@ metadata:
 | linkCard | ✗ | ✗ | ✗ | ✓ | 全部 |
 | verifyCard | ✗ | ✗ | ✗ | ✓ | 全部 |
 
-**CRITICAL — 视频消息（mediaType=1）必须同时提供视频文件和封面图片两个 mediaId。mediaIds 数组长度必须为2：[视频mediaId, 封面图片mediaId]。其他类型（image/file）仅支持单个 mediaId。**
+**CRITICAL — 视频消息必须同时提供视频文件和封面图片两个 mediaId。mediaIds 数组长度必须为2：[视频mediaId, 封面图片mediaId]。其他类型仅支持单个 mediaId。**
+
+### 媒体类型（App/Bot 接口，OpenAPI 4.5.4）
+
+本技能使用 **App/Bot 文件接口**，媒体类型为字符串：
+
+| 媒体类型 | 字符串值 | 说明 |
+|----------|----------|------|
+| 文件 | `"file"` | 通用文件 |
+| 视频 | `"video"` | 视频文件 |
+| 图片 | `"image"` | 图片文件 |
+| 音频 | `"audio"` | 音频文件 |
 
 ## Shortcuts（推荐优先使用）
 
@@ -113,10 +124,10 @@ lansenger message send-markdown staff123 "**Bold**"
 lansenger message send-text staff123 "Report" --file /path/to/file.pdf
 
 # Bot → 用户 发视频（必须提供封面图片）
-lansenger message send-text staff123 "Video" --file /path/to/video.mp4 --cover-image /path/to/cover.jpg --media-type 1
+lansenger message send-text staff123 "Video" --file /path/to/video.mp4 --cover-image /path/to/cover.jpg --media-type video
 
 # Bot → 用户 发图片
-lansenger message send-text staff123 "Photo" --file /path/to/photo.png --media-type 2
+lansenger message send-text staff123 "Photo" --file /path/to/photo.png --media-type image
 
 # Bot → 多人（每人独立私聊）
 lansenger message send-bot-message text '{"text":{"content":"Notice"}}' --chat-id staff1 --chat-id staff2

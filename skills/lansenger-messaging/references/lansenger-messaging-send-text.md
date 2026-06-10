@@ -16,7 +16,7 @@ Send a plain text message to a chat.
 | --group / -g | option | no | Send to a group chat (interprets chat_id as group ID) |
 | --mention-all | flag | no | Mention all members in the group |
 | --mention | option | no | List of user IDs to @mention (comma-separated) |
-| --media-type | option | no | Media type: 1=video, 2=image, 3=file (auto-detected if omitted) |
+| --media-type | option | no | Media type: video, image, audio, file (auto-detected if omitted, App/Bot interface) |
 | --cover-image | option | no | Cover image path (required when sending video with --file) |
 | --user-token | option | no | User token for user-token channel messaging |
 | --sender-id | option | no | Sender staff ID (required for some channels) |
@@ -34,7 +34,7 @@ lansenger message send-text grp_456 "Status update" --group --user-token $TOKEN 
 
 lansenger message send-text user_123 "" --file /path/to/message.txt
 
-lansenger message send-text user_123 "See this clip" --file /path/to/video.mp4 --media-type 1 --cover-image /path/to/cover.jpg
+lansenger message send-text user_123 "See this clip" --file /path/to/video.mp4 --media-type video --cover-image /path/to/cover.jpg
 ```
 
 ## Common Mistakes
