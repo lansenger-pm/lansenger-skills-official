@@ -13,7 +13,7 @@ Send a file attachment to a chat.
 | chat_id | arg | yes | Target chat ID |
 | file_path | arg | yes | Local path to the file to send |
 | --content / -c | option | no | Text content accompanying the file |
-| --media-type | option | no | Media type: video, image, audio, file (App/Bot interface, string type) |
+| --media-type | option | no | Media type: video, image, audio, file (defaults to file if omitted, App/Bot interface) |
 | --cover-image | option | no | Cover image path (required when sending video files) |
 | --group / -g | option | no | Send to a group chat (interprets chat_id as group ID) |
 | --user-token | option | no | User token for user-token channel messaging |

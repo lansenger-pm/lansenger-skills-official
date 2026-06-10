@@ -16,7 +16,7 @@ Send a plain text message to a chat.
 | --group / -g | option | no | Send to a group chat (interprets chat_id as group ID) |
 | --mention-all | flag | no | Mention all members in the group |
 | --mention | option | no | List of user IDs to @mention (comma-separated) |
-| --media-type | option | no | Media type: video, image, audio, file (auto-detected if omitted, App/Bot interface) |
+| --media-type | option | no | Media type: video, image, audio, file (defaults to file if omitted, App/Bot interface) |
 | --cover-image | option | no | Cover image path (required when sending video with --file) |
 | --user-token | option | no | User token for user-token channel messaging |
 | --sender-id | option | no | Sender staff ID (required for some channels) |
