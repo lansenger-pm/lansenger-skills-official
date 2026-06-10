@@ -224,6 +224,8 @@ lansenger oauth local-callback --timeout 300
 
 原理：启动本地 HTTP 服务器监听 `http://localhost:<port>`，浏览器授权后重定向到该地址，服务器自动捕获 code。**前提**：必须先将 `http://localhost:<port>`（如 `http://localhost:8765`）配置到蓝信开发者后台信任域名中，否则会报错无法获取 code。
 
+**重要提示**：`local-callback` 必须后台运行（添加 `&` 或使用后台启动），前台运行会阻塞终端无法同时打开浏览器。正确流程：后台启动 local-callback → 提取 URL → open 打开浏览器 → 等待回调完成。
+
 ## 参数说明
 
 ### oauth authorize-url
