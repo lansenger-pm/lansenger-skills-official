@@ -2,7 +2,7 @@
 
 Send a message via the bot channel to specified chats or departments.
 
-**Prerequisite:** Read [../lansenger-shared/SKILL.md](../lansenger-shared/SKILL.md) for authentication and token setup.
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则（Shell 执行纪律、Help-First 原则、认证、权限处理）。
 
 **Safety:** Always confirm recipients and message content with the user before sending. Bot messages are sent from the application bot identity — do not send without explicit user approval.
 

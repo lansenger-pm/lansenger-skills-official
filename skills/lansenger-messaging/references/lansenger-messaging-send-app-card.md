@@ -2,7 +2,7 @@
 
 Send an app card message to a chat.
 
-**Prerequisite:** Read [../lansenger-shared/SKILL.md](../lansenger-shared/SKILL.md) for authentication and token setup.
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则（Shell 执行纪律、Help-First 原则、认证、权限处理）。
 
 **Safety:** Always confirm the recipient and card content with the user before sending. Do not send cards the user has not explicitly approved.
 
