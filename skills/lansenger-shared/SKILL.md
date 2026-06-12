@@ -1,7 +1,7 @@
 ---
 name: lansenger-shared
 version: 1.3.3
-description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理 — 所有技能自动加载。首次设置 CLI、auth login、Token 或权限报错时使用。"
+description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
