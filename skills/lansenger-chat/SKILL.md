@@ -18,7 +18,7 @@ metadata:
 |----------|----------|------|
 | 发消息/回复消息 | `lansenger-messaging` | chat 管"看"，messaging 管"发" |
 | 查员工信息 | `lansenger-staff` | chat list 的 staff_infos 只含 staffId+姓名 |
-| OAuth2 获取 userToken | `lansenger-oauth` | 聊天读取需要 userToken |
+| OAuth2 获取 userToken | `lansenger-oauth` | 推荐使用 userToken 以获得用户视角数据 |
 
 **CRITICAL — 聊天读取需要 appToken，`--user-token` 可选但推荐传入。** 不传 userToken 时以机器人身份调用；传 userToken 时可以读到用户视角的聊天列表和消息内容（如 sender 为真实姓名）。
 
@@ -28,7 +28,7 @@ metadata:
 
 ## 核心概念
 
-蓝信聊天读取 API 允许你查看用户的聊天列表和拉取聊天消息历史。这两个操作都属于用户级资源，必须使用 userToken。
+蓝信聊天读取 API 允许你查看用户的聊天列表和拉取聊天消息历史。用户级资源，推荐传入 `--user-token` 以获取用户视角数据（不传则以机器人身份调用，信息有限）。
 
 ### 聊天类型
 
@@ -155,7 +155,7 @@ lansenger chat messages --staff-id staff123 --split-month --progress --user-toke
 | `--keyword` / `-k` | str | "" | 搜索关键词（仅 type=1 或 type=2 时有效） |
 | `--start` | int | 0 | 起始时间（微秒级时间戳） |
 | `--end` | int | 0 | 结束时间（微秒级时间戳） |
-| `--user-token` | str | "" | 用户 Token（必需） |
+| `--user-token` | str | "" | 用户 Token（推荐传入，获取用户视角数据） |
 
 ### chat messages
 
@@ -171,7 +171,7 @@ lansenger chat messages --staff-id staff123 --split-month --progress --user-toke
 | `--split-month` | flag | false | 自动按月拆分拉取（时间跨度超过1个月时必须使用） |
 | `--progress` | flag | false | 显示拉取进度（配合 --split-month 使用） |
 | `--json` | flag | false | JSON 格式输出，便于结构化解析 |
-| `--user-token` | str | "" | 用户 Token（必需） |
+| `--user-token` | str | "" | 用户 Token（推荐传入，获取用户视角数据） |
 
 **注意**：`--staff-id` 和 `--group-id` 二选一，必须提供其中一个。
 

@@ -187,7 +187,7 @@ lansenger staff detail staff456 --user-token "userToken123"
 - **有 --user-token** → 以 **用户身份** 操作，访问用户自己的资源（日历、聊天记录等）
 
 **关键差异**：
-- 机器人**看不到用户资源** — 无法访问用户日历、聊天记录等个人资源
+- 机器人**以自身视角访问资源** — 无法以用户身份查看用户日历、完整聊天详情等（需传 `--user-token` 获取用户视角）
 - 机器人**无法代表用户操作** — 发消息以应用名义发送
 - 机器人只需 appID + appSecret，无需 OAuth2 授权
 - 用户需要 OAuth2 授权获取 userToken（参见 `../lansenger-oauth/SKILL.md`）
