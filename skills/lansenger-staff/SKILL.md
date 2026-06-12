@@ -1,6 +1,6 @@
 ---
 name: lansenger-staff
-version: 1.0.0
+version: 1.0.1
 description: "蓝信员工/通讯录查询：基本信息、详细资料、部门祖先、ID映射（手机/邮箱→staffId）、组织扩展字段、员工搜索、组织信息。当用户需要查询员工信息、搜索员工、做ID映射时使用。"
 metadata:
   requires:

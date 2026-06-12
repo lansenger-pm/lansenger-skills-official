@@ -1,6 +1,6 @@
 ---
 name: lansenger-chat
-version: 1.2.0
+version: 1.2.1
 description: "蓝信聊天列表与消息历史：查看聊天列表（私聊+群聊）、拉取聊天消息记录。当用户需要查看聊天记录、浏览聊天列表时使用。"
 metadata:
   requires:

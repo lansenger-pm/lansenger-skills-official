@@ -1,6 +1,6 @@
 ---
 name: lansenger-oauth
-version: 1.4.2
+version: 1.4.3
 description: "蓝信OAuth2用户授权：构建授权URL、兑换授权码、刷新Token、获取用户信息、解析回调、验证State、本地回调服务器、自动刷新Token。当用户需要获取userToken或进行OAuth2授权流程时使用。"
 metadata:
   requires:

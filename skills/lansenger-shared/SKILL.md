@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.3.2
+version: 1.3.3
 description: "Authentication, config setup, error handling, security rules — auto-loaded by all other skills. Use when first setting up lansenger CLI, running auth login, handling permission or token errors, or needing to update the CLI."
 metadata:
   requires:

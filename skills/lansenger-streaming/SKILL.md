@@ -1,6 +1,6 @@
 ---
 name: lansenger-streaming
-version: 1.0.0
+version: 1.0.1
 description: "蓝信流式消息（AI Agent 实时推送）：创建流式消息会话、获取流式消息状态。当 AI Agent 需要实现打字式渐进输出时使用。"
 metadata:
   requires:

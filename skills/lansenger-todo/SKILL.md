@@ -1,6 +1,6 @@
 ---
 name: lansenger-todo
-version: 1.0.0
+version: 1.0.1
 description: "蓝信待办任务管理：创建、更新、查询、删除待办任务，管理执行人，查看状态统计。当用户需要创建/查询/管理待办任务时使用。"
 metadata:
   requires:

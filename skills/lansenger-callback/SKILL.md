@@ -1,6 +1,6 @@
 ---
 name: lansenger-callback
-version: 1.1.0
+version: 1.1.1
 description: "蓝信回调事件解析：解析加密/明文回调数据、AES解密、验证签名、查看事件类型映射。当用户需要处理蓝信 Webhook 回调、解析或解密事件数据时使用。"
 metadata:
   requires:
