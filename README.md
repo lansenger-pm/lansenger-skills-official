@@ -98,6 +98,8 @@ cd lansenger-skills-official && git pull
 ## Structure
 
 ```
+SKILL.md                                  # Root dispatcher + install guide
+README*.md                                # Human-readable docs
 skills/
   lansenger-shared/SKILL.md              # Shared rules (auth, config, security, errors)
   lansenger-messaging/SKILL.md           # Messaging strategy + references/

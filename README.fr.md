@@ -98,6 +98,8 @@ cd lansenger-skills-official && git pull
 ## Structure
 
 ```
+SKILL.md                                  # Répartiteur racine + guide d'installation
+README*.md                                # Documentation lisible par l'humain
 skills/
   lansenger-shared/SKILL.md              # Règles partagées (auth, config, sécurité, erreurs)
   lansenger-messaging/SKILL.md           # Stratégie de messagerie + references/

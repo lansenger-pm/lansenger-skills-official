@@ -98,6 +98,8 @@ cd lansenger-skills-official && git pull
 ## 目录结构
 
 ```
+SKILL.md                                  # 根调度器 + 安装指南
+README*.md                                # 人类可读文档
 skills/
   lansenger-shared/SKILL.md              # 共享规则（认证、配置、安全、错误处理）
   lansenger-messaging/SKILL.md           # 消息策略 + references/
