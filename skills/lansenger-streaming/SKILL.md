@@ -10,7 +10,13 @@ metadata:
 
 # streaming (v1)
 
-**CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md），其中包含认证、权限处理、安全规则。**
+**本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
+
+## Reverse Handoff — 何时不用此技能
+
+| 用户意图 | 正确技能 | 原因 |
+|----------|----------|------|
+| 发最终消息 | `lansenger-messaging` | streaming 只创建占位符，最终消息用 messaging 发送 |
 
 **CRITICAL — receiver_type 只支持 "single"（私聊）或 "group"（群聊），不要使用 "user" 或其他值。每个流式会话必须使用唯一的 stream_id。**
 

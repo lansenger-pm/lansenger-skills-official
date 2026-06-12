@@ -10,7 +10,15 @@ metadata:
 
 # oauth (v1.2)
 
-**CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md），其中包含认证、权限处理、安全规则。**
+**本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
+
+## Reverse Handoff — 何时不用此技能
+
+| 用户意图 | 正确技能 | 原因 |
+|----------|----------|------|
+| 配置 appID/appSecret | `lansenger config set` | 初始凭证配置，不是 OAuth2 |
+| 发消息 | `lansenger-messaging` | OAuth2 只管获取 token，不管发消息 |
+| 查员工信息 | `lansenger-staff` | OAuth2 可以获取用户信息，但员工详情用 staff |
 
 **CRITICAL — OAuth2 流程需要配置 passport_url（不同于 api_gateway_url，是单独的域名）。未配置 passport_url 会导致授权 URL 构建失败。**
 

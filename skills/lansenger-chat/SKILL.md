@@ -10,9 +10,17 @@ metadata:
 
 # chat (v1.2)
 
-**CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md)，其中包含认证、权限处理、安全规则。**
+**本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
-**CRITICAL — 聊天读取是用户级操作，必须传入 `--user-token` 参数（通过 OAuth2 获取）。机器人身份无法访问用户的聊天列表和消息记录。**
+## Reverse Handoff — 何时不用此技能
+
+| 用户意图 | 正确技能 | 原因 |
+|----------|----------|------|
+| 发消息/回复消息 | `lansenger-messaging` | chat 管"看"，messaging 管"发" |
+| 查员工信息 | `lansenger-staff` | chat list 的 staff_infos 只含 staffId+姓名 |
+| OAuth2 获取 userToken | `lansenger-oauth` | 聊天读取需要 userToken |
+
+**CRITICAL — 聊天读取需要 appToken，`--user-token` 可选但推荐传入。** 不传 userToken 时以机器人身份调用；传 userToken 时可以读到用户视角的聊天列表和消息内容（如 sender 为真实姓名）。
 
 **CRITICAL — 消息查询时间跨度不宜超过约1个月。超过1个月时，API 只返回最近的数据，更早消息会丢失。需要按月拆分查询才能完整拉取历史数据（见下方"批量操作与限制说明"章节）。**
 
@@ -225,8 +233,8 @@ lansenger chat messages --staff-id staff123 --version v1 --size 100 --user-token
 
 | 错误 | 正确做法 |
 |------|---------|
-| 不传 `--user-token` 试图查看聊天 | 聊天是用户级资源，必须传 `--user-token` |
-| 用 appToken 代替 userToken | appToken 是机器人身份，无法访问用户聊天记录 |
+| 不传 `--user-token` 试图查看用户视角聊天 | 传 `--user-token` 获取用户视角的聊天数据（否则只能看到机器人视角的有限信息） |
+| 用 appToken 代替 userToken | 不传 `--user-token` 即使用 appToken（机器人身份），也是合法调用，但建议传 userToken 以获得完整信息 |
 | 第一次拉消息就传非零 `--version` | 首次调用必须传 `--version 0` 或省略 |
 | `--staff-id` 和 `--group-id` 同时传入 | 二选一，私聊用 `--staff-id`，群聊用 `--group-id` |
 | keyword 在 type=0（全部）时使用 | keyword 仅在 type=1 或 type=2 时有效 |

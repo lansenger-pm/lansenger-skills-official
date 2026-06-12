@@ -10,7 +10,13 @@ metadata:
 
 # calendar (4.23)
 
-**CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md)，其中包含认证、权限处理**
+**本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
+
+## Reverse Handoff — 何时不用此技能
+
+| 用户意图 | 正确技能 | 原因 |
+|----------|----------|------|
+| OAuth2 获取 userToken | `lansenger-oauth` | 日历操作需要 userToken |
 
 **CRITICAL — 日历容器CRUD（4.23.1-8）暂不开放，仅日程操作（4.23.9-18）可用。用户口语中的"日历"通常指"日程"，请自动将"查日历"映射为"查日程"。**
 

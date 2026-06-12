@@ -10,9 +10,17 @@ metadata:
 
 # staff (v1)
 
-**CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md)，其中包含认证、权限处理、安全规则。**
+**本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
-**CRITICAL — `detail` 和 `search` 是用户级操作，必须传入 `--user-token` 或 `--user-id`。`basic-info`、`ancestors`、`id-mapping`、`org-extra-fields`、`org-info` 以机器人身份即可调用。**
+## Reverse Handoff — 何时不用此技能
+
+| 用户意图 | 正确技能 | 原因 |
+|----------|----------|------|
+| 浏览组织架构/查部门 | `lansenger-department` | staff 管人，department 管部门 |
+| 发消息给员工 | `lansenger-messaging` | 查到的 staffId 用于 messaging 的 chat_id 参数 |
+| OAuth2 获取 userToken | `lansenger-oauth` | userToken 来源 |
+
+**CRITICAL — `search` 是用户级操作，必须传入 `--user-token` 或 `--user-id`。其他命令（`basic-info`、`detail`、`ancestors`、`id-mapping`、`org-extra-fields`、`org-info`）以机器人身份即可调用，`--user-token` 可选。**
 
 ## 核心概念
 
@@ -34,7 +42,7 @@ metadata:
 | 命令 | 认证要求 |
 |------|---------|
 | `basic-info` | appToken（可选 userToken） |
-| `detail` | 需要 userToken 或 org 认证 |
+| `detail` | appToken（可选 userToken） |
 | `ancestors` | appToken（可选 userToken） |
 | `id-mapping` | appToken（可选 userToken） |
 | `org-extra-fields` | appToken（可选 userToken） |
@@ -190,7 +198,6 @@ lansenger staff org-info org123
 | 错误 | 正确做法 |
 |------|---------|
 | `search` 不传 userToken 或 userId | search 必须传 `--user-token` 或 `--user-id` |
-| `detail` 不传 userToken | detail 推荐传 `--user-token`，否则可能无法获取完整信息 |
 | id-mapping 用错 id_type | id_type 只支持 phone, email, login_name, external_id |
 | id-mapping 不传 org_id | org_id 是必需位置参数 |
 | search --size 超过 100 | search 每页最大 100 条 |

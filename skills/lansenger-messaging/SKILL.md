@@ -65,7 +65,7 @@ metadata:
 
 | | bot私聊 (4.6.12) | 公号私聊 (4.6.1) | 人→人私聊 (4.6.3) |
 |---|---|---|---|
-| CLI命令 | `send-text --user-id` | `send-account-message` | `send-user-message` |
+| CLI命令 | `send-text` | `send-account-message` | `send-user-message` |
 | 发送身份 | Bot | 公号 (Public Acct) | 用户本人 |
 | appToken | 必需 | 必需 | 必需 |
 | userToken | 可选 | 可选 | **必需** |

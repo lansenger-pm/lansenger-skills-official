@@ -94,7 +94,7 @@ lansenger config show
 | 技能 | 适用场景 | 不适用场景 |
 |------|----------|------------|
 | `lansenger-messaging` | 发消息、发文件、发卡片 | 查看聊天记录 → 用 `lansenger-chat` |
-| `lansenger-chat` | 查看聊天列表、拉取消息 | 发消息 → 用 `lansenger-messaging` |
+| `lansenger-chat` | 查看聊天列表、拉取消息（不强制要求 userToken） | 发消息 → 用 `lansenger-messaging` |
 | `lansenger-staff` | 查员工信息 | 浏览组织架构 → 用 `lansenger-department` |
 | `lansenger-department` | 查部门信息 | 查员工 → 用 `lansenger-staff` |
 | `lansenger-oauth` | 用户授权登录 | 配置 appID/appSecret → `lansenger config set` |

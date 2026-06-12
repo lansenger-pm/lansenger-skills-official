@@ -10,7 +10,15 @@ metadata:
 
 # group (v1.1)
 
-**CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md)，其中包含认证、权限处理、安全规则。**
+**本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
+
+## Reverse Handoff — 何时不用此技能
+
+| 用户意图 | 正确技能 | 原因 |
+|----------|----------|------|
+| 在群里发消息 | `lansenger-messaging` | group 管群结构，messaging 管发消息 |
+| 查群成员的详细信息 | `lansenger-staff` | group members 返回成员列表，详情用 staff |
+| 查看群聊天记录 | `lansenger-chat` | group 不管消息记录 |
 
 **CRITICAL — 添加/移除群成员属于高风险操作，执行前 MUST 向用户确认操作目标和具体人员。**
 
