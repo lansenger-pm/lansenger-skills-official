@@ -2,7 +2,7 @@
 
 Revoke (delete) previously sent messages.
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则（Shell 执行纪律、Help-First 原则、认证、权限处理）。
+**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
 
 **Safety:** Always confirm with the user which messages to revoke. Revoking removes messages from the recipient's view — this action cannot be undone.
 

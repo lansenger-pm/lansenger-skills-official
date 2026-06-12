@@ -2,7 +2,7 @@
 
 Send a message via the account channel (using a specific account identity) to chats or departments.
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则（Shell 执行纪律、Help-First 原则、认证、权限处理）。
+**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
 
 **Safety:** Always confirm recipients and message content with the user before sending. Account messages appear as coming from a specific person's account — do not send without explicit user approval, as the message will carry that account's identity.
 

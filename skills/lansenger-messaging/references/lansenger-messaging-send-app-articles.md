@@ -2,7 +2,7 @@
 
 Send an app articles message (multi-article card) to a chat.
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则（Shell 执行纪律、Help-First 原则、认证、权限处理）。
+**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
 
 **Safety:** Always confirm the recipient and article content with the user before sending. Do not send articles the user has not explicitly approved.
 
