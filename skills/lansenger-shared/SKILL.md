@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.3.1
+version: 1.3.2
 description: "Authentication, config setup, error handling, security rules — auto-loaded by all other skills. Use when first setting up lansenger CLI, running auth login, handling permission or token errors, or needing to update the CLI."
 metadata:
   requires:
@@ -9,9 +9,43 @@ metadata:
 
 # lansenger CLI 共享规则
 
-本技能指导你如何通过 `lansenger` CLI 操作蓝信平台资源，以及有哪些注意事项。
+本技能会被所有其他子技能自动加载，包含认证、配置、安全等通用规则。
 
-**CRITICAL — 所有其他 Skill 在使用前 MUST 先用 Read 工具读取本文件（`../lansenger-shared/SKILL.md`），其中包含认证、权限处理、安全规则。**
+**CRITICAL — 所有其他 Skill 在使用前 MUST 先用 Read 工具读取本文件。**
+
+## 心智模型 — lansenger CLI 是什么
+
+lansenger CLI 是对蓝信 OpenAPI 的命令行封装。每条命令对应一个或一组 API 调用：
+
+- **CLI 命令** → 解析参数 → 调用 SDK → 发送 HTTP 请求到蓝信 API 网关 → 返回结构化结果
+- **身份模型**：两级 Token 体系 — `appToken`（应用/机器人身份）+ `userToken`（个人用户身份，可选）
+- **凭证存储**：所有凭证保存在 `~/.lansenger/sdk_state.json`（0600 权限），按 appID 隔离
+
+理解这个模型有助于排查问题：命令失败 → 先检查身份是否正确（该不该带 userToken），再检查凭证是否有效（health check）。
+
+## Shell 执行纪律
+
+**逐条执行，逐条检查。** CLI 每条命令都有副作用（发消息、改配置），一口气跑多条命令可能中间某条静默失败，后续全部跑偏。正确姿势：一条命令 → 检查输出/exit code → 继续。
+
+**引号规则**（zsh/bash）：
+- 路径中的 `[]` 必须加引号：`"staff[1]"` 而非 `staff[1]`
+- 包含 `$` 的值用单引号：`'$token_value'` 而非 `"$token_value"`（双引号会被 shell 解释为变量）
+
+**每次操作前确认**：
+- 发消息前：确认收件人 + 内容 + 发送身份
+- 删改操作前：确认目标 + 操作不可逆提示
+
+## Help-First 原则
+
+**不确定参数名、值类型或命令语法时，先跑 `--help`，别猜。** 猜-错-重试循环比一次 help 查询慢得多。
+
+```bash
+lansenger --help                      # 所有子命令
+lansenger message --help              # 消息域命令
+lansenger <domain> <command> --help   # 具体命令
+```
+
+**Help 与本文档的关系**：本文档教授"怎么做"和"为什么"，CLI `--help` 提供已安装版本的精确参数。当两者不一致时，**`--help` 更权威**。
 
 ## 安装指南
 

@@ -1,6 +1,6 @@
 ---
 name: lansenger-messaging
-version: 1.2.1
+version: 1.2.2
 description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
@@ -8,29 +8,58 @@ metadata:
   cliHelp: "lansenger message --help"
 ---
 
-# messaging (v1.1)
+# messaging (v1.2)
 
-**CRITICAL — 开始前 MUST 先用 Read 工具读取 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md)，其中包含认证、权限处理**
+**本技能继承 `../lansenger-shared/SKILL.md` 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
 **CRITICAL — 发消息前 MUST 向用户确认：1) 收件人（谁/哪个群） 2) 消息内容 3) 发送身份。禁止未经确认直接发消息。**
 
-## 四种消息通道
+## Reverse Handoff — 何时不用此技能
 
-蓝信有 **私聊** 和 **群聊** 两大类消息通道。私聊有3种子通道，选择错误会导致发送身份不对或功能缺失。
+| 用户意图 | 正确技能 | 原因 |
+|----------|----------|------|
+| 查看聊天记录/历史消息 | `lansenger-chat` | messaging 管"发"，chat 管"看" |
+| 查员工信息 | `lansenger-staff` | 通过 staffId 查姓名、部门等 |
+| 查群信息 | `lansenger-group` | 群详情、群成员列表 |
+| 上传文件到素材库 | `lansenger-media` | 单上传不发消息 |
+| OAuth2 获取 userToken | `lansenger-oauth` | userToken 来源 |
+
+**只有用户明确要"发消息"、"回复消息"、"撤回消息"、"更新卡片"或"发提醒"时才用本技能。**
+
+## 四种消息通道 — 场景诊断表
+
+**先选通道，再选命令。** 根据以下三个维度确定通道：
+
+| 决策维度 | 选项 A | 选项 B | 选项 C |
+|----------|--------|--------|--------|
+| **消息范围** | 单/多人（每人独立私聊） | 群聊（所有人可见） | — |
+| **发送身份** | 机器人（bot） | 公号（public account） | 用户本人 |
+| **是否需要 userToken** | 否（机器人/公号） | 是（用户本人） | — |
 
 ### 通道选择决策树
 
 ```
-需要发消息
+用户要发消息
 ├── 发给单个/多个用户（每人独立私聊）
-│   ├── 以机器人身份 → bot私聊 (4.6.12)
-│   ├── 以公号身份 → 公号私聊 (4.6.1)
-│   └── 以用户本人身份 → 人→人私聊 (4.6.3)
+│   ├── 以机器人身份 → bot私聊 (4.6.12)，CLI: lansenger message send-text
+│   ├── 以公号身份 → 公号私聊 (4.6.1)，CLI: lansenger message send-account-message
+│   └── 以用户本人身份 → 人→人私聊 (4.6.3)，CLI: lansenger message send-user-message（需 userToken）
 └── 发到群里（所有人可见）
-│   └── 群聊 (4.6.2)
-│       ├── 机器人身份（默认）
-│       └── 用户身份（加 --user-token）
+    └── 群聊 (4.6.2)，CLI: lansenger message send-text --group
+        ├── 机器人身份（默认，不加 --user-token）
+        └── 用户身份（加 --user-token）
 ```
+
+### 场景诊断速查
+
+| 用户原话 | 通道 | 命令 |
+|----------|------|------|
+| "帮我给张三发条消息" | bot私聊 | `send-text staff123 "..."` |
+| "在技术群里发条公告" | 群聊(bot) | `send-text grp123 "..." --group` |
+| "用我自己的身份在群里发" | 群聊(用户) | `send-text grp123 "..." --group --user-token $TOKEN` |
+| "给开发部的所有人发通知" | bot私聊(batch) | `send-bot-message ... --dept dept1` |
+| "用公号给用户发欢迎消息" | 公号私聊 | `send-account-message ... --account-id xxx` |
+| "以我的身份给李四发私聊" | 人→人私聊 | `send-user-message ... --user-token $TOKEN` |
 
 ### 私聊通道对比
 

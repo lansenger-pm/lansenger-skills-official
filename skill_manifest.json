@@ -1,11 +1,19 @@
 {
-  "version": "1.5.4",
+  "version": "1.5.5",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python, Go, and TypeScript CLI",
   "structure": "<name>/SKILL.md",
+  "root": "SKILL.md",
   "shared": "lansenger-shared/SKILL.md",
   "skills": [
+    {
+      "id": "lansenger",
+      "name": "Lansenger CLI Skills Suite",
+      "category": "root",
+      "description": "Master dispatcher for all Lansenger CLI skills — install, strategy, skill routing table, identity model, and Reverse Handoff rules",
+      "path": "SKILL.md"
+    },
     {
       "id": "lansenger-shared",
       "name": "Lansenger Shared Rules",
