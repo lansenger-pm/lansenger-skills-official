@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.3.3
+version: 1.3.4
 description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
@@ -137,6 +137,9 @@ lansenger calendar primary --profile "my-lansenger-app" --user-token "ut1"
 # 查看所有已配置的 profile
 lansenger config list-profiles
 
+# 删除指定 profile（如为当前 active 则自动切换到 default）
+lansenger config delete-profile my-bot
+
 # 查看某个 profile 的配置
 lansenger config show --profile "my-personal-bot"
 
@@ -222,6 +225,9 @@ lansenger message send-text staff123 "Hello" --profile "org-bot"
 
 # 查看所有已配置 profile
 lansenger config list-profiles
+
+# 删除指定 profile
+lansenger config delete-profile org-bot
 
 # 查看某个 profile 详情
 lansenger config show --profile "my-personal-bot"
