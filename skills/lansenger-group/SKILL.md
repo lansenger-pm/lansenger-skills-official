@@ -1,6 +1,6 @@
 ---
 name: lansenger-group
-version: 1.1.1
+version: 1.1.2
 description: "蓝信群组管理：创建群、查看群信息、群成员列表、群列表、成员检查、更新群设置、添加/移除成员、解散群。当用户需要管理群组时使用。"
 metadata:
   requires:
@@ -30,7 +30,7 @@ metadata:
 
 - 创建群时如果提供 `--staff` 列表，最少需要 **3 人**
 - 可同时通过 `--staff` 添加指定员工，通过 `--dept` 添加部门全体成员
-- 机器人身份不能添加部门成员（必须用 `--user-token`）
+- 机器人身份不能添加部门成员（需传 `--as staff_id` 或 `--user-token`）
 
 ### 群管理权限
 

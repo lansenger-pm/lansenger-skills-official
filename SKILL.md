@@ -1,7 +1,7 @@
 ---
 name: lansenger
 description: "蓝信 CLI 技能套件 — 使用 lansenger CLI 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、OAuth2 认证、文件上传下载。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询等功能时加载此技能。"
-version: 1.5.4
+version: 1.6.0
 ---
 
 # 蓝信 Lansenger CLI 技能套件

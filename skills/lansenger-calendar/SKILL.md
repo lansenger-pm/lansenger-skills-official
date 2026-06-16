@@ -1,6 +1,6 @@
 ---
 name: lansenger-calendar
-version: 1.1.2
+version: 1.1.3
 description: "蓝信日历/日程（4.23）：主日历查询、日程CRUD、参会人管理、参会人元数据更新。注意：日历容器CRUD暂不开放，仅日程操作可用。涉及创建/修改日程必须先确认用户意图（新建 vs 编辑已有）。"
 metadata:
   requires:
@@ -187,7 +187,7 @@ lansenger calendar attendee-meta calOpenId schOpenId --remind-times '[5,15]' --u
 | 传毫秒时间戳 | 使用秒级时间戳（除以1000） |
 | 全天日程填time字段 | 全天只填date + timeZone=UTC |
 | 增删参会人传对象列表 | 增删用纯字符串列表 |
-| 不传userToken查日程 | 日历操作必须传 --user-token 或 --user-id |
+| 不传userToken查日程 | 日历操作需传 `--as staff_id` 或 `--user-token` 或 `--user-id` |
 | 用户说"日历"就查Calendar容器 | 用户意图通常是"日程"，用 list-schedules |
 | 时间范围超42天 | 拆分多次查询，每次 ≤ 42天 |
 | 修改重复日程不指定 --op | 默认 modify_all 影响所有实例；仅改当前用 modify_current + --current-time |

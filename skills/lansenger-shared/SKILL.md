@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.3.4
+version: 1.4.0
 description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
@@ -19,7 +19,8 @@ lansenger CLI 是对蓝信 OpenAPI 的命令行封装。每条命令对应一个
 
 - **CLI 命令** → 解析参数 → 调用 SDK → 发送 HTTP 请求到蓝信 API 网关 → 返回结构化结果
 - **身份模型**：两级 Token 体系 — `appToken`（应用/机器人身份）+ `userToken`（个人用户身份，可选）
-- **凭证存储**：所有凭证保存在 `~/.lansenger/sdk_state.json`（0600 权限），按 appID 隔离
+- **凭证存储**：所有凭证保存在 `~/.lansenger/sdk_state.json`（0600 权限），按 profile 隔离，支持多用户 token 存储
+- **多用户模式（v0.10.15+）**：`--as <staff_id>` 全局标志自动加载并刷新该用户的 userToken，无需每次手动传 `--user-token`
 
 理解这个模型有助于排查问题：命令失败 → 先检查身份是否正确（该不该带 userToken），再检查凭证是否有效（health check）。
 
@@ -173,27 +174,34 @@ lansenger config clear --all
 
 ### Token 传递方式
 
-CLI 命令通过参数传递 token：
-
 ```bash
-# appToken 自动管理，无需传递
+# 默认：appToken 自动管理，无需传递任何参数（以 app/bot 身份运行）
 lansenger message send-text staff123 "Hello"
 
-# userToken 通过 --user-token 参数传递
+# 需以用户身份操作时，用 --as 自动加载已持久化的 token
+lansenger calendar primary --as staff_001
+lansenger staff search "张三" --as staff_001
+lansenger chat list --as staff_001
+
+# 或手动传 --user-token（优先级高于 --as）
 lansenger calendar primary --user-token "userToken123"
-lansenger staff detail staff456 --user-token "userToken123"
 ```
 
 ### 身份选择原则
 
-- **无 --user-token** → 以 **应用/机器人身份** 操作，访问机器人自身资源
-- **有 --user-token** → 以 **用户身份** 操作，访问用户自己的资源（日历、聊天记录等）
+**默认不带身份参数 → 以 app/bot 身份运行。** `--as` 和 `--user-token` 仅在需要以用户身份操作时使用。
 
-**关键差异**：
-- 机器人**以自身视角访问资源** — 无法以用户身份查看用户日历、完整聊天详情等（需传 `--user-token` 获取用户视角）
+| 方式 | 身份 | 何时使用 |
+|------|------|----------|
+| 不传（默认） | app/bot | 机器人发消息、管群组等 — **大部分场景都是这个** |
+| `--as <staff_id>` | 指定用户 | 需以用户身份操作（日历、查聊天、员工搜索等），自动加载已持久化的 token |
+| `--user-token <token>` | 手动指定用户 | 临时以用户身份操作，**优先级高于 `--as`** |
+
+- 机器人**以自身视角访问资源** — 需传 `--as staff_id` 获取用户视角（如日历、完整聊天详情）
 - 机器人**无法代表用户操作** — 发消息以应用名义发送
 - 机器人只需 appID + appSecret，无需 OAuth2 授权
 - 用户需要 OAuth2 授权获取 userToken（参见 `../lansenger-oauth/SKILL.md`）
+- **多用户场景**：每个 staff_id 独立存储 token，用 `--as` 切换即可
 
 ### 权限不足处理
 
@@ -240,6 +248,32 @@ lansenger config clear --all
 ```
 
 **CRITICAL — 多应用场景下，不同 appID 对应不同机器人/应用身份。切换 profile 即切换身份，务必确认 profile 与目标身份一致。**
+
+## 多用户 Token 管理（v0.10.15+）
+
+CLI 支持在同一个 profile 下为多个用户（staff_id）存储独立的 userToken。一次 OAuth2 授权，之后全部通过 `--as` 自动加载：
+
+```bash
+# OAuth2 授权后会按 staff_id 自动存入当前 profile（参见 lansenger-oauth）
+lansenger oauth local-callback
+
+# 列出当前 profile 下所有已授权用户
+lansenger config list-users
+
+# 查看完整 token 信息
+lansenger config list-users --show-tokens
+
+# 以指定用户身份执行任何需要 userToken 的命令
+lansenger calendar primary --as staff_001
+lansenger staff search "张三" --as staff_001
+lansenger chat list --as staff_001
+```
+
+- `--as` 是全局标志，放在子命令之前
+- 每个 staff_id 的 token 独立存储，互不干扰
+- Token 过期时 CLI 自动刷新（需有 refreshToken）
+- 手动 `--user-token` 仍然可用，**优先级高于 `--as`**（同时传时 `--user-token` 生效）
+- 不想使用已持久化的 staff_id 时，直接传 `--user-token` 即可
 
 ## 输出格式
 

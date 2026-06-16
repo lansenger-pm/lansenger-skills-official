@@ -1,6 +1,6 @@
 ---
 name: lansenger-oauth
-version: 1.4.3
+version: 1.5.0
 description: "蓝信OAuth2用户授权：构建授权URL、兑换授权码、刷新Token、获取用户信息、解析回调、验证State、本地回调服务器、自动刷新Token。当用户需要获取userToken或进行OAuth2授权流程时使用。"
 metadata:
   requires:
@@ -49,7 +49,7 @@ metadata:
 | Token | 有效期 | 过期后 | 刷新方式 |
 |-------|--------|--------|---------|
 | **appToken** | 2小时 | SDK/CLI 自动刷新 | 无需手动处理 |
-| **userToken** | 2小时 | SDK UserTokenManager 自动刷新（提前5分钟） | SDK: `client.get_user_token()` 自动刷新；CLI: 手动 `lansenger oauth refresh-token` |
+| **userToken** | 2小时 | `--as staff_id` 自动刷新 | 无需手动刷新，CLI 在 `--as` 模式下自动处理 |
 | **refreshToken** | 30天 | 需重新 OAuth2 授权 | 无法刷新，过期后必须重新走完整授权流程 |
 
 ### Python SDK 自动刷新（UserTokenManager）
@@ -233,6 +233,28 @@ lansenger oauth local-callback --timeout 300
 原理：启动本地 HTTP 服务器监听 `http://localhost:<port>`，浏览器授权后重定向到该地址，服务器自动捕获 code。**前提**：必须先将 `http://localhost:<port>`（如 `http://localhost:8765`）配置到蓝信开发者后台信任域名中，否则会报错无法获取 code。
 
 **重要提示**：`local-callback` 必须后台运行（添加 `&` 或使用后台启动），前台运行会阻塞终端无法同时打开浏览器。正确流程：后台启动 local-callback → 提取 URL → open 打开浏览器 → 等待回调完成。
+
+### 授权后的 Token 使用（v0.10.15+）
+
+`local-callback` 和 `exchange-code` 完成后，userToken + refreshToken 会**自动按 staff_id 存入当前 profile**。之后所有需要 userToken 的命令**无需手动传 `--user-token`**，直接用 `--as <staff_id>` 即可自动加载并刷新：
+
+```bash
+# 授权一次，之后全部用 --as
+lansenger calendar primary --as staff_001
+lansenger staff search "张三" --as staff_001
+lansenger chat list --as staff_001
+
+# 查看已授权的所有用户
+lansenger config list-users
+
+# 查看完整 token 信息（含过期时间）
+lansenger config list-users --show-tokens
+```
+
+- `--as` 是全局标志，放在子命令之前
+- Token 过期时 CLI 自动用 refreshToken 刷新
+- 如需为多个用户授权，只需重复 OAuth2 流程（每个用户独立存储）
+- 手动 `--user-token` 仍然可用，**优先级高于 `--as`**
 
 ## 参数说明
 

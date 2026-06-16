@@ -1,6 +1,6 @@
 ---
 name: lansenger-staff
-version: 1.0.1
+version: 1.0.2
 description: "蓝信员工/通讯录查询：基本信息、详细资料、部门祖先、ID映射（手机/邮箱→staffId）、组织扩展字段、员工搜索、组织信息。当用户需要查询员工信息、搜索员工、做ID映射时使用。"
 metadata:
   requires:
@@ -20,7 +20,7 @@ metadata:
 | 发消息给员工 | `lansenger-messaging` | 查到的 staffId 用于 messaging 的 chat_id 参数 |
 | OAuth2 获取 userToken | `lansenger-oauth` | userToken 来源 |
 
-**CRITICAL — `search` 是用户级操作，必须传入 `--user-token` 或 `--user-id`。其他命令（`basic-info`、`detail`、`ancestors`、`id-mapping`、`org-extra-fields`、`org-info`）以机器人身份即可调用，`--user-token` 可选。**
+**CRITICAL — `search` 是用户级操作，需传入 `--as staff_id`（推荐）、`--user-token` 或 `--user-id`。其他命令（`basic-info`、`detail`、`ancestors`、`id-mapping`、`org-extra-fields`、`org-info`）以机器人身份即可调用，`--user-token` 可选。**
 
 ## 核心概念
 
