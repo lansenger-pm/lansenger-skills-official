@@ -164,31 +164,67 @@ lansenger config clear --all
 
 **CRITICAL — 三种身份类型的 API 可用性完全不同。Agent 在调用命令前 MUST 确认当前 profile 的身份类型能否执行该操作。**
 
-| 命令域 | 个人机器人 | 蓝信应用（自建） | 蓝信应用 + 机器人能力 | 关键说明 |
+| 命令域 | 个人机器人 | 蓝信应用（自建） | 蓝信应用 + 机器人 | 关键说明 |
 |--------|:---:|:---:|:---:|------|
-| `message send-text` 等 L1 快捷命令 (bot私聊) | **Y** | N | **Y** | 个人机器人可发 bot 私聊；蓝信应用需开启机器人能力 |
-| `message send-account-message` (公号私聊) | N | **Y** | **Y** | 需要公号能力，个人机器人无 |
-| `message send-user-message` (人→人私聊) | N | N | **Y** | 需要 userToken + 机器人能力 |
-| `message send-text --group` (群聊) | N | N | **Y** | 需要机器人能力（`send-group-message` 同理） |
-| `message revoke` (撤回) | **Y** | **Y** | **Y** | 个人机器人可撤回自己发的消息 |
-| `group *` (群管理 V2) | N | N | **Y** | 全部群 API 需要机器人能力 |
-| `staff basic-info/detail/ancestors/id-mapping/org-extra-fields` | N | **Y** | **Y** | 仅组织级应用可调通讯录 |
-| `staff search` | N | N | N | 必须 userToken，任何身份无 userToken 均不可用 |
-| `staff org-info` | N | **Y** | **Y** | 仅组织级应用 |
+| `message send-text/markdown/file/...` (bot私聊) | **Y** | N | **Y** | 只有机器人身份才能发 bot 私聊；蓝信应用无机器人能力不可用 |
+| `message send-text --group` (群聊) | N* | N | **Y** | 个人机器人 API 层面支持但当前无进群功能；蓝信应用非机器人不可用 |
+| `message send-group-message` | N* | N | **Y** | 同上 |
+
+> \* **N*** = API 能力存在，但当前缺少进群功能导致不可用。后续进群功能上线后变为 Y。
+| `message send-account-message` (公号私聊) | N | **Y** | **Y** | 需要公号能力 |
+| `message send-user-message` (人→人私聊) | N | **Y** | **Y** | 需要 userToken + OAuth2 |
+| `message revoke` (撤回) | **Y** | **Y** | **Y** | 撤回自己发的消息 |
+| `staff *` (通讯录只读) | N | **Y** | **Y** | 仅组织级应用可调通讯录；`search` 需额外 userToken |
 | `department *` | N | **Y** | **Y** | 仅组织级应用可浏览组织架构 |
-| `calendar *` (日历日程) | N | N | **Y** | 需机器人能力；以 userToken 操作时可绕过 |
+| `calendar *` (日历日程) | N | **Y** | **Y** | 组织级应用均可调用；以 userToken 操作以用户身份，无 userToken 时以机器人身份 |
 | `todo *` (待办) | N | **Y** | **Y** | 仅组织级应用 |
-| `chat list/messages` (拉取聊天记录) | N | **Y** | **Y** | 仅组织级应用 |
-| `media upload` | N | **Y** | **Y** | 通用上传需 userToken |
+| `chat list/messages` (聊天记录) | N | **Y** | **Y** | 仅组织级应用 |
+| `group *` (群管理 V2) | N | N | **Y** | 只有机器人能进群，应用无法管理群组 |
+| `media upload` | **Y** | **Y** | **Y** | 通用上传 |
 | `media upload-app` | N | **Y** | **Y** | App/Bot 上传仅自建应用，ISV 不支持 |
 | `media download/path` | **Y** | **Y** | **Y** | 通用下载 |
-| `oauth *` (OAuth2 授权) | N | **Y** | **Y** | 仅组织级应用可发起 OAuth2 |
-| `streaming *` (流式消息) | N | N | **Y** | 需要机器人能力 |
+| `oauth *` (OAuth2) | N | **Y** | **Y** | 仅组织级应用可发起 OAuth2 |
+| `streaming *` (流式消息) | N | **Y** | **Y** | 组织级应用均可 |
 | `callback *` (回调解析) | N/A | N/A | N/A | 纯数据侧操作，无身份要求 |
 
-> **个人机器人总结**：能力极其有限，**只能发 bot 私聊消息和撤回**。不能查通讯录、不能管群、不能操作日历日程、不能发起 OAuth2 授权。
+> **个人机器人总结**：能力极其有限——**只能收发消息和上传下载文件**。不能查通讯录、不能管群、不能操作日历日程、不能发起 OAuth2 授权。
 >
-> **蓝信应用 vs 蓝信应用+机器人能力**：两者使用同一个 appID/appSecret。"机器人能力"是在蓝信开发者中心为自建应用开启的一项**功能开关**，开启后获得：bot 私聊通道、群聊通道、群管理 V2、日历日程、流式消息。**目前仅蓝信自建应用支持开启机器人能力，ISV 应用不支持。**
+> **蓝信应用 vs 蓝信应用+机器人**：两者使用同一个 appID/appSecret，能力几乎完全相同。唯一区别在于**消息通道**——只有机器人身份能发 bot 私聊和群聊消息（因为只有机器人能进群）。其他所有 API（通讯录、日历、待办、聊天记录、OAuth2、流式消息等）两者完全一致。**目前仅蓝信自建应用支持开启机器人能力。**
+
+### 开发者中心权限
+
+**CRITICAL — 即使身份类型支持，具体 API 能否调用还取决于开发者中心的权限开关。Agent 遇到权限报错时，应提示用户检查对应权限是否已开启。**
+
+权限在蓝信开发者中心管理，分为基本权限（默认开启）和高级权限（默认关闭）。部分组织可能限制开发者自行访问开发者中心，需联系组织管理员操作。
+
+#### 基本权限（默认开启）
+
+| 权限 | 说明 |
+|------|------|
+| 获取人员基本信息 | 获取人员的基本信息，用于登录系统/应用 |
+| 发送通知消息 | 获取组织的消息通道给人员或群组发送消息 |
+
+#### 高级权限（默认关闭，需手动开启）
+
+| 权限 | 说明 | 影响的 Skill |
+|------|------|-------------|
+| 通讯录只读权限 | 获取通讯录的读取权限 | `lansenger-staff`、`lansenger-department` |
+| 通讯录编辑权限 | 获取通讯录的编辑权限 | `lansenger-staff`（创建/更新/删除员工） |
+| 人员敏感信息-手机号 | 获取某个人员手机号信息的权限 | `lansenger-staff`（detail、id-mapping） |
+| 人员敏感信息-邮箱 | 获取某个人员邮箱信息的权限 | `lansenger-staff`（detail、id-mapping） |
+| 人员敏感信息-身份证号 | 获取某个人员身份证号码的权限 | `lansenger-staff` |
+| 人员敏感信息-工号 | 获取某个人员工号信息的权限 | `lansenger-staff` |
+| 根据人员唯一属性换取员工ID | 根据手机号/邮箱/员工号换取员工ID | `lansenger-staff`（id-mapping） |
+| 应用编辑权限 | 创建应用与更新应用信息的权限 | 开发者中心管理 |
+| 群只读权限 | 获取群只读权限 | `lansenger-group`（查询群信息/成员） |
+| 群编辑权限 | 获取群编辑权限 | `lansenger-group`（创建/更新/解散/成员变更） |
+| 日历日程只读权限 | 获取日历日程只读权限 | `lansenger-calendar`（查询） |
+| 日历日程编辑权限 | 获取日历日程编辑权限 | `lansenger-calendar`（创建/更新/删除） |
+| 上传素材权限 | 获取上传素材文件权限 | `lansenger-media`（upload、upload-app） |
+| 工作台模版读权限 | 获取工作台模版读权限 | — |
+| 工作台模版写权限 | 获取工作台模版写权限 | — |
+
+> **Agent 指引**：当命令返回权限相关错误时，先检查 shared「身份能力矩阵」确认身份类型支持，再提示用户在开发者中心开启对应高级权限（如无法自行访问，联系组织管理员）。
 
 ## 认证
 

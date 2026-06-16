@@ -12,7 +12,7 @@ metadata:
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
-**CRITICAL — 流式消息需要「蓝信应用 + 机器人能力」，个人机器人不可用。** 详见 shared「身份能力矩阵」。
+**CRITICAL — 流式消息仅组织级应用可用，个人机器人不可用。** 详见 shared「身份能力矩阵」。
 
 ## Reverse Handoff — 何时不用此技能
 
