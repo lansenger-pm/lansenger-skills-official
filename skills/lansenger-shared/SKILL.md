@@ -181,7 +181,7 @@ lansenger config clear --all
 | `chat list/messages` (聊天记录) | N | **Y** | **Y** | 仅组织级应用 |
 | `group *` (群管理 V2) | N | N | **Y** | 只有机器人能进群，应用无法管理群组 |
 | `media upload` | **Y** | **Y** | **Y** | 通用上传 |
-| `media upload-app` | N | **Y** | **Y** | App/Bot 上传仅自建应用，ISV 不支持 |
+| `media upload-app` | **Y** | **Y** | **Y** | App/Bot 上传仅自建应用，ISV 不支持 |
 | `media download/path` | **Y** | **Y** | **Y** | 通用下载 |
 | `oauth *` (OAuth2) | N | **Y** | **Y** | 仅组织级应用可发起 OAuth2 |
 | `streaming *` (流式消息) | N | **Y** | **Y** | 组织级应用均可 |
