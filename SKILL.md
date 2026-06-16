@@ -1,7 +1,11 @@
 ---
 name: lansenger
+version: 1.7.0
 description: "蓝信 CLI 技能套件 — 使用 lansenger CLI 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、OAuth2 认证、文件上传下载。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询等功能时加载此技能。"
-version: 1.6.0
+metadata:
+  requires:
+    bins: ["lansenger"]
+  cliHelp: "lansenger --help"
 ---
 
 # 蓝信 Lansenger CLI 技能套件
@@ -120,3 +124,16 @@ lansenger config show
 
 1. `lansenger-shared`（自动）— 认证、配置、安全
 2. 按用户意图加载对应子技能（见分发表）
+
+### 多技能并发加载优先级
+
+当用户请求涉及多个领域（如"在张三的日历上创建日程并通知他"），需同时加载多个子技能时，优先级规则：
+
+| 优先级 | 规则 | 示例 |
+|--------|------|------|
+| **1** | 先获取数据，再操作 | 先 `lansenger-staff` 查 staffId → 再 `lansenger-calendar` 创建日程 |
+| **2** | 先完成写入，再通知 | 先完成日程/待办创建 → 再 `lansenger-messaging` 发送通知 |
+| **3** | OAuth 前置 | 需要 userToken 时，`lansenger-oauth` 优先于任何需要用户身份的操作 |
+| **4** | 同类互斥，跨界协作 | 发消息 vs 看消息 → 只加载其中一个；查员工 + 查部门 → 可同时加载 |
+
+冲突裁决：当两个子 skill 的规则冲突时，按操作类型决定 — 写入操作（messaging/calendar/todo）的确认规则优先于读取操作（chat/staff/department）的宽松规则。

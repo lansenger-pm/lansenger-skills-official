@@ -1,6 +1,6 @@
 ---
 name: lansenger-department
-version: 1.0.1
+version: 1.0.2
 description: "蓝信部门/组织架构导航：部门详情、子部门列表、部门员工列表。当用户需要浏览组织架构、查看部门信息时使用。"
 metadata:
   requires:
@@ -8,7 +8,7 @@ metadata:
   cliHelp: "lansenger department --help"
 ---
 
-# department (v1)
+# department (v1.0)
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
@@ -62,7 +62,7 @@ lansenger department children 524288-0
 lansenger department children dept123 --user-token "ut1"
 
 # JSON 输出
-lansenger department children 524288-0 --json
+lansenger -j department children 524288-0
 ```
 
 ### 查看部门员工列表
@@ -81,7 +81,7 @@ lansenger department staffs dept123 --page 2 --size 100
 lansenger department staffs dept123 --user-token "ut1"
 
 # JSON 输出
-lansenger department staffs dept123 --json
+lansenger -j department staffs dept123
 ```
 
 ## 参数说明

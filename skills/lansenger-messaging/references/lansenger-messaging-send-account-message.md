@@ -1,25 +1,25 @@
 # lansenger message send-account-message
 
-Send a message via the account channel (using a specific account identity) to chats or departments.
+通过账户通道（使用特定账户身份）向聊天或部门发送消息。
 
-**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
-**Safety:** Always confirm recipients and message content with the user before sending. Account messages appear as coming from a specific person's account — do not send without explicit user approval, as the message will carry that account's identity.
+**安全提醒：** 发送前务必与用户确认收件人和消息内容。账户消息显示为来自特定人员的账户 — 未经用户明确批准请勿发送，因为消息将携带该账户的身份信息。
 
-## Parameters
+## 参数
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| msg_type | arg | yes | Message type (e.g., text, markdown, image, file) |
-| msg_data | arg | yes | JSON object containing the message body data |
-| --chat-id | option | no | List of chat IDs to send to (comma-separated or repeated) |
-| --dept | option | no | List of department IDs to broadcast to (comma-separated or repeated) |
-| --account-id | option | no | Account ID to send from (specifies the account identity) |
-| --entry-id | option | no | Entry ID for the account channel |
-| --attach | option | no | Attachment data (JSON) |
-| --user-token | option | no | User token |
+| msg_type | arg | 是 | 消息类型（如 text, markdown, image, file） |
+| msg_data | arg | 是 | 包含消息正文数据的 JSON 对象 |
+| --chat-id | option | 否 | 要发送到的聊天 ID 列表（逗号分隔或重复指定） |
+| --dept | option | 否 | 要广播到的部门 ID 列表（逗号分隔或重复指定） |
+| --account-id | option | 否 | 发送来源的账户 ID（指定账户身份） |
+| --entry-id | option | 否 | 账户通道的入口 ID |
+| --attach | option | 否 | 附件数据（JSON） |
+| --user-token | option | 否 | 用户令牌 |
 
-## Examples
+## 示例
 
 ```bash
 lansenger message send-account-message text '{"text":"Notification from ops account"}' --chat-id user_123,user_456 --account-id acct_ops
@@ -31,16 +31,16 @@ lansenger message send-account-message text '{"text":"Document attached"}' --cha
 lansenger message send-account-message text '{"text":"Weekly summary"}' --chat-id grp_456 --account-id acct_ops --user-token $TOKEN
 ```
 
-## Common Mistakes
+## 常见错误
 
-- Passing `msg_data` as plain text instead of JSON — must be a valid JSON object.
-- Forgetting `--account-id` — the command will fail or use a default that may not be intended.
-- Specifying neither `--chat-id` nor `--dept` — the command has no recipients and will fail.
-- Sending an account message without the user's awareness of the account identity being used — recipients see it as coming from that account, which may be misleading.
+- 将 `msg_data` 作为纯文本而非 JSON 传递 — 必须是有效的 JSON 对象。
+- 忘记 `--account-id` — 命令将失败或使用可能不期望的默认值。
+- 既未指定 `--chat-id` 也未指定 `--dept` — 命令没有收件人，将会失败。
+- 在用户不知晓所用账户身份的情况下发送账户消息 — 收件人看到的消息来自该账户，可能会产生误导。
 
-## Return Value
+## 返回值
 
-Returns the message IDs of the sent messages:
+返回已发送消息的消息 ID 列表：
 
 ```json
 {

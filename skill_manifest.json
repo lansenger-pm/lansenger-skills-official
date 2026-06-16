@@ -1,5 +1,5 @@
 {
-  "version": "1.6.0",
+  "version": "1.7.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python, Go, and TypeScript CLI",
@@ -47,7 +47,7 @@
     {
       "id": "lansenger-chat",
       "name": "Lansenger Chat Reading APIs",
-      "category": "messaging",
+      "category": "chat",
       "description": "Lansenger chat reading APIs — fetch personal chat list (private + group conversations), pull messages from a specific conversation, auto monthly split, plain_text() helper",
       "path": "lansenger-chat/SKILL.md"
     },
@@ -112,7 +112,7 @@
       "id": "lansenger-callback",
       "name": "Lansenger Callback Events (Webhook)",
       "category": "callbacks",
-      "description": "Lansenger callback event parsing — 25 event types across 13 categories, structured dataclass parsing, AES decryption, payload parsing, signature verification",
+      "description": "Lansenger callback event parsing — 25 event types across 14 categories, structured dataclass parsing, AES decryption, payload parsing, signature verification",
       "path": "lansenger-callback/SKILL.md"
     },
     {

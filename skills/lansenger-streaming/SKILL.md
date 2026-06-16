@@ -1,6 +1,6 @@
 ---
 name: lansenger-streaming
-version: 1.0.1
+version: 1.0.2
 description: "蓝信流式消息（AI Agent 实时推送）：创建流式消息会话、获取流式消息状态。当 AI Agent 需要实现打字式渐进输出时使用。"
 metadata:
   requires:
@@ -8,7 +8,7 @@ metadata:
   cliHelp: "lansenger streaming --help"
 ---
 
-# streaming (v1)
+# streaming (v1.0)
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
@@ -55,7 +55,7 @@ lansenger streaming create staff123 single "ai-reply-abc123"
 lansenger streaming create group456 group "ai-reply-def456"
 
 # JSON 输出
-lansenger streaming create staff123 single "ai-reply-abc123" --json
+lansenger -j streaming create staff123 single "ai-reply-abc123"
 ```
 
 ### 获取流式消息状态
@@ -65,7 +65,7 @@ lansenger streaming create staff123 single "ai-reply-abc123" --json
 lansenger streaming fetch msg123
 
 # JSON 输出
-lansenger streaming fetch msg123 --json
+lansenger -j streaming fetch msg123
 ```
 
 ## 参数说明

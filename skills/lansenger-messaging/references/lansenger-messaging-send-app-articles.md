@@ -1,22 +1,22 @@
 # lansenger message send-app-articles
 
-Send an app articles message (multi-article card) to a chat.
+向聊天发送应用文章消息（多文章卡片）。
 
-**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
-**Safety:** Always confirm the recipient and article content with the user before sending. Do not send articles the user has not explicitly approved.
+**安全提醒：** 发送前务必与用户确认收件人和文章内容。请勿发送用户未明确批准的文章。
 
-## Parameters
+## 参数
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| chat_id | arg | yes | Target chat ID |
-| articles | arg | yes | JSON list of article objects (each with title, url, and optional desc/icon) |
-| --group / -g | option | no | Send to a group chat (interprets chat_id as group ID) |
-| --user-token | option | no | User token for user-token channel messaging |
-| --sender-id | option | no | Sender staff ID |
+| chat_id | arg | 是 | 目标聊天 ID |
+| articles | arg | 是 | 文章对象 JSON 列表（每个对象含 title、url，可选 desc/icon） |
+| --group / -g | option | 否 | 发送到群聊（将 chat_id 视为群 ID） |
+| --user-token | option | 否 | 用户令牌。群聊中以用户身份发送（替代 `--sender-id`），私聊中切换 robot→用户身份 |
+| --sender-id | option | 否 | 发送者 staffId，用于群聊中指定消息显示身份。与 `--user-token` 至少提供一个（OpenAPI 4.6.2） |
 
-## Examples
+## 示例
 
 ```bash
 lansenger message send-app-articles user_123 '[{"title":"News 1","url":"https://news.example.com/1"},{"title":"News 2","url":"https://news.example.com/2"}]'
@@ -26,16 +26,16 @@ lansenger message send-app-articles grp_456 '[{"title":"Weekly Report","url":"ht
 lansenger message send-app-articles user_123 '[{"title":"Feature","url":"https://docs.example.com","icon":"https://example.com/icon.png"}]' --user-token $TOKEN --sender-id staff_001
 ```
 
-## Common Mistakes
+## 常见错误
 
-- Passing articles as separate arguments instead of a single JSON list — the `articles` arg must be one JSON array string.
-- Using a group ID without `--group` flag — the command treats it as a private chat ID.
-- Providing invalid JSON for `articles` — must be a properly formatted JSON array of objects, each with at least `title` and `url`.
-- Forgetting to quote the JSON string — shell parsing will break on spaces and special characters.
+- 将 articles 作为多个独立参数而非单个 JSON 列表传递 — `articles` 参数必须是一个 JSON 数组字符串。
+- 使用群 ID 但未加 `--group` 标志 — 命令会将其视为私聊 ID。
+- 为 `articles` 提供了无效的 JSON — 必须是格式正确的 JSON 对象数组，每个对象至少包含 `title` 和 `url`。
+- 忘记对 JSON 字符串加引号 — Shell 解析会因空格和特殊字符而出错。
 
-## Return Value
+## 返回值
 
-Returns the message ID of the sent message:
+返回已发送消息的消息 ID：
 
 ```json
 {

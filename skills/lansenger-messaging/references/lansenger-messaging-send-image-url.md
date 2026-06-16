@@ -1,23 +1,23 @@
 # lansenger message send-image-url
 
-Send an image by URL to a chat.
+向聊天发送通过 URL 引用的图片。
 
-**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
-**Safety:** Always confirm the recipient and image content with the user before sending. Do not send images the user has not explicitly approved.
+**安全提醒：** 发送前务必与用户确认收件人和图片内容。请勿发送用户未明确批准的图片。
 
-## Parameters
+## 参数
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| chat_id | arg | yes | Target chat ID |
-| image_url | arg | yes | URL of the image to send |
-| --content / -c | option | no | Text content accompanying the image |
-| --group / -g | option | no | Send to a group chat (interprets chat_id as group ID) |
-| --user-token | option | no | User token for user-token channel messaging |
-| --sender-id | option | no | Sender staff ID |
+| chat_id | arg | 是 | 目标聊天 ID |
+| image_url | arg | 是 | 要发送图片的 URL |
+| --content / -c | option | 否 | 附带图片的文本内容 |
+| --group / -g | option | 否 | 发送到群聊（将 chat_id 视为群 ID） |
+| --user-token | option | 否 | 用户令牌。群聊中以用户身份发送（替代 `--sender-id`），私聊中切换 robot→用户身份 |
+| --sender-id | option | 否 | 发送者 staffId，用于群聊中指定消息显示身份。与 `--user-token` 至少提供一个（OpenAPI 4.6.2） |
 
-## Examples
+## 示例
 
 ```bash
 lansenger message send-image-url user_123 "https://example.com/photo.png"
@@ -29,16 +29,16 @@ lansenger message send-image-url user_123 "https://cdn.example.com/img.jpg" --co
 lansenger message send-image-url grp_456 "https://example.com/chart.svg" --group --sender-id staff_001
 ```
 
-## Common Mistakes
+## 常见错误
 
-- Using a group ID without `--group` flag — the command treats it as a private chat ID.
-- Providing a non-accessible image URL — the recipient will see a broken image or download failure.
-- Using a local file path instead of a URL — use `send-file` for local files, this command only accepts URLs.
-- Forgetting `--content` when context is needed — the image arrives without explanation.
+- 使用群 ID 但未加 `--group` 标志 — 命令会将其视为私聊 ID。
+- 提供了不可访问的图片 URL — 接收方将看到损坏的图片或下载失败。
+- 使用了本地文件路径而非 URL — 本地文件请使用 `send-file`，此命令仅接受 URL。
+- 需要上下文说明时忘记 `--content` — 图片发送时没有附带说明。
 
-## Return Value
+## 返回值
 
-Returns the message ID of the sent message:
+返回已发送消息的消息 ID：
 
 ```json
 {

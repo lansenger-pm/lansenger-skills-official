@@ -1,25 +1,25 @@
 # lansenger message send-user-message
 
-Send a message directly to a user via the user messaging channel.
+通过用户消息通道直接向用户发送消息。
 
-**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
-**Channel 4.6.3 — impersonates a real user; `--user-token` is REQUIRED (obtain via lansenger-oauth).**
+**通道 4.6.3 — 模拟真实用户身份；`--user-token` 为必填（通过 lansenger-oauth 获取）。**
 
-**Safety:** Always confirm the recipient and message content with the user before sending.
+**安全提醒：** 发送前务必与用户确认收件人和消息内容。
 
-## Parameters
+## 参数
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| receiver_id | arg | yes | Receiver user/staff ID |
-| msg_type | arg | yes | Message type (e.g., text, markdown, image, file, interactive) |
-| msg_data | arg | yes | JSON object containing the message body data |
-| --user-token | option | **yes** | Required — channel 4.6.3 must authenticate with userToken (OAuth2) |
-| --common | option | no | JSON object for common message config (e.g., chat_type, sender info) |
-| --uuid | option | no | Unique message ID for deduplication |
+| receiver_id | arg | 是 | 接收者用户/员工 ID |
+| msg_type | arg | 是 | 消息类型（如 text, markdown, image, file, interactive） |
+| msg_data | arg | 是 | 包含消息正文数据的 JSON 对象 |
+| --user-token | option | **是** | 必填 — 通道 4.6.3 必须使用 userToken（OAuth2）认证 |
+| --common | option | 否 | 通用消息配置的 JSON 对象（如 chat_type、发送者信息） |
+| --uuid | option | 否 | 用于去重的唯一消息 ID |
 
-## Examples
+## 示例
 
 ```bash
 lansenger message send-user-message user_123 text '{"text":"Hi"}' --user-token $TOKEN
@@ -31,16 +31,16 @@ lansenger message send-user-message user_123 interactive '{"header":{"title":{"t
 lansenger message send-user-message user_123 text '{"text":"Unique notification"}' --user-token $TOKEN --uuid "notif-001"
 ```
 
-## Common Mistakes
+## 常见错误
 
-- Missing `--user-token` — channel 4.6.3 requires it; the call will fail with an auth error
-- Passing `msg_data` as plain text instead of JSON — must be a valid JSON object
-- Using a group ID as `receiver_id` — this is for 1:1 private chat only; use `send-group-message` for groups
-- Providing invalid JSON for `--common` — must be a properly formatted JSON object
+- 缺少 `--user-token` — 通道 4.6.3 需要它；调用将因认证错误而失败
+- 将 `msg_data` 作为纯文本而非 JSON 传递 — 必须是有效的 JSON 对象
+- 将群 ID 用作 `receiver_id` — 此命令仅用于一对一私聊；群聊请使用 `send-group-message`
+- 为 `--common` 提供了无效的 JSON — 必须是格式正确的 JSON 对象
 
-## Return Value
+## 返回值
 
-Returns the message ID of the sent message:
+返回已发送消息的消息 ID：
 
 ```json
 {

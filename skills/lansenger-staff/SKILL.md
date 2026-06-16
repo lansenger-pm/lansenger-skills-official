@@ -1,6 +1,6 @@
 ---
 name: lansenger-staff
-version: 1.0.2
+version: 1.0.3
 description: "蓝信员工/通讯录查询：基本信息、详细资料、部门祖先、ID映射（手机/邮箱→staffId）、组织扩展字段、员工搜索、组织信息。当用户需要查询员工信息、搜索员工、做ID映射时使用。"
 metadata:
   requires:
@@ -8,7 +8,7 @@ metadata:
   cliHelp: "lansenger staff --help"
 ---
 
-# staff (v1)
+# staff (v1.0)
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
@@ -64,7 +64,7 @@ lansenger staff basic-info staff123 --user-token "ut1"
 ### 查看员工详细资料
 
 ```bash
-# 查看员工详细资料（需要 userToken）
+# 查看员工详细资料（建议带 userToken）
 lansenger staff detail staff123 --user-token "ut1"
 ```
 
@@ -123,7 +123,7 @@ lansenger staff search "张三" --user-id staff456
 lansenger staff search "张三" --user-token "ut1" --page 1 --size 50
 
 # JSON 输出
-lansenger staff search "张三" --user-token "ut1" --json
+lansenger -j staff search "张三" --user-token "ut1"
 ```
 
 ### 查看组织信息

@@ -1,25 +1,25 @@
 # lansenger message send-file
 
-Send a file attachment to a chat.
+向聊天发送文件附件。
 
-**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
-**Safety:** Always confirm the recipient and file content with the user before sending. Do not send files the user has not explicitly approved.
+**安全提醒：** 发送前务必与用户确认收件人和文件内容。请勿发送用户未明确批准的文件。
 
-## Parameters
+## 参数
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| chat_id | arg | yes | Target chat ID |
-| file_path | arg | yes | Local path to the file to send |
-| --content / -c | option | no | Text content accompanying the file |
-| --media-type | option | no | Media type: video, image, audio, file (defaults to file if omitted, App/Bot interface) |
-| --cover-image | option | no | Cover image path (required when sending video files) |
-| --group / -g | option | no | Send to a group chat (interprets chat_id as group ID) |
-| --user-token | option | no | User token for user-token channel messaging |
-| --sender-id | option | no | Sender staff ID |
+| chat_id | arg | 是 | 目标聊天 ID |
+| file_path | arg | 是 | 要发送文件的本地路径 |
+| --content / -c | option | 否 | 附带文件的文本内容 |
+| --media-type | option | 否 | 媒体类型：video, image, audio, file（若省略则默认为 file，App/Bot 接口） |
+| --cover-image | option | 否 | 封面图片路径（发送视频文件时必填） |
+| --group / -g | option | 否 | 发送到群聊（将 chat_id 视为群 ID） |
+| --user-token | option | 否 | 用户令牌。群聊中以用户身份发送（替代 `--sender-id`），私聊中切换 robot→用户身份 |
+| --sender-id | option | 否 | 发送者 staffId，用于群聊中指定消息显示身份。与 `--user-token` 至少提供一个（OpenAPI 4.6.2） |
 
-## Examples
+## 示例
 
 ```bash
 lansenger message send-file user_123 /path/to/report.pdf
@@ -31,16 +31,16 @@ lansenger message send-file user_123 /path/to/video.mp4 --media-type video --cov
 lansenger message send-file grp_456 /path/to/data.csv --group --sender-id staff_001
 ```
 
-## Common Mistakes
+## 常见错误
 
-- Using a group ID without `--group` flag — the command treats it as a private chat ID.
-- Providing a non-existent file path — the command will fail with a file-not-found error.
-- Forgetting `--content` when context is needed — the file arrives without explanation.
-- Using wrong `--media-type` — may cause incorrect rendering on the recipient side.
+- 使用群 ID 但未加 `--group` 标志 — 命令会将其视为私聊 ID。
+- 提供了不存在的文件路径 — 命令将因文件未找到错误而失败。
+- 需要上下文说明时忘记 `--content` — 文件发送时没有附带说明。
+- 使用了错误的 `--media-type` — 可能导致接收方渲染异常。
 
-## Return Value
+## 返回值
 
-Returns the message ID of the sent message:
+返回已发送消息的消息 ID：
 
 ```json
 {

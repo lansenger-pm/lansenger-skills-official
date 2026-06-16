@@ -1,24 +1,24 @@
 # lansenger message send-bot-message
 
-Send a message via the bot channel to specified chats or departments.
+通过 Bot 通道向指定聊天或部门发送消息。
 
-**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
-**Safety:** Always confirm recipients and message content with the user before sending. Bot messages are sent from the application bot identity — do not send without explicit user approval.
+**安全提醒：** 发送前务必与用户确认收件人和消息内容。Bot 消息以应用 Bot 身份发送 — 未经用户明确批准请勿发送。
 
-## Parameters
+## 参数
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| msg_type | arg | yes | Message type (e.g., text, markdown, image, file, interactive) |
-| msg_data | arg | yes | JSON object containing the message body data |
-| --chat-id | option | no | List of chat IDs to send to (comma-separated or repeated) |
-| --dept | option | no | List of department IDs to broadcast to (comma-separated or repeated) |
-| --user-token | option | no | User token (overrides app token for specific contexts) |
-| --entry-id | option | no | Bot entry ID (specifies which bot identity to use) |
-| --group / -g | option | no | Interpret chat IDs as group IDs |
+| msg_type | arg | 是 | 消息类型（如 text, markdown, image, file, interactive） |
+| msg_data | arg | 是 | 包含消息正文数据的 JSON 对象 |
+| --chat-id | option | 否 | 要发送到的聊天 ID 列表（逗号分隔或重复指定） |
+| --dept | option | 否 | 要广播到的部门 ID 列表（逗号分隔或重复指定） |
+| --user-token | option | 否 | 用户令牌（在特定上下文中覆盖应用令牌） |
+| --entry-id | option | 否 | Bot 入口 ID（指定使用哪个 Bot 身份） |
+| --group / -g | option | 否 | 将聊天 ID 视为群 ID |
 
-## Examples
+## 示例
 
 ```bash
 lansenger message send-bot-message text '{"text":"Hello from the bot"}' --chat-id user_123,user_456
@@ -30,16 +30,16 @@ lansenger message send-bot-message text '{"text":"Maintenance notice"}' --dept d
 lansenger message send-bot-message markdown '{"content":"**Bold** announcement"}' --chat-id grp_456 --group --user-token $TOKEN
 ```
 
-## Common Mistakes
+## 常见错误
 
-- Passing `msg_data` as plain text instead of JSON — must be a valid JSON object matching the msg_type schema.
-- Using `--chat-id` without `--group` for group IDs — group IDs will be misinterpreted as private chat IDs.
-- Specifying neither `--chat-id` nor `--dept` — the command has no recipients and will fail.
-- Forgetting `--entry-id` when multiple bot identities exist — the wrong bot may send the message.
+- 将 `msg_data` 作为纯文本而非 JSON 传递 — 必须是匹配 msg_type 模式的有效 JSON 对象。
+- 群 ID 未带 `--group` 使用 `--chat-id` — 群 ID 将被误解为私聊 ID。
+- 既未指定 `--chat-id` 也未指定 `--dept` — 命令没有收件人，将会失败。
+- 存在多个 Bot 身份时忘记 `--entry-id` — 可能由错误的 Bot 发送消息。
 
-## Return Value
+## 返回值
 
-Returns the message IDs of the sent messages:
+返回已发送消息的消息 ID 列表：
 
 ```json
 {

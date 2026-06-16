@@ -1,29 +1,29 @@
 # lansenger message send-link-card
 
-Send a link card message to a chat.
+向聊天发送链接卡片消息。
 
-**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
-**Safety:** Always confirm the recipient and link details with the user before sending. Do not send links the user has not explicitly approved.
+**安全提醒：** 发送前务必与用户确认收件人和链接详情。请勿发送用户未明确批准的链接。
 
-## Parameters
+## 参数
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| chat_id | arg | yes | Target chat ID |
-| title | arg | yes | Card title text |
-| link | arg | yes | URL the card links to |
-| --desc / -d | option | no | Description text below the title |
-| --icon | option | no | Icon URL for the card |
-| --pc-link | option | no | Separate URL for PC client |
-| --pad-link | option | no | Separate URL for pad/mobile client |
-| --from-name | option | no | Sender display name on the card |
-| --from-icon | option | no | Sender icon URL on the card |
-| --group / -g | option | no | Send to a group chat (interprets chat_id as group ID) |
-| --user-token | option | no | User token for user-token channel messaging |
-| --sender-id | option | no | Sender staff ID |
+| chat_id | arg | 是 | 目标聊天 ID |
+| title | arg | 是 | 卡片标题文本 |
+| link | arg | 是 | 卡片点击后跳转的 URL |
+| --desc / -d | option | 否 | 标题下方的描述文本 |
+| --icon | option | 否 | 卡片图标 URL |
+| --pc-link | option | 否 | PC 客户端单独的 URL |
+| --pad-link | option | 否 | Pad/移动端客户端单独的 URL |
+| --from-name | option | 否 | 卡片上显示的发送者名称 |
+| --from-icon | option | 否 | 卡片上显示的发送者图标 URL |
+| --group / -g | option | 否 | 发送到群聊（将 chat_id 视为群 ID） |
+| --user-token | option | 否 | 用户令牌。群聊中以用户身份发送（替代 `--sender-id`），私聊中切换 robot→用户身份 |
+| --sender-id | option | 否 | 发送者 staffId，用于群聊中指定消息显示身份。与 `--user-token` 至少提供一个（OpenAPI 4.6.2） |
 
-## Examples
+## 示例
 
 ```bash
 lansenger message send-link-card user_123 "Project Docs" "https://docs.example.com"
@@ -35,16 +35,16 @@ lansenger message send-link-card user_123 "Release Notes" "https://blog.example.
 lansenger message send-link-card grp_456 "Wiki" "https://wiki.example.com" --group --from-name "Dev Team" --from-icon "https://example.com/team.png" --user-token $TOKEN
 ```
 
-## Common Mistakes
+## 常见错误
 
-- Using a group ID without `--group` flag — the command treats it as a private chat ID.
-- Not providing `--pc-link` or `--pad-link` when the target platform needs a different URL — all clients will use the same link.
-- Providing an invalid URL for `--icon` — the card will render without an icon.
-- Forgetting that `title` and `link` are positional args, not options — passing them as flags will fail.
+- 使用群 ID 但未加 `--group` 标志 — 命令会将其视为私聊 ID。
+- 目标平台需要不同 URL 时未提供 `--pc-link` 或 `--pad-link` — 所有客户端将使用相同的链接。
+- 为 `--icon` 提供了无效的 URL — 卡片将以无图标方式渲染。
+- 忘记 `title` 和 `link` 是位置参数而非选项 — 以标志形式传递将失败。
 
-## Return Value
+## 返回值
 
-Returns the message ID of the sent message:
+返回已发送消息的消息 ID：
 
 ```json
 {

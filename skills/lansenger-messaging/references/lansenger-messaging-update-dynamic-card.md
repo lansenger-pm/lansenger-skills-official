@@ -1,24 +1,24 @@
 # lansenger message update-dynamic-card
 
-Update a previously sent dynamic app card message.
+更新先前发送的动态应用卡片消息。
 
-**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
-**Safety:** Always confirm the updated content with the user before modifying a sent card. Dynamic card updates change the visible content for all recipients who received the original card.
+**安全提醒：** 修改已发送卡片前务必与用户确认更新内容。动态卡片更新会改变所有收到原始卡片的收件人可见的内容。
 
-**Important:** This command only works on cards that were originally sent with `--dynamic` flag via `send-app-card`.
+**重要：** 此命令仅对通过 `send-app-card` 以 `--dynamic` 标志原始发送的卡片生效。
 
-## Parameters
+## 参数
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| msg_id | arg | yes | Message ID of the original dynamic card to update |
-| --last | flag | no | Mark this as the last update (card becomes static, no further updates allowed) |
-| --status-desc | option | no | Updated status description text |
-| --status-colour | option | no | Updated status colour (e.g., green, red, grey) |
-| --link | option | no | JSON list of updated link entries (name/URL pairs) |
+| msg_id | arg | 是 | 要更新的原始动态卡片的消息 ID |
+| --last | flag | 否 | 标记为最后一次更新（卡片变为静态，不允许进一步更新） |
+| --status-desc | option | 否 | 更新后的状态描述文本 |
+| --status-colour | option | 否 | 更新后的状态颜色（如 green, red, grey） |
+| --link | option | 否 | 更新后的链接条目 JSON 列表（name/URL 对） |
 
-## Examples
+## 示例
 
 ```bash
 lansenger message update-dynamic-card msg_abc123 --status-desc "Completed" --status-colour green
@@ -30,16 +30,16 @@ lansenger message update-dynamic-card msg_abc123 --link '[{"name":"View Result",
 lansenger message update-dynamic-card msg_abc123 --status-desc "In Review" --status-colour grey --link '[{"name":"Details","url":"https://app.example.com/details"},{"name":"History","url":"https://app.example.com/history"}]'
 ```
 
-## Common Mistakes
+## 常见错误
 
-- Trying to update a card that was not sent with `--dynamic` — only dynamic cards can be updated.
-- Using `--last` when you intend to update again later — after `--last`, no further updates are allowed.
-- Passing `--link` as a plain string instead of JSON — must be a valid JSON array.
-- Not saving the original msg_id from `send-app-card` — you need it to call this command.
+- 尝试更新未以 `--dynamic` 发送的卡片 — 只有动态卡片才能更新。
+- 计划稍后再次更新却使用了 `--last` — 使用 `--last` 之后不允许进一步更新。
+- 将 `--link` 作为普通字符串而非 JSON 传递 — 必须是有效的 JSON 数组。
+- 未保存 `send-app-card` 返回的原始 msg_id — 调用此命令时需要它。
 
-## Return Value
+## 返回值
 
-Returns confirmation of the update:
+返回更新确认信息：
 
 ```json
 {

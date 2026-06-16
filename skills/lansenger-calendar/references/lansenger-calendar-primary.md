@@ -1,37 +1,37 @@
 # lansenger calendar primary
 
-## Prerequisite
+## 前置条件
 
 ../lansenger-shared/SKILL.md
 
-## Description
+## 描述
 
-Fetch the primary calendar for a user. Returns the calendar ID, summary, description, permissions, and the user's role.
+获取用户的主日历。返回日历 ID、名称、描述、权限以及用户角色。
 
-## Command Examples
+## 命令示例
 
 ```bash
 lansenger calendar primary --user-token "ut_xxx" --user-id "uid_xxx"
 ```
 
-## Parameters
+## 参数
 
-| Parameter | Required | Description |
+| 参数 | 必填 | 描述 |
 |---|---|---|
-| --user-token | No | User token for authentication |
-| --user-id | No | User ID for authentication |
+| --user-token | 否 | 用于认证的用户令牌 |
+| --user-id | 否 | 用于认证的用户 ID |
 
-## Return Value
+## 返回值
 
 ```
-calendar_id    : string   - Primary calendar ID
-summary        : string   - Calendar title
-description    : string   - Calendar description
-permissions    : string   - Calendar permissions
-role           : string   - User's role on this calendar
+calendar_id    : string   - 主日历 ID
+summary        : string   - 日历标题
+description    : string   - 日历描述
+permissions    : string   - 日历权限
+role           : string   - 用户在此日历上的角色
 ```
 
-## Common Mistakes
+## 常见错误
 
-- Passing both `--user-token` and `--user-id` when only one is needed. Either a user token or a user ID is sufficient; provide whichever your application uses.
-- Expecting a list of calendars. This command returns a single primary calendar object, not a list.
+- 同时传递 `--user-token` 和 `--user-id`，但实际只需一个。用户令牌或用户 ID 二者取其一即可；提供您的应用所使用的那个即可。
+- 期望返回日历列表。此命令返回单个主日历对象，而非列表。

@@ -1,10 +1,11 @@
 ---
 name: lansenger-shared
-version: 1.4.0
+version: 1.4.1
 description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
+  cliHelp: "lansenger --help"
 ---
 
 # lansenger CLI 共享规则
@@ -275,6 +276,8 @@ lansenger chat list --as staff_001
 - 手动 `--user-token` 仍然可用，**优先级高于 `--as`**（同时传时 `--user-token` 生效）
 - 不想使用已持久化的 staff_id 时，直接传 `--user-token` 即可
 
+> **子 skill 编写规范**：各子 skill 的示例命令中，需要 userToken 时优先展示 `--as staff_xxx` 方式，将 `--user-token` 作为备选在注释中说明。
+
 ## 输出格式
 
 **CRITICAL — `--json/-j` 是全局选项，必须放在最前面（子命令之前），不能放在命令末尾。**
@@ -364,26 +367,6 @@ lansenger --version
 ## 技能核心配置
 
 > **推荐**：本技能优先使用 **Python SDK 和 CLI**，其他语言（Go、TypeScript）作为备选。
-
-### App/Bot 文件接口媒体类型
-
-本技能使用 **App/Bot 文件接口**，媒体类型为字符串：
-
-| 媒体类型 | 字符串值 |
-|----------|----------|
-| 文件 | `"file"` |
-| 视频 | `"video"` |
-| 图片 | `"image"` |
-| 音频 | `"audio"` |
-
-### 新增 API 参数
-
-| 命令/API | 新增参数 | 说明 |
-|----------|----------|------|
-| `calendar add-attendees` | `--op`, `--current-time` | 支持重复日程操作 |
-| `calendar delete-attendees` | `--op`, `--current-time` | 支持重复日程操作 |
-| `media download` | `--user-token` | 用户身份下载 |
-| `media upload-app` | `--context` | 上下文参数 |
 
 ## 能力索引
 

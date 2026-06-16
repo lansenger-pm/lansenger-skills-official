@@ -1,6 +1,6 @@
 ---
 name: lansenger-chat
-version: 1.2.1
+version: 1.2.2
 description: "蓝信聊天列表与消息历史：查看聊天列表（私聊+群聊）、拉取聊天消息记录。当用户需要查看聊天记录、浏览聊天列表时使用。"
 metadata:
   requires:
@@ -46,7 +46,7 @@ metadata:
 
 ### 时间参数
 
-时间参数使用 **微秒级 Unix 时间戳**（毫秒 × 1000），例如 `1700000000000000`。
+时间参数使用 **微秒级 Unix 时间戳**（毫秒 × 1000），例如 `1700000000000000`（≈ 2023-11-15）。
 
 **CRITICAL — 时间跨度不宜超过约1个月。超过1个月时 API 只返回最近的数据，更早消息丢失。需按月拆分查询。**
 
@@ -124,7 +124,7 @@ lansenger chat messages --staff-id staff123 --version "123456" --user-token "ut1
 lansenger chat messages --group-id group456 --start 1700000000000000 --end 1710000000000000 --sender-id staff789 --user-token "ut1"
 
 # JSON 输出（便于结构化解析）
-lansenger chat messages --staff-id staff123 --user-token "ut1" --json
+lansenger -j chat messages --staff-id staff123 --user-token "ut1"
 
 # --json 输出示例
 # [

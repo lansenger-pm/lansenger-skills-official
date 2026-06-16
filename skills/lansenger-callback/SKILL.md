@@ -1,6 +1,6 @@
 ---
 name: lansenger-callback
-version: 1.1.1
+version: 1.1.2
 description: "蓝信回调事件解析：解析加密/明文回调数据、AES解密、验证签名、查看事件类型映射。当用户需要处理蓝信 Webhook 回调、解析或解密事件数据时使用。"
 metadata:
   requires:
@@ -25,7 +25,7 @@ metadata:
 
 蓝信回调事件解析是纯数据侧操作——将 Webhook payload 解析为结构化事件对象。不涉及任何 HTTP 调用。
 
-### 事件类型分类（25种事件 × 13个类别）
+### 事件类型分类（25种事件 × 14个类别）
 
 | 类别 | 事件类型 |
 |------|---------|
@@ -85,7 +85,7 @@ lansenger callback parse-payload "ENCRYPTED_DATA" --encoding-key "key" --callbac
 lansenger callback parse-payload "ENCRYPTED_DATA" --encoding-key "key" --verify-sig --timestamp "1234567890" --nonce "abc" --signature "sig_value"
 
 # JSON 输出
-lansenger callback parse-payload '{"appId":"xxx","orgId":"xxx","events":[...]}' --json
+lansenger -j callback parse-payload '{"appId":"xxx","orgId":"xxx","events":[...]}'
 ```
 
 ### 解密回调数据
@@ -98,7 +98,7 @@ lansenger callback decrypt-payload "ENCRYPTED_DATA" --encoding-key "your_key"
 lansenger callback decrypt-payload "ENCRYPTED_DATA" --encoding-key "your_key" --known-app-id "your_app_id"
 
 # JSON 输出
-lansenger callback decrypt-payload "ENCRYPTED_DATA" --encoding-key "your_key" --json
+lansenger -j callback decrypt-payload "ENCRYPTED_DATA" --encoding-key "your_key"
 ```
 
 ### 验证签名
@@ -111,7 +111,7 @@ lansenger callback verify-signature "1234567890" "nonce_value" "signature_value"
 lansenger callback verify-signature "1234567890" "nonce_value" "signature_value" "encoding_key" --data-encrypt "encrypted_data_value" --callback-token "your_callback_token"
 
 # JSON 输出
-lansenger callback verify-signature "1234567890" "nonce_value" "signature_value" "encoding_key" --data-encrypt "encrypted_data_value" --json
+lansenger -j callback verify-signature "1234567890" "nonce_value" "signature_value" "encoding_key" --data-encrypt "encrypted_data_value"
 ```
 
 ### 查看事件类型映射
@@ -121,7 +121,7 @@ lansenger callback verify-signature "1234567890" "nonce_value" "signature_value"
 lansenger callback event-types
 
 # JSON 输出
-lansenger callback event-types --json
+lansenger -j callback event-types
 ```
 
 ## 参数说明

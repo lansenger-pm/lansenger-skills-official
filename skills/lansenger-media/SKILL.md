@@ -1,6 +1,6 @@
 ---
 name: lansenger-media
-version: 1.1.1
+version: 1.1.2
 description: "蓝信媒体文件管理：上传文件/图片/视频/音频、下载媒体文件、获取媒体路径。当用户需要上传附件、下载媒体、获取媒体URL时使用。"
 metadata:
   requires:
@@ -8,7 +8,7 @@ metadata:
   cliHelp: "lansenger media --help"
 ---
 
-# media (v1)
+# media (v1.1)
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
@@ -47,7 +47,7 @@ metadata:
 lansenger media upload /path/to/file.pdf --user-token "ut1"
 
 # JSON 输出
-lansenger media upload /path/to/file.pdf --user-token "ut1" --json
+lansenger -j media upload /path/to/file.pdf --user-token "ut1"
 ```
 
 ### 上传文件（App/Bot通道）
@@ -69,17 +69,17 @@ lansenger media upload-app /path/to/audio.mp3 --media-type audio --duration 30
 lansenger media upload-app /path/to/file.pdf --context '{"key":"value"}'
 
 # JSON 输出
-lansenger media upload-app /path/to/file.pdf --json
+lansenger -j media upload-app /path/to/file.pdf
 ```
 
 ### 下载媒体文件
 
 ```bash
 # 下载到 stdout（JSON 输出）
-lansenger media download media123 --json
+lansenger -j media download media123
 
 # 下载媒体文件（带 userToken，OpenAPI 4.5.2）
-lansenger media download media123 --user-token "ut1" --json
+lansenger -j media download media123 --user-token "ut1"
 ```
 
 ### 下载到本地文件

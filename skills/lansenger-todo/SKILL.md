@@ -1,6 +1,6 @@
 ---
 name: lansenger-todo
-version: 1.0.1
+version: 1.0.2
 description: "蓝信待办任务管理：创建、更新、查询、删除待办任务，管理执行人，查看状态统计。当用户需要创建/查询/管理待办任务时使用。"
 metadata:
   requires:
@@ -8,7 +8,7 @@ metadata:
   cliHelp: "lansenger todo --help"
 ---
 
-# todo (v1)
+# todo (v1.0)
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
@@ -118,7 +118,7 @@ lansenger todo list org123 --status 21,22
 lansenger todo list org123 --app-ids app1,app2
 
 # JSON 输出
-lansenger todo list org123 --json
+lansenger -j todo list org123
 ```
 
 ### 按来源ID查询

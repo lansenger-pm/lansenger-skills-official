@@ -1,6 +1,6 @@
 ---
 name: lansenger-oauth
-version: 1.5.0
+version: 1.5.1
 description: "蓝信OAuth2用户授权：构建授权URL、兑换授权码、刷新Token、获取用户信息、解析回调、验证State、本地回调服务器、自动刷新Token。当用户需要获取userToken或进行OAuth2授权流程时使用。"
 metadata:
   requires:
@@ -8,7 +8,7 @@ metadata:
   cliHelp: "lansenger oauth --help"
 ---
 
-# oauth (v1.2)
+# oauth (v1.5)
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
@@ -88,11 +88,11 @@ user_token = client.get_user_token()  # auto-refreshes
 
 ```bash
 # 刷新过期 userToken
-lansenger oauth refresh-token "RT_xxx" --json
+lansenger -j oauth refresh-token "RT_xxx"
 # 返回新的 userToken + 新 refreshToken（旧 refreshToken 立即失效！）
 
 # 批量脚本中的刷新模式
-NEW_TOKENS=$(lansenger oauth refresh-token "$REFRESH_TOKEN" --json)
+NEW_TOKENS=$(lansenger -j oauth refresh-token "$REFRESH_TOKEN")
 NEW_USER_TOKEN=$(echo "$NEW_TOKENS" | jq -r '.user_token')
 NEW_REFRESH_TOKEN=$(echo "$NEW_TOKENS" | jq -r '.refresh_token')
 ```
@@ -106,10 +106,10 @@ NEW_REFRESH_TOKEN=$(echo "$NEW_TOKENS" | jq -r '.refresh_token')
 ```bash
 # Agent 应自动执行以下两步，无需用户手动复制链接：
 # Step 1: 启动 local-callback（自动监听 localhost 回调）
-lansenger oauth local-callback --port 8765 --json
+lansenger -j oauth local-callback --port 8765
 
 # Step 2: 从 --json 输出中提取 authorize_url，自动在浏览器打开
-open "$(lansenger oauth local-callback --port 8765 --json | jq -r '.authorize_url')"
+open "$(lansenger -j oauth local-callback --port 8765 | jq -r '.authorize_url')"
 # macOS 用 open，Linux 用 xdg-open，Windows 用 start
 
 # 流程：
@@ -171,7 +171,7 @@ lansenger oauth exchange-code "AUTH_CODE_HERE"
 lansenger oauth exchange-code "AUTH_CODE_HERE" --redirect-uri "https://myapp.com/callback"
 
 # JSON 输出
-lansenger oauth exchange-code "AUTH_CODE_HERE" --json
+lansenger -j oauth exchange-code "AUTH_CODE_HERE"
 ```
 
 ### 刷新 Token
@@ -184,7 +184,7 @@ lansenger oauth refresh-token "REFRESH_TOKEN_HERE"
 lansenger oauth refresh-token "REFRESH_TOKEN_HERE" --scope "basic_userinfor"
 
 # JSON 输出
-lansenger oauth refresh-token "REFRESH_TOKEN_HERE" --json
+lansenger -j oauth refresh-token "REFRESH_TOKEN_HERE"
 ```
 
 ### 获取用户信息
@@ -194,7 +194,7 @@ lansenger oauth refresh-token "REFRESH_TOKEN_HERE" --json
 lansenger oauth user-info "USER_TOKEN_HERE"
 
 # JSON 输出
-lansenger oauth user-info "USER_TOKEN_HERE" --json
+lansenger -j oauth user-info "USER_TOKEN_HERE"
 ```
 
 ### 解析回调参数
@@ -224,7 +224,7 @@ lansenger oauth local-callback --port 9000
 lansenger oauth local-callback --no-exchange
 
 # JSON 输出
-lansenger oauth local-callback --json
+lansenger -j oauth local-callback
 
 # 自定义超时（默认120秒）
 lansenger oauth local-callback --timeout 300

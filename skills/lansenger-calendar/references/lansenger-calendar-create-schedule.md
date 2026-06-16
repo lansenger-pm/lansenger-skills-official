@@ -1,14 +1,14 @@
 # lansenger calendar create-schedule
 
-## Prerequisite
+## 前置条件
 
 ../lansenger-shared/SKILL.md
 
-## Description
+## 描述
 
-Create a new schedule (event) on a calendar. Supports timed and all-day events, recurrence, reminders, and attendees.
+在日历上创建新的日程（事件）。支持定时事件和全天事件、重复规则、提醒以及参与人。
 
-## Command Examples
+## 命令示例
 
 ```bash
 lansenger calendar create-schedule \
@@ -29,39 +29,39 @@ lansenger calendar create-schedule \
   --tz "UTC"
 ```
 
-## Parameters
+## 参数
 
-| Parameter | Required | Description |
+| 参数 | 必填 | 描述 |
 |---|---|---|
-| calendar_id | Yes (arg) | Calendar ID |
-| summary | Yes (arg) | Schedule title |
-| start_time | Yes (arg) | Start time as unix timestamp in seconds |
-| end_time | Yes (arg) | End time as unix timestamp in seconds |
-| attendees | Yes (arg) | JSON list of objects: [{"staffId":"xxx","attendeeFlag":"yes"}] |
-| --desc / -d | No | Schedule description |
-| --all-day | No | "yes" or "no" (default "no") |
-| --date | No | Date string for all-day events, e.g. "2026-01-01" |
-| --repeat | No | Repeat type: no, daily, weekly, monthly, yearly, work_day, custom (default "no") |
-| --reminder | No | Reminder type: "yes" or "no" (default "yes") |
-| --tz | No | Time zone, e.g. "Asia/Shanghai" (default "Asia/Shanghai") |
-| --user-token | No | User token for authentication |
-| --user-id | No | User ID for authentication |
+| calendar_id | 是（arg） | 日历 ID |
+| summary | 是（arg） | 日程标题 |
+| start_time | 是（arg） | 起始时间（Unix 秒级时间戳） |
+| end_time | 是（arg） | 结束时间（Unix 秒级时间戳） |
+| attendees | 是（arg） | 对象 JSON 列表：[{"staffId":"xxx","attendeeFlag":"yes"}] |
+| --desc / -d | 否 | 日程描述 |
+| --all-day | 否 | "yes" 或 "no"（默认 "no"） |
+| --date | 否 | 全天事件的日期字符串，如 "2026-01-01" |
+| --repeat | 否 | 重复类型：no, daily, weekly, monthly, yearly, work_day, custom（默认 "no"） |
+| --reminder | 否 | 提醒类型："yes" 或 "no"（默认 "yes"） |
+| --tz | 否 | 时区，如 "Asia/Shanghai"（默认 "Asia/Shanghai"） |
+| --user-token | 否 | 用于认证的用户令牌 |
+| --user-id | 否 | 用于认证的用户 ID |
 
-## Return Value
+## 返回值
 
 ```
-schedule_id    : string   - ID of the newly created schedule
+schedule_id    : string   - 新创建日程的 ID
 ```
 
-## IMPORTANT Notes
+## 重要注意事项
 
-- **Time format**: `start_time` and `end_time` are unix timestamps in **seconds**, not milliseconds. Divide millisecond timestamps by 1000 before passing them.
-- **All-day events**: When `--all-day` is "yes", you must provide `--date` and the timezone is automatically set to UTC regardless of the `--tz` value. The `start_time` and `end_time` arguments can be set to 0 for all-day events since the date field takes precedence.
-- **Attendees format**: The `attendees` argument for create-schedule uses a JSON list of **objects** with `{staffId, attendeeFlag}` fields. This is different from `add-attendees` and `delete-attendees`, which accept a plain JSON list of staff ID strings.
+- **时间格式**：`start_time` 和 `end_time` 是 Unix 时间戳，单位为**秒**而非毫秒。传入前请将毫秒时间戳除以 1000。
+- **全天事件**：当 `--all-day` 为 "yes" 时，您必须提供 `--date`，且无论 `--tz` 值为何，时区都会自动设置为 UTC。全天事件的 `start_time` 和 `end_time` 参数可设为 0，因为日期字段优先。
+- **参与人格式**：create-schedule 的 `attendees` 参数使用包含 `{staffId, attendeeFlag}` 字段的**对象** JSON 列表。这与 `add-attendees` 和 `delete-attendees` 不同，后者接受员工 ID 字符串的纯 JSON 列表。
 
-## Common Mistakes
+## 常见错误
 
-- Passing millisecond timestamps instead of seconds. Always use seconds.
-- Using all-day mode without providing `--date`. All-day events require a date string.
-- Passing attendee staff IDs as plain strings instead of objects. Create-schedule expects `[{"staffId":"xxx","attendeeFlag":"yes"}]`, not `["xxx"]`.
-- Setting a custom timezone when `--all-day` is "yes". All-day events always use UTC internally.
+- 传入毫秒时间戳而非秒。请始终使用秒。
+- 使用全天模式但未提供 `--date`。全天事件需要日期字符串。
+- 将参与人员工 ID 作为纯字符串而非对象传递。Create-schedule 期望 `[{"staffId":"xxx","attendeeFlag":"yes"}]`，而非 `["xxx"]`。
+- `--all-day` 为 "yes" 时设置了自定义时区。全天事件内部始终使用 UTC。

@@ -1,6 +1,6 @@
 ---
 name: lansenger-messaging
-version: 1.2.2
+version: 1.2.3
 description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
@@ -10,7 +10,7 @@ metadata:
 
 # messaging (v1.2)
 
-**本技能继承 `../lansenger-shared/SKILL.md` 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
+**本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
 **CRITICAL — 发消息前 MUST 向用户确认：1) 收件人（谁/哪个群） 2) 消息内容 3) 发送身份。禁止未经确认直接发消息。**
 
@@ -81,12 +81,21 @@ metadata:
 | | 群聊 |
 |---|---|
 | CLI命令 | `send-text --group`, `send-markdown --group`, etc. |
-| 发送身份 | 无userToken → Bot；有userToken → 用户本人 |
+| 发送身份 | 由 `--user-token` / `--sender-id` 决定（见下方说明） |
 | 接收人 | group_id (`--group`) |
 | 支持msgType | **全部** (text, formatText, oacard, appCard, linkCard, appArticles, verifyCard) |
 | @mention | ✓ — **仅text & formatText** |
 | 附件 | ✓ (text类型) |
 | 前置条件 | Bot/用户必须在群内 |
+
+**群聊发送身份规则（OpenAPI 4.6.2）**：`--user-token` 和 `--sender-id` 至少提供一个（App 有机器人能力时两者都可不传）。同时传时 `--user-token` 做认证、`--sender-id` 决定显示身份。
+
+| 传参 | 发送身份 |
+|------|---------|
+| 不传任何 | Bot（需 App 有机器人能力） |
+| 仅 `--user-token` | 用户本人 |
+| 仅 `--sender-id` | 以指定 staffId 身份（Bot 通道） |
+| 两者都传 | `--user-token` 认证 + `--sender-id` 显示身份 |
 
 **CRITICAL — 私聊中不存在群语境，绝对禁止在私聊中使用 @mention/reminder。@mention 只在群聊中有效，且仅限 text 和 formatText 类型。**
 
@@ -135,8 +144,8 @@ metadata:
 | `send-user-message` | 人→人私聊发消息（需userToken） | [`references/lansenger-messaging-send-user-message.md`](references/lansenger-messaging-send-user-message.md) |
 | `update-dynamic-card` | 更新动态卡片 | [`references/lansenger-messaging-update-dynamic-card.md`](references/lansenger-messaging-update-dynamic-card.md) |
 | `revoke` | 撤回消息 | [`references/lansenger-messaging-revoke.md`](references/lansenger-messaging-revoke.md) |
-| `query-groups` | 查询机器人可发消息的群列表 | — |
-| `send-reminder` | 对消息发送提醒（弹窗/SMS/电话） | — |
+| `query-groups` | 查询机器人可发消息的群列表 | 见下方「CLI 命令速查」→ `query-groups` |
+| `send-reminder` | 对消息发送提醒（弹窗/SMS/电话） | 见下方「CLI 命令速查」→ `send-reminder` |
 
 ## CLI 命令速查
 
@@ -213,7 +222,7 @@ lansenger message query-groups
 lansenger message query-groups --page 1 --size 50
 
 # JSON 输出
-lansenger message query-groups --json
+lansenger -j message query-groups
 ```
 
 ### 消息管理
@@ -255,7 +264,7 @@ lansenger message send-reminder msg123 --type 2 --user staff456 --user staff789
 lansenger message send-reminder msg123 --type 3 --user staff456
 
 # JSON 输出
-lansenger message send-reminder msg123 --type 1 --user staff456 --json
+lansenger -j message send-reminder msg123 --type 1 --user staff456
 ```
 
 ## 常见错误

@@ -1,27 +1,27 @@
 # lansenger message send-text
 
-Send a plain text message to a chat.
+向聊天发送纯文本消息。
 
-**Inherits** all rules from [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) (Shell discipline, Help-First, auth, permissions).
+**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
-**Safety:** Always confirm the recipient and message content with the user before sending. Do not send messages the user has not explicitly approved.
+**安全提醒：** 发送前务必与用户确认收件人和消息内容。请勿发送用户未明确批准的消息。
 
-## Parameters
+## 参数
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| chat_id | arg | yes | Target chat ID (user ID for private chat, or chat ID) |
-| content | arg | yes | Text content to send |
-| --file / -f | option | no | Path to a text file whose content is sent as the message body |
-| --group / -g | option | no | Send to a group chat (interprets chat_id as group ID) |
-| --mention-all | flag | no | Mention all members in the group |
-| --mention | option | no | List of user IDs to @mention (comma-separated) |
-| --media-type | option | no | Media type: video, image, audio, file (defaults to file if omitted, App/Bot interface) |
-| --cover-image | option | no | Cover image path (required when sending video with --file) |
-| --user-token | option | no | User token for user-token channel messaging |
-| --sender-id | option | no | Sender staff ID (required for some channels) |
+| chat_id | arg | 是 | 目标聊天 ID（私聊时为用户 ID，或聊天 ID） |
+| content | arg | 是 | 要发送的文本内容 |
+| --file / -f | option | 否 | 文本文件路径，其内容将作为消息正文发送 |
+| --group / -g | option | 否 | 发送到群聊（将 chat_id 视为群 ID） |
+| --mention-all | flag | 否 | @提及群内所有成员 |
+| --mention | option | 否 | 要 @提及的用户 ID 列表（逗号分隔） |
+| --media-type | option | 否 | 媒体类型：video, image, audio, file（若省略则默认为 file，App/Bot 接口） |
+| --cover-image | option | 否 | 封面图片路径（使用 --file 发送视频时必填） |
+| --user-token | option | 否 | 用户令牌。群聊中以用户身份发送（替代 `--sender-id`），私聊中切换 robot→用户身份 |
+| --sender-id | option | 否 | 发送者 staffId，用于群聊中指定消息显示身份。与 `--user-token` 至少提供一个（OpenAPI 4.6.2） |
 
-## Examples
+## 示例
 
 ```bash
 lansenger message send-text user_123 "Hello, this is a test message"
@@ -37,16 +37,16 @@ lansenger message send-text user_123 "" --file /path/to/message.txt
 lansenger message send-text user_123 "See this clip" --file /path/to/video.mp4 --media-type video --cover-image /path/to/cover.jpg
 ```
 
-## Common Mistakes
+## 常见错误
 
-- Using a group ID without `--group` flag — the command treats it as a private chat ID.
-- Passing `--mention` without `--group` — mentions only work in group chats.
-- Forgetting `--sender-id` when using channels that require it — the message will fail to send.
-- Using `--file` and a content argument simultaneously — the file content overrides the argument.
+- 使用群 ID 但未加 `--group` 标志 — 命令会将其视为私聊 ID。
+- 未在群聊中使用 `--mention` — @提及仅在群聊中有效。
+- 群聊中既未传 `--user-token` 也未传 `--sender-id` — OpenAPI 4.6.2 要求至少提供一个（除非 App 有机器人能力）。
+- 同时使用 `--file` 和 content 参数 — 文件内容会覆盖参数内容。
 
-## Return Value
+## 返回值
 
-Returns the message ID of the sent message:
+返回已发送消息的消息 ID：
 
 ```json
 {

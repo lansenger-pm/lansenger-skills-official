@@ -1,6 +1,6 @@
 ---
 name: lansenger-calendar
-version: 1.1.3
+version: 1.1.4
 description: "蓝信日历/日程（4.23）：主日历查询、日程CRUD、参会人管理、参会人元数据更新。注意：日历容器CRUD暂不开放，仅日程操作可用。涉及创建/修改日程必须先确认用户意图（新建 vs 编辑已有）。"
 metadata:
   requires:
@@ -8,7 +8,7 @@ metadata:
   cliHelp: "lansenger calendar --help"
 ---
 
-# calendar (4.23)
+# calendar (v1.1 — API 4.23)
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
@@ -17,6 +17,9 @@ metadata:
 | 用户意图 | 正确技能 | 原因 |
 |----------|----------|------|
 | OAuth2 获取 userToken | `lansenger-oauth` | 日历操作需要 userToken |
+| 发送日程提醒到群/私聊 | `lansenger-messaging` | 日历只管日程数据，不管消息发送 |
+| 查询参会人详细信息 | `lansenger-staff` | staff 管员工信息查询 |
+| 创建参会人待办任务 | `lansenger-todo` | todo 管理任务
 
 **CRITICAL — 日历容器CRUD（4.23.1-8）暂不开放，仅日程操作（4.23.9-18）可用。用户口语中的"日历"通常指"日程"，请自动将"查日历"映射为"查日程"。**
 
@@ -67,7 +70,7 @@ lansenger calendar primary
 
 ```bash
 # 基本创建
-lansenger calendar create-schedule calOpenId "项目周会" 1656468000 1656475200 '[{"staffId":"staff1","attendeeFlag":"yes"}]' --user-token "ut1"
+lansenger calendar create-schedule calOpenId "项目周会" 1656468000 1656475200 '[{"staffId":"staff1","attendeeFlag":"yes"}]' --user-token "ut1"  # 1656468000 ≈ 2022-06-29
 
 # 全天日程
 lansenger calendar create-schedule calOpenId "Company Holiday" 0 0 '[{"staffId":"staff1","attendeeFlag":"yes"}]' --all-day yes --date 2024-01-15 --user-token "ut1"
@@ -102,20 +105,20 @@ lansenger calendar update-schedule calOpenId schOpenId --summary "新标题" --u
 lansenger calendar update-schedule calOpenId schOpenId --desc "新描述" --user-token "ut1"
 
 # 修改重复日程仅当前这次
-lansenger calendar update-schedule calOpenId schOpenId --summary "新标题" --op modify_current --current-time 1656468000 --user-token "ut1"
+lansenger calendar update-schedule calOpenId schOpenId --summary "新标题" --op modify_current --current-time 1656468000 --user-token "ut1"  # 1656468000 ≈ 2022-06-29
 
 # 修改日程时间
 lansenger calendar update-schedule calOpenId schOpenId --start-time '{"time":"1656468000","date":"","timeZone":"Asia/Shanghai"}' --end-time '{"time":"1656475200","date":"","timeZone":"Asia/Shanghai"}' --user-token "ut1"
 
 # JSON 输出
-lansenger calendar update-schedule calOpenId schOpenId --summary "新标题" --user-token "ut1" --json
+lansenger -j calendar update-schedule calOpenId schOpenId --summary "新标题" --user-token "ut1"
 ```
 
 ### 查询日程列表（时间范围）
 
 ```bash
 # 注意：start_time/end_time 为秒级时间戳，时间范围 ≤ 42天
-lansenger calendar list-schedules calOpenId 1705276800 1707940800 --user-token "ut1"
+lansenger calendar list-schedules calOpenId 1705276800 1707940800 --user-token "ut1"  # 2024-01-15 ~ 2024-02-15
 ```
 
 ### 参会人管理
