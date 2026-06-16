@@ -1,6 +1,6 @@
 ---
 name: lansenger-calendar
-version: 1.1.4
+version: 1.2.0
 description: "蓝信日历/日程（4.23）：主日历查询、日程CRUD、参会人管理、参会人元数据更新。注意：日历容器CRUD暂不开放，仅日程操作可用。涉及创建/修改日程必须先确认用户意图（新建 vs 编辑已有）。"
 metadata:
   requires:
@@ -20,6 +20,8 @@ metadata:
 | 发送日程提醒到群/私聊 | `lansenger-messaging` | 日历只管日程数据，不管消息发送 |
 | 查询参会人详细信息 | `lansenger-staff` | staff 管员工信息查询 |
 | 创建参会人待办任务 | `lansenger-todo` | todo 管理任务
+
+**CRITICAL — 日历日程需要「蓝信应用 + 机器人能力」，个人机器人不可用。以 userToken 操作时可绕过机器人能力要求。** 详见 shared「身份能力矩阵」。
 
 **CRITICAL — 日历容器CRUD（4.23.1-8）暂不开放，仅日程操作（4.23.9-18）可用。用户口语中的"日历"通常指"日程"，请自动将"查日历"映射为"查日程"。**
 

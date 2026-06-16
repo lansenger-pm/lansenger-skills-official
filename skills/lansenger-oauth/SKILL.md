@@ -1,6 +1,6 @@
 ---
 name: lansenger-oauth
-version: 1.5.1
+version: 1.6.0
 description: "蓝信OAuth2用户授权：构建授权URL、兑换授权码、刷新Token、获取用户信息、解析回调、验证State、本地回调服务器、自动刷新Token。当用户需要获取userToken或进行OAuth2授权流程时使用。"
 metadata:
   requires:
@@ -11,6 +11,8 @@ metadata:
 # oauth (v1.5)
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
+
+**CRITICAL — OAuth2 仅组织级应用（蓝信应用/组织机器人）可用，个人机器人无法发起 OAuth2 授权。** 详见 shared「身份能力矩阵」。
 
 ## Reverse Handoff — 何时不用此技能
 

@@ -1,6 +1,6 @@
 ---
 name: lansenger-streaming
-version: 1.0.2
+version: 1.1.0
 description: "蓝信流式消息（AI Agent 实时推送）：创建流式消息会话、获取流式消息状态。当 AI Agent 需要实现打字式渐进输出时使用。"
 metadata:
   requires:
@@ -11,6 +11,8 @@ metadata:
 # streaming (v1.0)
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
+
+**CRITICAL — 流式消息需要「蓝信应用 + 机器人能力」，个人机器人不可用。** 详见 shared「身份能力矩阵」。
 
 ## Reverse Handoff — 何时不用此技能
 

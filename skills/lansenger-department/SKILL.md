@@ -1,6 +1,6 @@
 ---
 name: lansenger-department
-version: 1.0.2
+version: 1.1.0
 description: "蓝信部门/组织架构导航：部门详情、子部门列表、部门员工列表。当用户需要浏览组织架构、查看部门信息时使用。"
 metadata:
   requires:
@@ -21,7 +21,7 @@ metadata:
 
 ## 核心概念
 
-蓝信部门 API 提供组织架构导航能力：查看部门详情、获取子部门列表、查看部门下的员工。以机器人身份（appToken）即可调用，可选传 `--user-token`。
+蓝信部门 API 提供组织架构导航能力：查看部门详情、获取子部门列表、查看部门下的员工。仅组织级应用（appToken）可用，可选传 `--user-token`。个人机器人不可用。详见 shared「身份能力矩阵」。
 
 ### 根部门 ID
 

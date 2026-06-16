@@ -1,6 +1,6 @@
 ---
 name: lansenger-media
-version: 1.1.2
+version: 1.2.0
 description: "蓝信媒体文件管理：上传文件/图片/视频/音频、下载媒体文件、获取媒体路径。当用户需要上传附件、下载媒体、获取媒体URL时使用。"
 metadata:
   requires:
@@ -11,6 +11,8 @@ metadata:
 # media (v1.1)
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
+
+**CRITICAL — `upload-app` 仅自建应用可用（ISV 不支持）；个人机器人仅可用 `download/path`。** 详见 shared「身份能力矩阵」。
 
 ## Reverse Handoff — 何时不用此技能
 

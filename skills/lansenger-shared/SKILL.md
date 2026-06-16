@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.4.1
+version: 1.5.0
 description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
@@ -159,6 +159,36 @@ lansenger config clear --all
 | **个人机器人** | 蓝信桌面端 → 通讯录 → 智能机器人 → 个人机器人 → 点击 ℹ️ 图标（手机端不显示凭证） |
 | **蓝信应用** | 在蓝信开发者中心创建 — 可能需要组织管理员审批（地址因私有部署而异，请向客户索取） |
 | **组织机器人** | 在蓝信开发者中心创建 — 可能需要组织管理员审批（地址因私有部署而异，请向客户索取） |
+
+### 身份能力矩阵
+
+**CRITICAL — 三种身份类型的 API 可用性完全不同。Agent 在调用命令前 MUST 确认当前 profile 的身份类型能否执行该操作。**
+
+| 命令域 | 个人机器人 | 蓝信应用（自建） | 蓝信应用 + 机器人能力 | 关键说明 |
+|--------|:---:|:---:|:---:|------|
+| `message send-text` 等 L1 快捷命令 (bot私聊) | **Y** | N | **Y** | 个人机器人可发 bot 私聊；蓝信应用需开启机器人能力 |
+| `message send-account-message` (公号私聊) | N | **Y** | **Y** | 需要公号能力，个人机器人无 |
+| `message send-user-message` (人→人私聊) | N | N | **Y** | 需要 userToken + 机器人能力 |
+| `message send-text --group` (群聊) | N | N | **Y** | 需要机器人能力（`send-group-message` 同理） |
+| `message revoke` (撤回) | **Y** | **Y** | **Y** | 个人机器人可撤回自己发的消息 |
+| `group *` (群管理 V2) | N | N | **Y** | 全部群 API 需要机器人能力 |
+| `staff basic-info/detail/ancestors/id-mapping/org-extra-fields` | N | **Y** | **Y** | 仅组织级应用可调通讯录 |
+| `staff search` | N | N | N | 必须 userToken，任何身份无 userToken 均不可用 |
+| `staff org-info` | N | **Y** | **Y** | 仅组织级应用 |
+| `department *` | N | **Y** | **Y** | 仅组织级应用可浏览组织架构 |
+| `calendar *` (日历日程) | N | N | **Y** | 需机器人能力；以 userToken 操作时可绕过 |
+| `todo *` (待办) | N | **Y** | **Y** | 仅组织级应用 |
+| `chat list/messages` (拉取聊天记录) | N | **Y** | **Y** | 仅组织级应用 |
+| `media upload` | N | **Y** | **Y** | 通用上传需 userToken |
+| `media upload-app` | N | **Y** | **Y** | App/Bot 上传仅自建应用，ISV 不支持 |
+| `media download/path` | **Y** | **Y** | **Y** | 通用下载 |
+| `oauth *` (OAuth2 授权) | N | **Y** | **Y** | 仅组织级应用可发起 OAuth2 |
+| `streaming *` (流式消息) | N | N | **Y** | 需要机器人能力 |
+| `callback *` (回调解析) | N/A | N/A | N/A | 纯数据侧操作，无身份要求 |
+
+> **个人机器人总结**：能力极其有限，**只能发 bot 私聊消息和撤回**。不能查通讯录、不能管群、不能操作日历日程、不能发起 OAuth2 授权。
+>
+> **蓝信应用 vs 蓝信应用+机器人能力**：两者使用同一个 appID/appSecret。"机器人能力"是在蓝信开发者中心为自建应用开启的一项**功能开关**，开启后获得：bot 私聊通道、群聊通道、群管理 V2、日历日程、流式消息。**目前仅蓝信自建应用支持开启机器人能力，ISV 应用不支持。**
 
 ## 认证
 

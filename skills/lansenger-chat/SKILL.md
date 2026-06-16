@@ -1,6 +1,6 @@
 ---
 name: lansenger-chat
-version: 1.2.2
+version: 1.3.0
 description: "蓝信聊天列表与消息历史：查看聊天列表（私聊+群聊）、拉取聊天消息记录。当用户需要查看聊天记录、浏览聊天列表时使用。"
 metadata:
   requires:
@@ -20,7 +20,7 @@ metadata:
 | 查员工信息 | `lansenger-staff` | chat list 的 staff_infos 只含 staffId+姓名 |
 | OAuth2 获取 userToken | `lansenger-oauth` | 推荐使用 userToken 以获得用户视角数据 |
 
-**CRITICAL — 聊天读取需要 appToken，`--user-token` 可选但推荐传入。** 不传 userToken 时以机器人身份调用；传 userToken 时可以读到用户视角的聊天列表和消息内容（如 sender 为真实姓名）。
+**CRITICAL — 聊天读取仅组织级应用可用，个人机器人不可用。** 详见 shared「身份能力矩阵」。需要 appToken，`--user-token` 可选但推荐传入。不传 userToken 时以机器人身份调用；传 userToken 时可以读到用户视角的聊天列表和消息内容（如 sender 为真实姓名）。
 
 **CRITICAL — 消息查询时间跨度不宜超过约1个月。超过1个月时，API 只返回最近的数据，更早消息会丢失。需要按月拆分查询才能完整拉取历史数据（见下方"批量操作与限制说明"章节）。**
 

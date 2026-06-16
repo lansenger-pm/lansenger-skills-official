@@ -5,7 +5,7 @@
 AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python, Go, and TypeScript CLI, covering messaging, calendar, groups, contacts, departments, todos, streaming, callbacks, OAuth, and more.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.7.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.8.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## What are Skills?
 
