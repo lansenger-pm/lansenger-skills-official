@@ -169,8 +169,6 @@ lansenger config clear --all
 | `message send-text/markdown/file/...` (bot私聊) | **Y** | N | **Y** | 只有机器人身份才能发 bot 私聊；蓝信应用无机器人能力不可用 |
 | `message send-text --group` (群聊) | N* | N | **Y** | 个人机器人 API 层面支持但当前无进群功能；蓝信应用非机器人不可用 |
 | `message send-group-message` | N* | N | **Y** | 同上 |
-
-> \* **N*** = API 能力存在，但当前缺少进群功能导致不可用。后续进群功能上线后变为 Y。
 | `message send-account-message` (公号私聊) | N | **Y** | **Y** | 需要公号能力 |
 | `message send-user-message` (人→人私聊) | N | **Y** | **Y** | 需要 userToken + OAuth2 |
 | `message revoke` (撤回) | **Y** | **Y** | **Y** | 撤回自己发的消息 |
@@ -186,6 +184,8 @@ lansenger config clear --all
 | `oauth *` (OAuth2) | N | **Y** | **Y** | 仅组织级应用可发起 OAuth2 |
 | `streaming *` (流式消息) | N | **Y** | **Y** | 组织级应用均可 |
 | `callback *` (回调解析) | N/A | N/A | N/A | 纯数据侧操作，无身份要求 |
+
+> \* **N\*** = API 能力存在，但当前缺少进群功能导致不可用。后续进群功能上线后变为 Y。
 
 > **个人机器人总结**：能力极其有限——**只能收发消息和上传下载文件**。不能查通讯录、不能管群、不能操作日历日程、不能发起 OAuth2 授权。
 >
