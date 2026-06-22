@@ -17,6 +17,8 @@
 | --sender-id | option | 否* | 发送者 staffId。与 `--user-token` 至少提供一个。不传 user_token 时以指定 staffId 身份发送 |
 | --mention-all | flag | 否 | @提及所有群成员 |
 | --mention | option | 否 | 要 @提及的用户 ID 列表（逗号分隔） |
+
+> **CRITICAL**: 不要在消息内容中手动写 `@姓名`。蓝信 API 会根据 `--mention` 的 staffId 自动在消息前拼接 `@姓名`。
 | --outlines | option | 否 | 提纲/话题线索信息 |
 | --entry-id | option | 否 | 指定发送身份的入口 ID |
 

@@ -99,6 +99,8 @@ metadata:
 
 **CRITICAL — 私聊中不存在群语境，绝对禁止在私聊中使用 @mention/reminder。@mention 只在群聊中有效，且仅限 text 和 formatText 类型。**
 
+**CRITICAL — 不要在消息内容中手动写 `@姓名`！蓝信 API 会根据 `--mention` 传入的 staffId 自动拼接 @姓名到消息前面，Agent 只需传 staffId 即可。**
+
 ## 消息类型能力矩阵
 
 | msgType | Markdown | @mention | 附件 | 群聊 | 通道 |
@@ -187,7 +189,8 @@ lansenger message send-markdown group123 "**Bold**" --group
 lansenger message send-text group123 "Important!" --group --mention-all
 
 # Bot → 群 @指定人（仅text/formatText）
-lansenger message send-text group123 "@张三 please check" --group --mention staff456
+# CRITICAL: 不要在消息内容中写 @名字！蓝信 API 会根据 --mention 的 staffId 自动拼接 @姓名
+lansenger message send-text group123 "please check" --group --mention staff456
 
 # 用户 → 群（需userToken）
 lansenger message send-text group123 "I'll handle it" --group --user-token "ut1"

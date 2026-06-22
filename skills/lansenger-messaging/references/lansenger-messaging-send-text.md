@@ -16,6 +16,8 @@
 | --group / -g | option | 否 | 发送到群聊（将 chat_id 视为群 ID） |
 | --mention-all | flag | 否 | @提及群内所有成员 |
 | --mention | option | 否 | 要 @提及的用户 ID 列表（逗号分隔） |
+
+> **CRITICAL**: 不要在消息内容中手动写 `@姓名`。蓝信 API 会根据 `--mention` 的 staffId 自动在消息前拼接 `@姓名`。
 | --media-type | option | 否 | 媒体类型：video, image, audio, file（若省略则默认为 file，App/Bot 接口） |
 | --cover-image | option | 否 | 封面图片路径（使用 --file 发送视频时必填） |
 | --user-token | option | 否 | 用户令牌。群聊中以用户身份发送（替代 `--sender-id`），私聊中切换 robot→用户身份 |

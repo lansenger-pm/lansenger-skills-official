@@ -17,6 +17,8 @@
 | --group / -g | option | 否 | 发送到群聊（将 chat_id 视为群 ID） |
 | --mention-all | flag | 否 | @提及群内所有成员 |
 | --mention | option | 否 | 要 @提及的用户 ID 列表（逗号分隔） |
+
+> **CRITICAL**: 不要在消息内容中手动写 `@姓名`。蓝信 API 会根据 `--mention` 的 staffId 自动在消息前拼接 `@姓名`。
 | --user-token | option | 否 | 用户令牌。群聊中以用户身份发送（替代 `--sender-id`），私聊中切换 robot→用户身份 |
 | --sender-id | option | 否 | 发送者 staffId，用于群聊中指定消息显示身份。与 `--user-token` 至少提供一个（OpenAPI 4.6.2） |
 
@@ -27,7 +29,7 @@ lansenger message send-markdown user_123 "**Bold** and _italic_ text"
 
 lansenger message send-markdown grp_456 "## Heading\n- Item 1\n- Item 2" --group
 
-lansenger message send-markdown grp_456 "See @user_789" --group --mention user_789 --user-token $TOKEN
+lansenger message send-markdown grp_456 "See" --group --mention user_789 --user-token $TOKEN
 
 lansenger message send-markdown user_123 "```python\nprint('hello')\n```" --user-token $TOKEN --sender-id staff_001
 ```
