@@ -5,7 +5,7 @@
 Lansenger CLI 的 AI Agent Skills — 結構化 Markdown Skills 文件，適用於 Python、Go 及 TypeScript CLI，涵蓋訊息、行事曆、群組、聯絡人、部門、待辦事項、串流訊息、回呼事件、OAuth 等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.8.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.8.2-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## 甚麼是 Skills？
 

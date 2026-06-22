@@ -8,7 +8,7 @@ metadata:
   cliHelp: "lansenger calendar --help"
 ---
 
-# calendar (v1.1 — API 4.23)
+# calendar（API 4.23）
 
 **本技能继承 [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 的所有规则。** Shell 执行纪律、Help-First 原则、认证、权限处理等均在其定义，此处不复述。
 
