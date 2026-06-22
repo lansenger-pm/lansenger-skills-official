@@ -17,8 +17,11 @@
 | --group / -g | option | 否 | 发送到群聊（将 chat_id 视为群 ID） |
 | --mention-all | flag | 否 | @提及群内所有成员 |
 | --mention | option | 否 | 要 @提及的用户 ID 列表（逗号分隔） |
+| --mention-bot | option | 否 | 要 @提及的机器人 ID 列表（逗号分隔） |
 
-> **CRITICAL**: 不要在消息内容中手动写 `@姓名`。蓝信 API 会根据 `--mention` 的 staffId 自动在消息前拼接 `@姓名`。
+> **CRITICAL**: 不要在消息内容中手动写 `@姓名`。蓝信 API 会根据 `--mention` 的 staffId / `--mention-bot` 的 botId 自动在消息前拼接 `@名称`。
+
+| --ref-msg-id | option | 否 | 引用消息 openId，用于回复/引用上下文 |
 | --user-token | option | 否 | 用户令牌。群聊中以用户身份发送（替代 `--sender-id`），私聊中切换 robot→用户身份 |
 | --sender-id | option | 否 | 发送者 staffId，用于群聊中指定消息显示身份。与 `--user-token` 至少提供一个（OpenAPI 4.6.2） |
 

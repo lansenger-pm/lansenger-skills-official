@@ -152,6 +152,23 @@ lansenger config clear --profile "my-personal-bot"
 lansenger config clear --all
 ```
 
+**CRITICAL — Agent 修改持久化凭证时必须遵循以下 Profile 管理规则：**
+
+1. **先查后建**：修改凭证前，必须先 `lansenger config list-profiles` 检查是否已有与目标 AppID 相同的 profile
+2. **有则复用**：如果已存在相同 AppID 的 profile，直接复用该 profile（通过 `--profile` 指定），**绝不修改已有凭证**
+3. **无则新建**：如果不存在，才创建新 profile（建议以应用名/机器人名命名）
+4. **不修改已有**：不要修改、覆盖、清除已有 profile 的凭证，因为这可能影响其他 Agent 或用户的正常使用
+
+```bash
+# 正确的 profile 管理流程
+# Step 1: 先查询已有 profile
+lansenger config list-profiles
+# Step 2: 如果 AppID 已存在对应 profile → 直接复用它
+lansenger staff search --profile "existing-profile" ...
+# Step 3: 如果不存在 → 创建新 profile
+lansenger config set --profile "new-app-name"
+```
+
 ### 获取凭证
 
 | Bot 类型 | 如何获取 appID + appSecret |

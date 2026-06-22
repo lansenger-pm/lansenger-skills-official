@@ -84,7 +84,7 @@ metadata:
 | 发送身份 | 由 `--user-token` / `--sender-id` 决定（见下方说明） |
 | 接收人 | group_id (`--group`) |
 | 支持msgType | **全部** (text, formatText, oacard, appCard, linkCard, appArticles, verifyCard) |
-| @mention | ✓ — **仅text & formatText** |
+| @mention | ✓ — **仅text & formatText**（`--mention` @人，`--mention-bot` @bot） |
 | 附件 | ✓ (text类型) |
 | 前置条件 | Bot/用户必须在群内 |
 
@@ -99,7 +99,9 @@ metadata:
 
 **CRITICAL — 私聊中不存在群语境，绝对禁止在私聊中使用 @mention/reminder。@mention 只在群聊中有效，且仅限 text 和 formatText 类型。**
 
-**CRITICAL — 不要在消息内容中手动写 `@姓名`！蓝信 API 会根据 `--mention` 传入的 staffId 自动拼接 @姓名到消息前面，Agent 只需传 staffId 即可。**
+**CRITICAL — 不要在消息内容中手动写 `@姓名`！蓝信 API 会根据 `--mention` 传入的 staffId / `--mention-bot` 传入的 botId 自动拼接 @名称到消息前面，Agent 只需传 ID 即可。**
+
+**TIP — `--ref-msg-id`**：发送消息时可传入引用消息的 openId，实现回复/引用上下文。可用于 `send-text`、`send-markdown`、`send-group-message`。
 
 ## 消息类型能力矩阵
 
@@ -221,8 +223,8 @@ lansenger message send-app-articles staff123 '{"title":"News","url":"https://...
 # 查询机器人可发消息的群列表
 lansenger message query-groups
 
-# 分页查询
-lansenger message query-groups --page 1 --size 50
+# 分页查询（--page 从 0 开始）
+lansenger message query-groups --page 0 --size 50
 
 # JSON 输出
 lansenger -j message query-groups
