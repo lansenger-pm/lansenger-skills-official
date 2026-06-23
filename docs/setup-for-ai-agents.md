@@ -143,19 +143,22 @@ lansenger health check --profile "NAME"
 
 ### 6b — 配置 OAuth2 回调地址
 
-先确认 `redirect_uri` 已配置：
+问用户：
+
+> 你的 OAuth2 回调地址（`redirect_uri`）想在本地还是用已配置的可信域名？
+>
+> - **本地回调（推荐）**：用 `http://localhost:8765`，CLI 自动启动本地服务器接收回调，完全自动化。但需在开发者中心把此地址加入可信域名（约 10 分钟生效）。
+> - **已有可信域名**：用你已在开发者中心配置好的域名（如 `https://myapp.com/callback`）。授权后需手动从浏览器地址栏复制 `code` 参数。
+
+根据用户选择设置 `redirect_uri`：
 
 ```bash
-lansenger config show --profile "NAME"
-```
-
-如果没有 `redirect_uri`，设置默认值：
-
-```bash
+# 本地回调
 lansenger config set --profile "NAME" redirect_uri http://localhost:8765
-```
 
-> `http://localhost:8765` 需在蓝信开发者中心配置为可信域名（含协议头和端口），约 10 分钟生效。
+# 或已有可信域名
+lansenger config set --profile "NAME" redirect_uri REDIRECT_URI
+```
 
 私有部署用户还需配置 `passport_url`（不同于 `api_gateway_url`）：
 
@@ -165,18 +168,18 @@ lansenger config set --profile "NAME" passport_url PASSPORT_URL
 
 ### 6c — 发起 OAuth2 授权
 
-**CRITICAL — 必须在后台执行**，因为 `local-callback` 会阻塞等待回调。如果在同一终端前台执行，会阻塞工具调用，导致无法获取 URL 去打开浏览器。
+根据 6b 的选择走对应的流程：
 
-两步操作，两步在不同终端/后台执行：
+#### 方式一：本地回调（`redirect_uri == http://localhost:8765`，推荐）
 
-**第一步 — 后台启动 local-callback 并获取授权 URL：**
+**CRITICAL — 必须在后台执行**，`local-callback` 会阻塞等待回调。
 
 ```bash
 # 后台启动，输出重定向到临时文件（用于后续读取）
 lansenger -j oauth local-callback --port 8765 --profile "NAME" > /tmp/lansenger_oauth_result.json 2>&1 &
 ```
 
-**不要等它完成** — 命令会阻塞到用户授权成功。立即读取输出提取 URL：
+**不要等它完成** — 立即读取输出提取 URL：
 
 ```bash
 # 等待少量时间让 JSON 输出刷出
@@ -185,28 +188,49 @@ sleep 1
 AUTH_URL=$(grep -o '"authorize_url":"[^"]*"' /tmp/lansenger_oauth_result.json | cut -d'"' -f4)
 ```
 
-将 `AUTH_URL` 以 **Markdown 自动链接** 形式呈现给用户：`<AUTH_URL>`。角度括号保留 URL 原样并渲染为可点击链接。
+将 `AUTH_URL` 以 **Markdown 自动链接** 形式呈现给用户：`<AUTH_URL>`。
 
-**第二步 — 打开浏览器：**
-
-Agent 应自动调用 `open` 命令在浏览器中打开授权 URL：
+Agent 自动打开浏览器：
 
 ```bash
 # macOS
 open "$AUTH_URL"
-
 # Linux
 xdg-open "$AUTH_URL"
 ```
 
-> Agent 的沙箱浏览器可以正常打开授权页面 — 用户在浏览器中扫码授权后，蓝信会重定向到 `http://localhost:8765`，本地回调服务器自动接收并兑换 token。
-
-**等待用户确认已完成授权**。用户扫码授权后，`local-callback` 会自动完成 token 兑换。Agent 可检查后台进程是否已退出：
+**等待用户确认已完成授权**。用户扫码授权后，`local-callback` 自动完成 token 兑换。检查后台进程是否已退出：
 
 ```bash
-# 检查 lansenger 进程是否还在运行（运行中=等待授权，已退出=完成或超时）
 pgrep -f "lansenger.*local-callback"
+# 无输出 = 已完成或超时
 ```
+
+完成后跳到 6d。
+
+#### 方式二：手动 code 兑换（有已有可信域名时）
+
+Step 1 — 构建授权 URL：
+
+```bash
+lansenger -j oauth authorize-url --profile "NAME"
+```
+
+提取 `authorize_url`，以 Markdown 自动链接形式呈现给用户：`<AUTH_URL>`。Agent 自动打开浏览器。
+
+Step 2 — **等待用户提供 code**：
+
+用户授权后，浏览器会重定向到 `redirect_uri?code=XXX&state=YYY`。让用户从地址栏复制完整的 `code` 参数值（不含 &state= 部分）发给你。
+
+> 如果 redirect_uri 对应的页面不存在导致 404，URL 中的 `code` 参数不会丢失，用户仍可从地址栏复制。
+
+Step 3 — 兑换 token：
+
+```bash
+lansenger -j oauth exchange-code "CODE" --profile "NAME"
+```
+
+成功 → 继续 6d。失败 → 授权码有效期仅 5 分钟，重新执行方式二。
 
 ### 6d — 验证 OAuth2 状态
 
