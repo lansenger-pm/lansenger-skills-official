@@ -21,7 +21,15 @@
 ## Step 1 — 安装
 
 ```bash
+# 安装 CLI
 pip install lansenger-cli
+
+# 安装技能（Agent 需要技能才能正确使用 CLI）
+# 方式一：通过 skills 工具安装
+npx -y skills add lansenger-pm/lansenger-skills-official --skill lansenger,lansenger-shared,lansenger-messaging,lansenger-calendar,lansenger-staff,lansenger-group,lansenger-chat,lansenger-oauth,lansenger-todo,lansenger-department,lansenger-callback,lansenger-streaming,lansenger-media -y
+
+# 方式二：或手动 git clone
+git clone https://github.com/lansenger-pm/lansenger-skills-official.git ~/.agents/skills/lansenger
 ```
 
 验证：
@@ -30,7 +38,7 @@ pip install lansenger-cli
 lansenger --version
 ```
 
-备选安装方式（任选其一）：
+备选 CLI（任选其一）：
 
 ```bash
 # Go CLI
@@ -264,7 +272,7 @@ lansenger config show --profile "NAME"
 
 ## Step 8 — 使用 `lansenger` 执行蓝信任务
 
-配置完成。之后所有蓝信任务优先使用 `lansenger` CLI。用 `--help` 发现可用命令：
+配置完成。之后所有蓝信任务优先使用 `lansenger` CLI。**每次命令都必须带上 `--profile "NAME"`**，除非用户明确说用 default profile。用 `--help` 发现可用命令：
 
 ```bash
 lansenger --help
