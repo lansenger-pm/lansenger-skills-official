@@ -165,20 +165,48 @@ lansenger config set --profile "NAME" passport_url PASSPORT_URL
 
 ### 6c — 发起 OAuth2 授权
 
+**CRITICAL — 必须在后台执行**，因为 `local-callback` 会阻塞等待回调。如果在同一终端前台执行，会阻塞工具调用，导致无法获取 URL 去打开浏览器。
+
+两步操作，两步在不同终端/后台执行：
+
+**第一步 — 后台启动 local-callback 并获取授权 URL：**
+
 ```bash
-lansenger oauth authorize --profile "NAME"
+# 后台启动，输出重定向到临时文件（用于后续读取）
+lansenger -j oauth local-callback --port 8765 --profile "NAME" > /tmp/lansenger_oauth_result.json 2>&1 &
 ```
 
-CLI 会：
-1. 在终端输出授权 URL
-2. 启动本地回调服务器（`http://localhost:8765`）
-3. 自动用浏览器打开授权页面
+**不要等它完成** — 命令会阻塞到用户授权成功。立即读取输出提取 URL：
 
-将授权 URL 以 **Markdown 自动链接** 形式呈现给用户：`<URL>`。角度括号保留 URL 原样并渲染为可点击链接。
+```bash
+# 等待少量时间让 JSON 输出刷出
+sleep 1
+# 提取授权 URL
+AUTH_URL=$(grep -o '"authorize_url":"[^"]*"' /tmp/lansenger_oauth_result.json | cut -d'"' -f4)
+```
 
-> **不要在 Agent 自己的沙箱浏览器中打开 URL** — Agent 的浏览器无法完成用户授权。
+将 `AUTH_URL` 以 **Markdown 自动链接** 形式呈现给用户：`<AUTH_URL>`。角度括号保留 URL 原样并渲染为可点击链接。
 
-**等待用户确认已完成授权**。不要提前执行下一步 — 用户还没点击，会阻塞直到超时。
+**第二步 — 打开浏览器：**
+
+Agent 应自动调用 `open` 命令在浏览器中打开授权 URL：
+
+```bash
+# macOS
+open "$AUTH_URL"
+
+# Linux
+xdg-open "$AUTH_URL"
+```
+
+> Agent 的沙箱浏览器可以正常打开授权页面 — 用户在浏览器中扫码授权后，蓝信会重定向到 `http://localhost:8765`，本地回调服务器自动接收并兑换 token。
+
+**等待用户确认已完成授权**。用户扫码授权后，`local-callback` 会自动完成 token 兑换。Agent 可检查后台进程是否已退出：
+
+```bash
+# 检查 lansenger 进程是否还在运行（运行中=等待授权，已退出=完成或超时）
+pgrep -f "lansenger.*local-callback"
+```
 
 ### 6d — 验证 OAuth2 状态
 
