@@ -222,7 +222,7 @@ Step 2 — **等待用户提供 code**：
 
 用户授权后，浏览器会重定向到 `redirect_uri?code=XXX&state=YYY`。让用户从地址栏复制完整的 `code` 参数值（不含 &state= 部分）发给你。
 
-> 如果 redirect_uri 对应的页面不存在导致 404，URL 中的 `code` 参数不会丢失，用户仍可从地址栏复制。
+> **redirect_uri 必须在开发者中心的可信域名列表中**，否则授权会直接失败（无法获取 code）。如果用户不确定当前的 redirect_uri 是否已加入可信域名，让他们先确认或联系组织管理员。
 
 Step 3 — 兑换 token：
 
