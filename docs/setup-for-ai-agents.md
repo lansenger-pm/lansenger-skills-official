@@ -25,11 +25,7 @@
 pip install lansenger-cli
 
 # 安装技能（Agent 需要技能才能正确使用 CLI）
-# 方式一：通过 skills 工具安装
-npx -y skills add lansenger-pm/lansenger-skills-official --skill lansenger,lansenger-shared,lansenger-messaging,lansenger-calendar,lansenger-staff,lansenger-group,lansenger-chat,lansenger-oauth,lansenger-todo,lansenger-department,lansenger-callback,lansenger-streaming,lansenger-media -y
-
-# 方式二：或手动 git clone
-git clone https://github.com/lansenger-pm/lansenger-skills-official.git ~/.agents/skills/lansenger
+npx -y skills add lansenger-pm/lansenger-skills-official -y
 ```
 
 验证：
