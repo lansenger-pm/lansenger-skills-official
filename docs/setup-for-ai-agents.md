@@ -289,4 +289,4 @@ lansenger staff --help
 | 撤消息 | `lansenger message revoke <msg_id> --profile NAME` |
 | 查聊天列表 | `lansenger chat list --user-token <token> --profile NAME` |
 
-> **身份能力提醒**：不是所有命令对所有身份类型都可用。遇到权限错误时，先查 [身份能力矩阵](../skills/lansenger-shared/SKILL.md#身份能力矩阵)。
+> **身份能力提醒**：不是所有命令对所有身份类型都可用。遇到权限错误时，参考 `lansenger-shared` 技能中的「身份能力矩阵」。
