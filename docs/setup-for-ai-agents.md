@@ -112,15 +112,15 @@ lansenger config show --profile "NAME"
 
 ## Step 5 — 验证凭证
 
+用一个轻量命令触发 appToken 获取并验证凭证：
+
 ```bash
-lansenger config show --profile "NAME"
+lansenger health check --profile "NAME"
 ```
 
-检查输出：
-- `app_id` 不为空
-- `app_secret` 显示为 `***`（脱敏）
-- `app_token` 存在 → 凭证有效，继续 Step 6
-- `app_token` 不存在 → **覆盖停止规则**。让用户重新确认 appID 和 appSecret 是否正确
+- 成功 → 凭证有效，继续 Step 6
+- 认证错误 → **覆盖停止规则**。让用户重新确认 appID 和 appSecret 是否正确
+- 网络/超时错误 → **覆盖停止规则**。确认 `api_gateway_url` 是否正确
 
 ---
 
