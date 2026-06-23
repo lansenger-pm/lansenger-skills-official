@@ -110,7 +110,7 @@ lansenger config show --profile "NAME"
 
 ---
 
-## Step 5 — 验证连通性
+## Step 5 — 验证凭证
 
 ```bash
 lansenger config show --profile "NAME"
@@ -119,22 +119,8 @@ lansenger config show --profile "NAME"
 检查输出：
 - `app_id` 不为空
 - `app_secret` 显示为 `***`（脱敏）
-- 私有部署时 `api_gateway_url` 正确
-
-再用一个简单命令验证凭证可用：
-
-```bash
-# 有机器人能力时（personal-bot / org-app-bot）
-lansenger message query-groups --profile "NAME"
-
-# 无机器人能力时（org-app）
-lansenger staff search --profile "NAME" --keyword "test"
-```
-
-- 成功 → 继续 Step 6
-- 返回认证错误 → **覆盖停止规则**。让用户重新确认 appID 和 appSecret 是否正确
-- 返回网络/超时错误 → **覆盖停止规则**。私有部署用户需确认 `api_gateway_url` 是否正确；公有云用户检查网络
-- 其他错误 → 停止，将错误呈现给用户
+- `app_token` 存在 → 凭证有效，继续 Step 6
+- `app_token` 不存在 → **覆盖停止规则**。让用户重新确认 appID 和 appSecret 是否正确
 
 ---
 
