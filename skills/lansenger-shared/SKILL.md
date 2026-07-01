@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.5.1
+version: 1.6.0
 description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
@@ -22,6 +22,7 @@ lansenger CLI 是对蓝信 OpenAPI 的命令行封装。每条命令对应一个
 - **身份模型**：两级 Token 体系 — `appToken`（应用/机器人身份）+ `userToken`（个人用户身份，可选）
 - **凭证存储**：所有凭证保存在 `~/.lansenger/sdk_state.json`（0600 权限），按 profile 隔离，支持多用户 token 存储
 - **多用户模式（v0.10.15+）**：`--as <staff_id>` 全局标志自动加载并刷新该用户的 userToken，无需每次手动传 `--user-token`
+- **External Token 模式（v0.10.17+）**：通过 `--app-token` 和 `--user-token` 全局参数直接传入 token，无需配置凭证文件，适用于集成场景
 
 理解这个模型有助于排查问题：命令失败 → 先检查身份是否正确（该不该带 userToken），再检查凭证是否有效（health check）。
 
@@ -201,6 +202,9 @@ lansenger config set --profile "new-app-name"
 | `oauth *` (OAuth2) | N | **Y** | **Y** | 仅组织级应用可发起 OAuth2 |
 | `streaming *` (流式消息) | N | **Y** | **Y** | 组织级应用均可 |
 | `callback *` (回调解析) | N/A | N/A | N/A | 纯数据侧操作，无身份要求 |
+| `bot-command *` (机器人指令) | **Y** | **Y** | **Y** | 管理机器人指令（4.37） |
+| `personal-app *` (个人应用) | N | **Y** | **Y** | 管理个人应用（4.38），需 userToken |
+| `message approve-card` (审批卡片) | **Y** | **Y** | **Y** | 发送审批卡片（4.6.4.13） |
 
 > **个人机器人总结**：**能收发消息（含群聊）、上传下载文件**。不能查通讯录、不能管群（群管理）、不能操作日历日程、不能发起 OAuth2 授权。
 >
@@ -278,12 +282,35 @@ lansenger calendar primary --user-token "userToken123"
 | 不传（默认） | app/bot | 机器人发消息、管群组等 — **大部分场景都是这个** |
 | `--as <staff_id>` | 指定用户 | 需以用户身份操作（日历、查聊天、员工搜索等），自动加载已持久化的 token |
 | `--user-token <token>` | 手动指定用户 | 临时以用户身份操作，**优先级高于 `--as`** |
+| `--app-token <token>` + `--user-token <token>` | External模式 | 集成方直接传入 token，不使用凭证文件，适用于第三方系统集成 |
 
 - 机器人**以自身视角访问资源** — 需传 `--as staff_id` 获取用户视角（如日历、完整聊天详情）
 - 机器人**无法代表用户操作** — 发消息以应用名义发送
 - 机器人只需 appID + appSecret，无需 OAuth2 授权
 - 用户需要 OAuth2 授权获取 userToken（参见 `../lansenger-oauth/SKILL.md`）
 - **多用户场景**：每个 staff_id 独立存储 token，用 `--as` 切换即可
+- **External Token 模式**：通过 `--app-token` 和 `--user-token` 全局参数直接传入 token，CLI 不管理 token 生命周期，适用于集成场景
+
+### External Token 模式（v0.10.17+）
+
+**适用于第三方系统集成场景**：集成方自行管理 token 获取和刷新，通过命令行参数直接传入。
+
+```bash
+# External模式：直接传入app_token，无需配置凭证文件
+lansenger --app-token "xxx" message send-text staff123 "Hello"
+
+# External模式：同时传入app_token和user_token
+lansenger --app-token "xxx" --user-token "yyy" calendar primary
+
+# External模式下，--profile参数被忽略（不读取凭证文件）
+lansenger --app-token "xxx" --profile "default" message send-text staff123 "Hello"
+```
+
+**注意事项**：
+- External 模式下，CLI 不会自动刷新 token，集成方需自行管理 token 生命周期
+- `--app-token` 是开启 External 模式的开关，只要提供了 `--app-token`，就进入 External 模式
+- `--user-token` 在 External 模式下是可选的，根据具体 API 是否需要决定是否传入
+- External 模式下，`--as` 参数无效（不读取持久化的 userToken）
 
 ### 权限不足处理
 
@@ -455,7 +482,7 @@ lansenger --version
 
 | 域 | Skill | 说明 |
 |----|-------|------|
-| 消息策略 | `../lansenger-messaging/SKILL.md` | 4种消息通道选择、消息类型矩阵、@mention规则 |
+| 消息策略 | `../lansenger-messaging/SKILL.md` | 4种消息通道选择、消息类型矩阵、@mention规则、审批卡片 |
 | 聊天读取 | `../lansenger-chat/SKILL.md` | 查看聊天列表、拉取聊天消息 |
 | 群组管理 | `../lansenger-group/SKILL.md` | 创建群、群信息、群成员、群列表 |
 | 通讯录/员工 | `../lansenger-staff/SKILL.md` | 员工信息查询、搜索、ID映射 |
@@ -466,3 +493,6 @@ lansenger --version
 | 流式消息 | `../lansenger-streaming/SKILL.md` | AI Agent 实时消息推送 |
 | 回调事件 | `../lansenger-callback/SKILL.md` | Webhook 事件解析、AES解密、签名验证 |
 | 媒体文件 | `../lansenger-media/SKILL.md` | 上传/下载文件、图片、视频、音频 |
+| 机器人指令 | `../lansenger-bot-command/SKILL.md` | 管理机器人指令（4.37） |
+| 个人应用 | `../lansenger-personal-app/SKILL.md` | 管理个人应用/机器人（4.38） |
+| External模式 | `../lansenger-external/SKILL.md` | 显式传入app_token/user_token的集成模式 |

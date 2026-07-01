@@ -1,7 +1,7 @@
 ---
 name: lansenger
-version: 1.8.2
-description: "蓝信 CLI 技能套件 — 使用 lansenger CLI 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、OAuth2 认证、文件上传下载。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询等功能时加载此技能。"
+version: 1.9.0
+description: "蓝信 CLI 技能套件 — 使用 lansenger CLI 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、OAuth2 认证、文件上传下载、机器人指令、个人应用。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询等功能时加载此技能。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -79,7 +79,7 @@ lansenger config show
 
 | 用户意图 | 加载技能 | 说明 |
 |----------|----------|------|
-| 发文字/文件/图片/视频/卡片消息 | `lansenger-messaging` | 私聊+群聊，支持多种消息类型 |
+| 发文字/文件/图片/视频/卡片消息 | `lansenger-messaging` | 私聊+群聊，支持多种消息类型，含审批卡片 |
 | 查看聊天列表、拉取消息记录 | `lansenger-chat` | 私聊+群聊聊天记录 |
 | 创建/解散群、管理群成员 | `lansenger-group` | 群组生命周期管理 |
 | 查员工信息、通讯录搜索 | `lansenger-staff` | ID 映射、组织扩展字段 |
@@ -90,6 +90,10 @@ lansenger config show
 | 上传/下载文件、图片、视频 | `lansenger-media` | 媒体文件上传下载 |
 | 接收蓝信 Webhook 回调 | `lansenger-callback` | 事件解析、AES解密 |
 | AI Agent 实时推送消息 | `lansenger-streaming` | SSE 流式消息 |
+| 管理机器人指令 | `lansenger-bot-command` | 创建/查询/删除机器人指令（4.37） |
+| 管理个人应用/机器人 | `lansenger-personal-app` | 创建/更新/查询/删除个人应用（4.38） |
+
+> **External Token模式**：如需显式传入app_token和user_token的集成模式，请使用独立项目 [lansenger-skills-external](file:///Users/lanxin_pm/Documents/lansenger-skills-external)。
 
 **注意**：`lansenger-shared` 会被所有子技能自动加载，包含认证、配置、安全等通用规则，不需要手动加载。
 

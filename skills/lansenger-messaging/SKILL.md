@@ -1,7 +1,7 @@
 ---
 name: lansenger-messaging
-version: 1.2.5
-description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
+version: 1.3.0
+description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles/approveCard），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -114,6 +114,7 @@ metadata:
 | appCard | ✗(div) | ✗ | ✗ | ✓ | 全部 |
 | linkCard | ✗ | ✗ | ✗ | ✓ | 全部 |
 | verifyCard | ✗ | ✗ | ✗ | ✓ | 全部 |
+| approveCard | ✓ | ✓(群聊) | ✗ | ✓ | 全部 |
 
 **CRITICAL — 视频消息必须同时提供视频文件和封面图片两个 mediaId。mediaIds 数组长度必须为2：[视频mediaId, 封面图片mediaId]。其他类型仅支持单个 mediaId。**
 
@@ -150,6 +151,8 @@ metadata:
 | `revoke` | 撤回消息 | [`references/lansenger-messaging-revoke.md`](references/lansenger-messaging-revoke.md) |
 | `query-groups` | 查询机器人可发消息的群列表 | 见下方「CLI 命令速查」→ `query-groups` |
 | `send-reminder` | 对消息发送提醒（弹窗/SMS/电话） | 见下方「CLI 命令速查」→ `send-reminder` |
+| `approve-card` | 发送审批卡片（4.6.4.13） | 见下方「审批卡片」章节 |
+| `update-approve-card` | 更新审批卡片状态（4.6.4.12） | 见下方「审批卡片」章节 |
 
 ## CLI 命令速查
 
@@ -287,11 +290,86 @@ lansenger -j message send-reminder msg123 --type 1 --user staff456
 | 私聊中使用 send-reminder | reminder 只在群聊中有效 — 私聊无群语境 |
 | 发视频消息只传一个 mediaId | 视频消息 **必须** 用 `--cover-image` 提供封面图片；CLI 会自动上传封面并构造 `[视频mediaId, 封面mediaId]` |
 
+## 审批卡片（4.6.4.13）
+
+审批卡片（approveCard）是一种特殊的卡片类型，支持以下高级特性：
+- @mention/reminder（群聊中支持）
+- 按钮组（支持回调、跳转链接）
+- 按钮权限控制（permittedStaffs/prohibitedStaffs）
+- 卡片到期时间（expireTime）
+- 卡片状态动态更新（4.6.4.12）
+
+### 发送审批卡片
+
+```bash
+# 基本审批卡片
+lansenger message approve-card "申请标题" "**申请内容**\n详细说明" --chat-id staff123
+
+# 审批卡片带字段和按钮
+lansenger message approve-card "报销申请" "**金额**：¥1000\n**事由**：差旅费" \
+  --chat-id staff123 \
+  --head-title "审批通知" \
+  --fields '[{"key":"申请人","value":"张三"},{"key":"部门","value":"技术部"}]' \
+  --buttons '[{"text":"同意","buttonTheme":1,"link":"https://..."},{"text":"拒绝","buttonTheme":2}]' \
+  --card-link "https://example.com/approve?id=123"
+
+# 群聊发送审批卡片
+lansenger message approve-card "全员审批" "**事项**：年度预算审批" \
+  --chat-id group123 \
+  --group \
+  --mention-all \
+  --expire-time 86400
+
+# 审批卡片带状态
+lansenger message approve-card "订单审核" "**订单号**：ORD-20240101" \
+  --chat-id staff123 \
+  --head-status "待审核" \
+  --head-status-colour "orange"
+```
+
+### 更新审批卡片状态
+
+```bash
+# 更新审批卡片状态
+lansenger message update-approve-card msg123 \
+  --head-status "已通过" \
+  --head-status-colour "green"
+
+# 更新审批卡片按钮
+lansenger message update-approve-card msg123 \
+  --buttons '[{"text":"已审批","buttonTheme":3,"state":2}]'
+```
+
+### 审批卡片参数说明
+
+| 参数 | 说明 |
+|------|------|
+| `--body-title` | 卡片正文标题（必填） |
+| `--body-content` | 卡片正文内容（支持Markdown，必填） |
+| `--chat-id` | 接收人（用户或群组ID） |
+| `--group` | 发送到群组 |
+| `--head-title` | 卡片头部标题 |
+| `--head-icon-link` | 头部图标URL |
+| `--head-status` | 状态描述文本 |
+| `--head-status-colour` | 状态颜色 |
+| `--fields` | 表单字段（JSON数组） |
+| `--buttons` | 按钮组（JSON数组） |
+| `--card-link` | 卡片跳转链接 |
+| `--card-link-pc` | PC端跳转链接 |
+| `--card-link-pad` | Pad端跳转链接 |
+| `--expire-time` | 过期时间（秒，0=默认7天，最大30天） |
+| `--mention-all` | @全体成员（群聊） |
+| `--mention` | @指定用户（群聊） |
+| `--mention-bot` | @指定机器人（群聊） |
+| `--user-token` | 用户token（以用户身份发送） |
+| `--sender-id` | 发送者ID（群聊） |
+
 ## 卡片类型对比
 
-| 卡片类型 | 多语言 | 动态更新 | headStatus | Pad链接字段 |
-|----------|--------|----------|-----------|-------------|
-| appCard | ✗ | ✓ | ✓ | --pad-card-link |
-| linkCard | ✗ | ✗ | ✗ | --pad-link |
-| oacard | ✗ | ✗ | ✗ | --pad-link |
-| appArticles | ✗ | ✗ | ✗ | (每条article的padUrl) |
+| 卡片类型 | 多语言 | 动态更新 | headStatus | Pad链接字段 | 按钮权限 | 到期时间 |
+|----------|--------|----------|-----------|-------------|---------|---------|
+| appCard | ✗ | ✓ | ✓ | --pad-card-link | ✗ | ✗ |
+| linkCard | ✗ | ✗ | ✗ | --pad-link | ✗ | ✗ |
+| oacard | ✗ | ✗ | ✗ | --pad-link | ✗ | ✗ |
+| appArticles | ✗ | ✗ | ✗ | (每条article的padUrl) | ✗ | ✗ |
+| approveCard | ✗ | ✓ | ✓ | --card-link-pad | ✓ | ✓ |
