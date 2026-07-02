@@ -153,8 +153,8 @@ lansenger chat messages --staff-id staff123 --split-month --progress --user-toke
 |------|------|--------|------|
 | `--type` / `-t` | int | 0 | 聊天类型：0=全部, 1=私聊, 2=群聊 |
 | `--keyword` / `-k` | str | "" | 搜索关键词（仅 type=1 或 type=2 时有效） |
-| `--start` | int | 0 | 起始时间（微秒级时间戳） |
-| `--end` | int | 0 | 结束时间（微秒级时间戳） |
+| `--start` | int | 0 | 起始时间（微秒级时间戳，0=不限制，返回所有历史聊天） |
+| `--end` | int | 0 | 结束时间（微秒级时间戳，0=不限制） |
 | `--user-token` | str | "" | 用户 Token（推荐传入，获取用户视角数据） |
 
 ### chat messages
@@ -165,8 +165,8 @@ lansenger chat messages --staff-id staff123 --split-month --progress --user-toke
 | `--group-id` | str | "" | 群 openId |
 | `--size` / `-s` | int | 100 | 每页条数（最大 100） |
 | `--version` | str | "0" | 深分页游标，首次调用传 0 |
-| `--start` | int | 0 | 起始时间（微秒级时间戳） |
-| `--end` | int | 0 | 结束时间（微秒级时间戳） |
+| `--start` | int | 0 | 起始时间（微秒级时间戳，0=不限制） |
+| `--end` | int | 0 | 结束时间（微秒级时间戳，0=不限制） |
 | `--sender-id` | str | "" | 按发送者 staffId 过滤 |
 | `--split-month` | flag | false | 自动按月拆分拉取（时间跨度超过1个月时必须使用） |
 | `--progress` | flag | false | 显示拉取进度（配合 --split-month 使用） |

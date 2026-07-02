@@ -1,6 +1,6 @@
 ---
 name: lansenger
-version: 1.9.0
+version: 1.9.1
 description: "蓝信 CLI 技能套件 — 使用 lansenger CLI 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、OAuth2 认证、文件上传下载、机器人指令、个人应用。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询等功能时加载此技能。"
 metadata:
   requires:
@@ -93,7 +93,7 @@ lansenger config show
 | 管理机器人指令 | `lansenger-bot-command` | 创建/查询/删除机器人指令（4.37） |
 | 管理个人应用/机器人 | `lansenger-personal-app` | 创建/更新/查询/删除个人应用（4.38） |
 
-> **External Token模式**：如需显式传入app_token和user_token的集成模式，请使用独立项目 [lansenger-skills-external](file:///Users/lanxin_pm/Documents/lansenger-skills-external)。
+> **External Token模式**：如需显式传入app_token和user_token的集成模式，请使用独立的 lansenger-skills-external 技能套件。
 
 **注意**：`lansenger-shared` 会被所有子技能自动加载，包含认证、配置、安全等通用规则，不需要手动加载。
 
@@ -141,3 +141,94 @@ lansenger config show
 | **4** | 同类互斥，跨界协作 | 发消息 vs 看消息 → 只加载其中一个；查员工 + 查部门 → 可同时加载 |
 
 冲突裁决：当两个子 skill 的规则冲突时，按操作类型决定 — 写入操作（messaging/calendar/todo）的确认规则优先于读取操作（chat/staff/department）的宽松规则。
+
+---
+
+## 场景化指南
+
+以下为常见业务场景的最佳实践示例，Agent 可直接参考执行。
+
+### 查询今日消息（日报素材）
+
+用户想要汇总今天的聊天记录，需拉取当天所有私聊和群聊消息。
+
+```
+# Step 1：先获取聊天列表（获取用户今天活跃的聊天）
+lansenger -j chat list --user-token "ut1"
+
+# Step 2：从返回结果中提取各聊天对象
+# Step 3：逐个拉取今天的消息（计算今日 00:00:00 微秒时间戳作为 --start）
+# 例如 2026-07-01 00:00:00 = 1770912000000000
+lansenger chat messages --staff-id staff123 --start 1770912000000000 --user-token "ut1"
+
+# 群聊同样操作
+lansenger chat messages --group-id group456 --start 1770912000000000 --user-token "ut1"
+```
+
+**关键提示**：
+- `chat list` 不传 `--start/--end`（默认 0=不限制）可获取所有历史联系过的聊天
+- 要精确限定"今天"，需手动计算当天零点微秒时间戳并传入 `--start`
+- 从消息返回中提取 `sender`（姓名）、`msgType`、`plain_text` 用于生成摘要
+
+### 生成工作日报
+
+结合聊天记录和日程数据，生成当日工作日报。
+
+```
+# Step 1：拉取今日聊天摘要
+lansenger chat list --user-token "ut1"
+
+# Step 2：拉取今日日程
+lansenger -j calendar list-schedules calOpenId 1770912000 1770998400 --user-token "ut1"
+
+# Step 3：拉取今日待办
+lansenger -j todo list org123 --user-token "ut1"
+
+# Step 4：汇总数据，生成 Markdown 日报
+# - 今日日程：从 list-schedules 结果提取 summary + start_time
+# - 今日待办：从 todo list 结果提取待办状态（21=待办, 22=已办）
+# - 今日沟通：从 chat messages 结果汇总各聊天的消息主题
+```
+
+### 按时间范围查询聊天记录
+
+拉取指定时间段内的聊天消息，用于回溯或审计。
+
+```
+# 拉取 2024年1月的私聊记录（时间跨度 ≤ 1个月）
+lansenger chat messages --staff-id staff123 --start 1704067200000000 --end 1706745599000000 --user-token "ut1"
+
+# 跨多个月拉取（使用自动按月拆分）
+lansenger chat messages --staff-id staff123 --start 1704067200000000 --end 1717199999000000 --split-month --progress --user-token "ut1"
+```
+
+### 群发通知
+
+向多个群发送同一条通知消息。
+
+```
+# Step 1：查询可发消息的群列表
+lansenger -j message query-groups
+
+# Step 2：逐个群发送通知（注意逐条执行，逐条检查）
+lansenger message send-text group123 "【通知】今晚 20:00 系统维护" --group
+lansenger message send-text group456 "【通知】今晚 20:00 系统维护" --group
+```
+
+### 创建日程并通知参会人
+
+完整流程：创建日程 → 发送通知给参会人。
+
+```
+# Step 1：创建日程
+lansenger calendar create-schedule calOpenId "项目评审会" 1770998400 1771005600 '[{"staffId":"staff1","attendeeFlag":"yes"},{"staffId":"staff2","attendeeFlag":"yes"}]' --desc "讨论项目进度" --user-token "ut1"
+
+# Step 2：查询参会人姓名（用于通知消息）
+lansenger -j staff basic-info staff1
+lansenger -j staff basic-info staff2
+
+# Step 3：发送通知消息
+lansenger message send-text staff1 "您有一个新日程：项目评审会，时间：7月14日 16:00-18:00" 
+```
+
+**关键原则**：先完成写入操作（创建日程），再执行通知操作（发消息）。

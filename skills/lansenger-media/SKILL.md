@@ -119,9 +119,9 @@ lansenger media path media123 --user-token "ut1"
 |------|------|--------|------|
 | `file_path` (位置参数) | str | — | 本地文件路径（必需） |
 | `--media-type` / `-t` | str | "file" | 媒体类型：file, video, image, audio |
-| `--width` | int | 0 | 宽度（video/image） |
-| `--height` | int | 0 | 高度（video/image） |
-| `--duration` | int | 0 | 时长（秒，video/audio） |
+| `--width` | int | 0 | 宽度（video/image，0=自动检测） |
+| `--height` | int | 0 | 高度（video/image，0=自动检测） |
+| `--duration` | int | 0 | 时长（秒，video/audio，0=自动检测） |
 | `--context` | str | "" | 上下文参数（OpenAPI 4.5.4） |
 
 ### media download
