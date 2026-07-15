@@ -1,6 +1,6 @@
 ---
 name: lansenger-media
-version: 1.2.0
+version: 1.2.1
 description: "蓝信媒体文件管理：上传文件/图片/视频/音频、下载媒体文件、获取媒体路径。当用户需要上传附件、下载媒体、获取媒体URL时使用。"
 metadata:
   requires:
