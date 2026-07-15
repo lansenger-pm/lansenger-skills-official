@@ -166,7 +166,7 @@ The CLI supports multiple profiles (each corresponding to an appID). Credentials
 |-------|-----------|-------------|---------|
 | `app_id` | **Always** | All API calls | `LANSENGER_APP_ID` |
 | `app_secret` | **Always** | All API calls | `LANSENGER_APP_SECRET` |
-| `api_gateway_url` | **Always** | API gateway (change for private deploy) | `LANSENGER_API_GATEWAY_URL` |
+| `api_gateway_url` | **Always** | API gateway (no default, must be configured) | `LANSENGER_API_GATEWAY_URL` |
 | `passport_url` | OAuth2 | Getting userTokens | `LANSENGER_PASSPORT_URL` |
 | `redirect_uri` | OAuth2 | OAuth2 callback URL (must be configured in Lansenger console as trusted domain, include protocol & port; CLI default http://localhost:8765 also needs config, ~10min cache) | `LANSENGER_REDIRECT_URI` |
 | `encoding_key` | Callbacks | AES decryption of callback data (Base64-encoded) | `LANSENGER_ENCODING_KEY` |
@@ -176,10 +176,10 @@ The CLI supports multiple profiles (each corresponding to an appID). Credentials
 # Basic credentials (all users)
 lansenger config set app_id YOUR_APP_ID
 lansenger config set app_secret YOUR_APP_SECRET
-# api_gateway_url defaults to Lansenger public cloud; private deployment requires manual setup
-# lansenger config set api_gateway_url YOUR_PRIVATE_GATEWAY_URL
+# api_gateway_url has no default — always required:
+# lansenger config set api_gateway_url YOUR_GATEWAY_URL
 
-# For OAuth2 user auth (private deployment requires manual setup)
+# For OAuth2 user auth (passport_url must be provided)
 # lansenger config set passport_url YOUR_PRIVATE_PASSPORT_URL
 
 # For callback decryption & signature verification

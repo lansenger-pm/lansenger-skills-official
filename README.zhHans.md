@@ -166,8 +166,8 @@ CLI 支持多个配置档案（每个对应一个 appID），凭证按 appID 隔
 |------|----------|----------|----------|
 | `app_id` | **必填** | 所有 API 调用 | `LANSENGER_APP_ID` |
 | `app_secret` | **必填** | 所有 API 调用 | `LANSENGER_APP_SECRET` |
-| `api_gateway_url` | **必填** | API 网关地址（私有部署需修改） | `LANSENGER_API_GATEWAY_URL` |
-| `passport_url` | 需 OAuth2 时填 | OAuth2 授权页地址（私有部署需修改） | `LANSENGER_PASSPORT_URL` |
+| `api_gateway_url` | **必填** | API 网关地址（无默认值，必须提供） | `LANSENGER_API_GATEWAY_URL` |
+| `passport_url` | 需 OAuth2 时填 | OAuth2 授权页地址（需 OAuth2 时必填） | `LANSENGER_PASSPORT_URL` |
 | `redirect_uri` | 需 OAuth2 时填 | OAuth2 回调地址（需在蓝信开发者中心配置为可信域名，含协议头和端口号；CLI 默认 http://localhost:8765 也需配置，约10分钟生效） | `LANSENGER_REDIRECT_URI` |
 | `encoding_key` | 需接收回调时填 | 回调数据 AES 解密密钥（Base64 编码） | `LANSENGER_ENCODING_KEY` |
 | `callback_token` | 需接收回调时填 | 回调签名验证 token（未填时回退到 encoding_key） | `LANSENGER_CALLBACK_TOKEN` |
@@ -176,10 +176,10 @@ CLI 支持多个配置档案（每个对应一个 appID），凭证按 appID 隔
 # 基本凭证（所有用户必填）
 lansenger config set app_id YOUR_APP_ID
 lansenger config set app_secret YOUR_APP_SECRET
-# api_gateway_url 默认为蓝信公有云地址，私有部署需手动设置
-# lansenger config set api_gateway_url YOUR_PRIVATE_GATEWAY_URL
+# api_gateway_url 无默认值，必须手动配置
+# lansenger config set api_gateway_url YOUR_GATEWAY_URL
 
-# OAuth2 用户认证（私有部署需手动设置 passport_url）
+# OAuth2 用户认证（必须设置 passport_url）
 # lansenger config set passport_url YOUR_PRIVATE_PASSPORT_URL
 
 # 回调接收（需要解析/验签回调 Webhook 时填写）

@@ -77,7 +77,7 @@ npm install -g lansenger-cli
 | `org-app` | 在蓝信开发者中心创建应用后获得 — 可能需要组织管理员审批。凭证和 API Gateway 地址均在开发者中心查看。 |
 | `org-app-bot` | 在蓝信开发者中心创建应用并开启机器人能力后获得 — 与蓝信应用共用同一个 appID。API Gateway 地址同应用配置。 |
 
-问用户索要 **appID**、**appSecret** 和 **API Gateway 地址**（如果非公有云默认地址）。用户提供后，继续 Step 4。
+问用户索要 **appID**、**appSecret** 和 **API Gateway 地址**（必填）。用户提供后，继续 Step 4。
 
 > **安全提醒**：appSecret 是敏感凭证。你收到后直接写入配置文件，不要在对话中回显 appSecret。
 
@@ -100,7 +100,7 @@ lansenger config set --profile "NAME" app_id APP_ID
 lansenger config set --profile "NAME" app_secret APP_SECRET
 ```
 
-`NAME` 建议用应用名或机器人名。如果用户的 `api_gateway_url` 非蓝信公有云默认地址，需配置网关：
+`NAME` 建议用应用名或机器人名。必须配置 `api_gateway_url`：
 
 ```bash
 lansenger config set --profile "NAME" api_gateway_url GATEWAY_URL
@@ -164,7 +164,7 @@ lansenger config set --profile "NAME" redirect_uri http://localhost:8765
 lansenger config set --profile "NAME" redirect_uri REDIRECT_URI
 ```
 
-私有部署用户还需配置 `passport_url`（不同于 `api_gateway_url`）：
+使用 OAuth2 还需配置 `passport_url`（不同于 `api_gateway_url`）：
 
 ```bash
 lansenger config set --profile "NAME" passport_url PASSPORT_URL

@@ -91,8 +91,8 @@ npm install -g lansenger-cli
 |------|----------|------|----------|
 | `app_id` | **必填** | 所有 API 调用都需要 | `LANSENGER_APP_ID` |
 | `app_secret` | **必填** | 所有 API 调用都需要 | `LANSENGER_APP_SECRET` |
-| `api_gateway_url` | 私有部署时必填 | API 网关地址（默认为蓝信公有云，私有部署需修改） | `LANSENGER_API_GATEWAY_URL` |
-| `passport_url` | 需 OAuth2 + 私有部署时填 | OAuth2 授权页地址（公有云自动推断，私有部署需手动设置） | `LANSENGER_PASSPORT_URL` |
+| `api_gateway_url` | **必填** | API 网关地址（无默认值，必须提供） | `LANSENGER_API_GATEWAY_URL` |
+| `passport_url` | 需 OAuth2 + 私有部署时填 | OAuth2 授权页地址（无默认值，必须提供） | `LANSENGER_PASSPORT_URL` |
 | `redirect_uri` | OAuth2 时填 | OAuth2 回调地址（需在蓝信开发者中心配置为可信域名，含协议头和端口号；CLI 默认 http://localhost:8765 也需配置，约10分钟生效） | `LANSENGER_REDIRECT_URI` |
 | `encoding_key` | 需接收回调时填 | 回调数据 AES 解密密钥（Base64 编码，来自开发者中心） | `LANSENGER_ENCODING_KEY` |
 | `callback_token` | 需接收回调时填 | 回调签名验证 token（未填时回退到 encoding_key） | `LANSENGER_CALLBACK_TOKEN` |
@@ -101,11 +101,11 @@ npm install -g lansenger-cli
 # 基本凭证（所有用户必填）
 lansenger config set app_id YOUR_APP_ID
 lansenger config set app_secret YOUR_APP_SECRET
-# api_gateway_url 默认为蓝信公有云地址，私有部署需手动设置
-# lansenger config set api_gateway_url YOUR_PRIVATE_GATEWAY_URL
+# api_gateway_url 无默认值，必须手动配置
+# lansenger config set api_gateway_url YOUR_GATEWAY_URL
 
 # OAuth2 用户认证（需要获取 userToken 时填写）
-# passport_url 私有部署需手动设置
+# passport_url 需 OAuth2 时必填
 # lansenger config set passport_url YOUR_PRIVATE_PASSPORT_URL
 
 # 回调接收（需要解析/验签回调 Webhook 时填写）
@@ -435,7 +435,7 @@ lansenger health check
 ```
 
 如果 health check 失败，检查：
-1. `api_gateway_url` 配置是否正确（因私有部署而异，默认为蓝信公共云地址）
+1. `api_gateway_url` 配置是否正确（无默认值，必须提供）
 2. 网络是否能访问蓝信 API
 
 ### 凭证错误
