@@ -402,6 +402,7 @@ lansenger --app-token "xxx" --profile "default" message send-text staff123 "Hell
 | `权限不足 / scope 缺失` | app 未开通对应权限 | 在蓝信开发者后台开通对应 scope（地址因私有部署而异） |
 | `需要 userToken` | 访问用户级资源但未传 token | 添加 `--user-token` 参数（参见 lansenger-oauth） |
 | `token 过期` | userToken 过期 | 通过 OAuth2 重新获取或刷新 |
+| **`errCode=51011`（建群申请等待审核）** | 组织开启了建群审核 | **非报错，正常业务流程。告知用户"申请已提交，等待管理员审核"** |
 
 ## Profile 管理（多应用/多机器人）
 

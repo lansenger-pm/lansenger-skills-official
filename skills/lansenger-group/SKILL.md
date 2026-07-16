@@ -57,6 +57,8 @@ lansenger group create "项目讨论组" org123 --staff staff1 --staff staff2 --
 lansenger group create "项目讨论组" org123 --dept dept1 --user-token "ut1"
 ```
 
+**CRITICAL — 如果创建群接口返回 errCode=51011（"建群申请等待审核"），这不是错误，而是组织开启了建群审核功能后的正常业务流程。此时群已成功提交创建申请，等待管理员审核。Agent 应将此结果视为成功，向用户说明"建群申请已提交，等待管理员审核"，不要重试。**
+
 ### 查看群信息
 
 ```bash
@@ -233,6 +235,7 @@ lansenger group dismiss group456 --user-token "ut1"
 | 不确认就解散群 | 解散群属于高风险操作（不可恢复），必须先确认 |
 | 群名/org_id 不传位置参数 | `create` 的 name 和 org_id 是必需位置参数 |
 | group_id 不传位置参数 | `info`/`members`/`check`/`update`/`update-members` 的 group_id 是必需位置参数 |
+| **创建群返回 errCode=51011** | **这是建群审核，非报错。告知用户"申请已提交，等待管理员审核"，不要重试** |
 
 ## SDK 用法
 

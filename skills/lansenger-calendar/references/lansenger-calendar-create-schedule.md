@@ -53,6 +53,34 @@ lansenger calendar create-schedule \
 schedule_id    : string   - 新创建日程的 ID
 ```
 
+## CRITICAL — 参会人补齐规则
+
+**创建日程时，以下两种人必须出现在 attendees 列表中，否则接口会报错。如果用户没有明确指定，Agent 需要主动将它们补齐。**
+
+| 必须参会的人 | 说明 | 如何获取 |
+|------------|------|---------|
+| **日历主人** | 即将被创建日程的日历的所有者 | 先调 `lansenger calendar primary` 获取 calendar_id，再通过日历信息获取 owner |
+| **当前操作用户** | 正在执行创建操作的人（即 `--user-token` 或 `--user-id` 对应的人） | Agent 维护的当前操作用户身份 |
+
+**补齐规则：**
+
+1. 日历主人：如果用户指定的 attendees 中已包含，保持用户的 `attendeeFlag` 设置；如果不在列表中，追加一条 `{"staffId":"<ownerStaffId>","attendeeFlag":"no"}`。日历主人的 RSVP 默认为「已接受」。
+2. 当前操作用户：如果用户指定的 attendees 中已包含，保持用户的 `attendeeFlag` 设置；如果不在列表中，追加一条 `{"staffId":"<当前用户staffId>","attendeeFlag":"no"}`。
+3. 如果日历主人和操作用户是同一个人，只保留一条，不要重复。
+
+**Agent 执行步骤：**
+
+1. 获取日历主人的 staffId
+2. 获取当前操作用户的 staffId
+3. 检查用户指定的 attendees 列表，将两人的 `attendeeFlag` 翻为 `yes`（如果用户已包含）
+4. 如果列表中没有这两人，分别补齐
+5. 将补齐后的列表传给 `create-schedule` 命令
+
+**不要做的事：**
+
+- 不要设置参会人权限字段——该字段会被重置为"参与人可邀请他人"，传了也无效
+- 不要试图通过不传当前操作用户来隐藏自己——当前操作用户一定会出现在最终参会人中
+
 ## 重要注意事项
 
 - **时间格式**：`start_time` 和 `end_time` 是 Unix 时间戳，单位为**秒**而非毫秒。传入前请将毫秒时间戳除以 1000。
@@ -65,3 +93,4 @@ schedule_id    : string   - 新创建日程的 ID
 - 使用全天模式但未提供 `--date`。全天事件需要日期字符串。
 - 将参与人员工 ID 作为纯字符串而非对象传递。Create-schedule 期望 `[{"staffId":"xxx","attendeeFlag":"yes"}]`，而非 `["xxx"]`。
 - `--all-day` 为 "yes" 时设置了自定义时区。全天事件内部始终使用 UTC。
+- **创建日程时 attendees 只传用户指定的人，没有补齐日历主人和当前操作用户** — 接口会报错，Agent 必须先补齐再发送。

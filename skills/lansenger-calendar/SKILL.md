@@ -81,7 +81,13 @@ lansenger calendar create-schedule calOpenId "Company Holiday" 0 0 '[{"staffId":
 lansenger calendar create-schedule calOpenId "每周同步" 1656468000 1656475200 '[{"staffId":"staff1","attendeeFlag":"yes"}]' --repeat week --user-token "ut1"
 ```
 
-详细文档：[`references/lansenger-calendar-create-schedule.md`](references/lansenger-calendar-create-schedule.md)
+**CRITICAL — 创建日程时必须补齐参会人！attendees 列表中必须包含日历主人和当前操作用户。如果用户没指定，Agent 需要主动补齐，否则接口报错。**
+
+**补齐步骤：① 查日历得到 owner 的 staffId → ② 获取当前操作用户的 staffId → ③ 将两人加入 attendees（重复则合并）。**
+
+**参会人权限无需设置，接口内已固定为"可邀请他人"。**
+
+详细文档：[`references/lansenger-calendar-create-schedule.md`](references/lansenger-calendar-create-schedule.md) 中的「参会人补齐规则」章节。
 
 ### 查询日程
 
@@ -185,6 +191,8 @@ lansenger calendar attendee-meta calOpenId schOpenId --remind-times '[5,15]' --u
 
 **CRITICAL — 增删参会人用纯 staffId 列表，不要传 attendeeFlag 对象。**
 
+**CRITICAL — 创建日程时，Agent 必须将日历主人和当前操作用户补齐到 attendees 后再发请求，不能直接用用户提供的原始列表。**
+
 ## 常见错误
 
 | 错误 | 正确做法 |
@@ -196,6 +204,8 @@ lansenger calendar attendee-meta calOpenId schOpenId --remind-times '[5,15]' --u
 | 用户说"日历"就查Calendar容器 | 用户意图通常是"日程"，用 list-schedules |
 | 时间范围超42天 | 拆分多次查询，每次 ≤ 42天 |
 | 修改重复日程不指定 --op | 默认 modify_all 影响所有实例；仅改当前用 modify_current + --current-time |
+| **创建日程 attendees 没补齐日历主人和当前用户** | **Agent 必须先补齐再发送，否则接口报错** |
+| **试图设置参会人权限字段** | **无需设置，接口内部已固定** |
 
 ## 参数速查
 
