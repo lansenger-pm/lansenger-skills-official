@@ -1,6 +1,6 @@
 ---
 name: lansenger-chat
-version: 1.3.1
+version: 1.4.0
 description: "蓝信聊天列表与消息历史：查看聊天列表（私聊+群聊）、拉取聊天消息记录。当用户需要查看聊天记录、浏览聊天列表时使用。"
 metadata:
   requires:
@@ -242,3 +242,81 @@ lansenger chat messages --staff-id staff123 --version v1 --size 100 --user-token
 | 时间跨度超过1个月 | **必须按月拆分**，超过1个月历史数据会丢失；使用 `--split-month` |
 | 以为 sender 是 staffId | sender 是**姓名**，不是 staffId，同名员工无法区分；结合 `sender_id` 或用 `staff search` 反查 |
 | 需要对方部门/职位但只看 chat list | chat list 的 staff_infos 只含 staffId+staffName，需额外调 `staff detail` |
+
+## SDK 用法
+
+当需要批量拉取多个聊天的消息、或拉取跨多月的历史记录时，用 SDK 替代逐条 CLI 调用。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+```python
+from lansenger_sdk import LansengerClient, LansengerSyncClient
+
+# 异步
+client = LansengerClient.from_store(profile="default")
+chat_list = await client.fetch_chat_list(chat_type=0, user_token="ut1")
+messages = await client.fetch_chat_messages(staff_id="staff123", start_time=1700000000000000, user_token="ut1")
+
+# 同步
+sync_client = LansengerSyncClient.from_store(profile="default")
+chat_list = sync_client.fetch_chat_list(chat_type=0, user_token="ut1")
+messages = sync_client.fetch_chat_messages(staff_id="staff123", start_time=1700000000000000, user_token="ut1")
+```
+
+### 批量并发拉取多个聊天
+
+```python
+import asyncio
+from lansenger_sdk import LansengerClient
+
+async def batch_fetch_all_chats():
+    client = LansengerClient.from_store(profile="default")
+    user_token = await client.get_user_token(staff_id="staff_001")
+
+    # 获取聊天列表
+    chat_list = await client.fetch_chat_list(user_token=user_token)
+    if not chat_list.success:
+        return
+
+    # 构建目标列表
+    targets = [{"staff_id": s.staff_id} for s in chat_list.staff_infos]
+    targets += [{"group_id": g.group_id} for g in chat_list.group_infos]
+
+    # 并发拉取（限流 5）
+    semaphore = asyncio.Semaphore(5)
+    async def fetch_one(target):
+        async with semaphore:
+            return await client.fetch_chat_messages(
+                staff_id=target.get("staff_id", ""),
+                group_id=target.get("group_id", ""),
+                start_time=1770912000000000,  # 今日零点
+                user_token=user_token,
+            )
+
+    results = await asyncio.gather(*[fetch_one(t) for t in targets])
+    await client.close()
+
+    total = sum(len(r.messages or []) for r in results if r.success)
+    print(f"成功 {sum(1 for r in results if r.success)}/{len(results)}, 共 {total} 条")
+
+asyncio.run(batch_fetch_all_chats())
+```
+
+### 深分页 + 按月拆分（完整历史）
+
+CLI 的 `--split-month` 在 SDK 中需要手动实现按月拆分逻辑。完整代码模板详见 `../lansenger-sdk/SKILL.md` 的"模式 3：深分页 + 按月拆分"。
+
+### 断点续传
+
+长时间拉取任务支持中断后恢复，进度保存到 JSON 文件。详见 `../lansenger-sdk/SKILL.md` 的"模式 4：断点续传"。
+
+### plain_text() 提取消息文本
+
+SDK 的 `ChatMessageInfo` 对象提供 `plain_text()` 方法，自动处理所有消息格式：
+
+```python
+messages = result.messages
+for msg in messages:
+    text = msg.plain_text()  # 自动提取纯文本，无论 content 是 text/formatText/附件
+    print(f"{msg.sender}: {text}")
+```

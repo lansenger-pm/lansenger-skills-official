@@ -325,3 +325,29 @@ lansenger config list-users --show-tokens
 | 只保存 userToken 不保存 refreshToken | refreshToken 是续期的唯一途径，必须同时保存；SDK UserTokenManager 自动保存 |
 | 批量脚本不考虑 token 中途过期 | SDK 用户用 `get_user_token()` 自动刷新；CLI 用户手动 `refresh-token` |
 | 刷新后继续用旧 refreshToken | 刷新后旧 refreshToken 立即失效，必须用新返回的 |
+
+## SDK 用法
+
+SDK 的 OAuth2 流程比 CLI 更灵活，适合在应用中集成用户授权。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+```python
+from lansenger_sdk import LansengerClient
+
+client = LansengerClient.from_store(profile="default")
+
+# 构建授权 URL
+url = client.build_authorize_url(redirect_uri="https://myapp.com/callback")
+
+# 兑换授权码（授权后自动注册 token，支持自动刷新）
+token_result = await client.exchange_code(code="auth_code_from_callback")
+
+# 获取 userToken（自动刷新，CLI --as 的等效）
+user_token = await client.get_user_token(staff_id="staff_001")
+
+# 获取用户信息
+user_info = await client.fetch_user_info(user_token=user_token)
+```
+
+**关键优势**：SDK 的 `exchange_code()` 内部自动调用 `set_user_tokens()`，后续 `get_user_token()` 会在过期前自动刷新，无需手动管理 token 生命周期。

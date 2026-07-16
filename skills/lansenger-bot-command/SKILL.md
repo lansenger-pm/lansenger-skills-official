@@ -1,6 +1,6 @@
 ---
 name: lansenger-bot-command
-version: 1.0.0
+version: 1.0.1
 description: "机器人指令管理（4.37）：创建、查询、删除机器人指令。当用户需要管理机器人指令时使用。"
 metadata:
   requires:
@@ -95,3 +95,24 @@ lansenger bot-command delete 3 --chat-id staff123 --chat-type staff
 | `参数错误` | scope_type 与参数不匹配 | 检查 scope_type 对应的参数是否齐全 |
 | `指令已存在` | 同一作用域下指令名称重复 | 修改指令名称后重新创建 |
 | `命令格式错误` | command 包含非法字符 | 仅使用字母、数字、下划线 |
+
+## SDK 用法
+
+当需要批量管理机器人指令时，用 SDK 替代逐条 CLI 调用。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+```python
+from lansenger_sdk import LansengerClient
+
+client = LansengerClient.from_store(profile="default")
+
+# 创建指令
+result = await client.create_bot_commands(commands=[{"name": "/help", "description": "帮助"}])
+
+# 查询指令
+result = await client.fetch_bot_commands()
+
+# 删除指令
+result = await client.delete_bot_commands(command_ids=["cmd1", "cmd2"])
+```

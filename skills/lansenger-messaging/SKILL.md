@@ -1,6 +1,6 @@
 ---
 name: lansenger-messaging
-version: 1.3.0
+version: 1.4.0
 description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles/approveCard），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
@@ -373,3 +373,98 @@ lansenger message update-approve-card msg123 \
 | oacard | ✗ | ✗ | ✗ | --pad-link | ✗ | ✗ |
 | appArticles | ✗ | ✗ | ✗ | (每条article的padUrl) | ✗ | ✗ |
 | approveCard | ✗ | ✓ | ✓ | --card-link-pad | ✓ | ✓ |
+
+## SDK 用法
+
+当需要群发通知到多个群、或批量发送不同消息时，用 SDK 并发发送。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+`LansengerClient` 提供以下消息发送方法：
+
+| 方法 | 说明 | 关键参数 |
+|------|------|---------|
+| `send_text` | 发送文本消息 | `chat_id`, `content`, `is_group`(群聊), `user_token`(用户身份), `reminder_all`(@全体) |
+| `send_markdown` | 发送 Markdown 消息 | `chat_id`, `content`, `is_group`, `user_token` |
+| `send_file` | 发送文件消息 | `chat_id`, `file_path`, `is_group`, `media_type` |
+| `send_group_message` | 群聊发消息（完整能力） | `group_id`, `msg_type`, `msg_data`, `user_token`, `reminder_all`, `reminder_members` |
+
+```python
+# 私聊文本
+await client.send_text(chat_id="staff123", content="Hello")
+# 群聊文本
+await client.send_text(chat_id="group123", content="Notice", is_group=True)
+# 私聊 Markdown
+await client.send_markdown(chat_id="staff123", content="**Bold**")
+# 发送文件
+await client.send_file(chat_id="staff123", file_path="/path/to/file.pdf")
+# 群聊发消息（完整能力）
+await client.send_group_message(group_id="group123", msg_type="text", msg_data={"text": {"content": "Hello"}}, user_token="ut")
+```
+
+### 批量群发通知
+
+向多个群并发发送同一条通知，用 `asyncio.gather` + `Semaphore(5)` 控制并发：
+
+```python
+import asyncio
+from lansenger import LansengerClient
+
+async def broadcast_notice(client: LansengerClient, group_ids: list[str], content: str):
+    sem = asyncio.Semaphore(5)
+
+    async def send_to_group(group_id: str):
+        async with sem:
+            return await client.send_text(
+                chat_id=group_id,
+                content=content,
+                is_group=True,
+                reminder_all=True,
+            )
+
+    results = await asyncio.gather(
+        *[send_to_group(gid) for gid in group_ids],
+        return_exceptions=True,
+    )
+    return results
+
+# 用法
+# group_ids = ["group1", "group2", "group3"]
+# results = await broadcast_notice(client, group_ids, "系统维护通知：今晚 22:00-23:00")
+```
+
+### 批量发送不同消息
+
+向不同收件人发送不同内容的消息：
+
+```python
+import asyncio
+from lansenger import LansengerClient
+
+async def send_batch_messages(client: LansengerClient, tasks: list[dict]):
+    """tasks 示例:
+    [
+        {"chat_id": "staff1", "content": "张三，你的审批已通过", "is_group": False},
+        {"chat_id": "group1", "content": "项目组周会改到周五", "is_group": True},
+        {"chat_id": "staff2", "content": "李四，请查收报告", "is_group": False},
+    ]
+    """
+    sem = asyncio.Semaphore(5)
+
+    async def send_one(task: dict):
+        async with sem:
+            return await client.send_text(
+                chat_id=task["chat_id"],
+                content=task["content"],
+                is_group=task.get("is_group", False),
+                user_token=task.get("user_token"),
+            )
+
+    results = await asyncio.gather(
+        *[send_one(t) for t in tasks],
+        return_exceptions=True,
+    )
+    return results
+```
+
+**注意**：并发发送时 Semaphore 值建议 ≤5，避免触发 API 限流。详见 `../lansenger-sdk/SKILL.md` 的"模式 2：并发批量"。

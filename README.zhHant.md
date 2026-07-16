@@ -9,7 +9,7 @@
 
 ## 什麼是 Skills？
 
-Skills 是結構化 Markdown 文件，教導 AI Agent 如何使用 `lansenger` CLI。每個 Skill 涵蓋一個業務領域（訊息傳送、行事曆、群組等），包含：
+Skills 是結構化 Markdown 文件，教導 AI Agent 如何使用 `lansenger` CLI 和 SDK。每個 Skill 涵蓋一個業務領域（訊息傳送、行事曆、群組等），包含：
 
 - **核心概念**與術語
 - **CLI 命令參考**，含參數與範例
@@ -114,6 +114,7 @@ skills/
   lansenger-streaming/SKILL.md          # 串流訊息（AI-Agent SSE）
   lansenger-callback/SKILL.md           # 回呼事件與 Webhook
   lansenger-media/SKILL.md              # 媒體檔案上傳/下載
+  lansenger-sdk/SKILL.md                  # SDK 程式設計指南（批次、並發、斷點續傳）
 skill_manifest.json                      # 所有 Skills 的索引
 skill-template/                          # 建立新 Skills 的模板
 ```

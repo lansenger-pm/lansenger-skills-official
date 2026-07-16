@@ -1,6 +1,6 @@
 ---
 name: lansenger-calendar
-version: 1.2.0
+version: 1.3.0
 description: "蓝信日历/日程（4.23）：主日历查询、日程CRUD、参会人管理、参会人元数据更新。注意：日历容器CRUD暂不开放，仅日程操作可用。涉及创建/修改日程必须先确认用户意图（新建 vs 编辑已有）。"
 metadata:
   requires:
@@ -211,3 +211,76 @@ lansenger calendar attendee-meta calOpenId schOpenId --remind-times '[5,15]' --u
 | `delete-attendees` | calendar_id, schedule_id, attendees (JSON) | --user-token, --user-id, --op, --current-time |
 | `update-schedule` | calendar_id, schedule_id | --summary, --desc, --op, --current-time, --reminder, --repeat, --rule, --expire, --all-day, --permissions, --start-time, --end-time, --user-token, --user-id |
 | `attendee-meta` | calendar_id, schedule_id | --rsvp, --color, --permissions, --busy-free, --remind-times, --user-token, --user-id |
+
+## SDK 用法
+
+当需要批量查询日程、或批量创建日程时，用 SDK 替代逐条 CLI 调用。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+`LansengerClient` / `LansengerSyncClient` 提供以下日历日程方法：
+
+```python
+from lansenger_sdk import LansengerClient, LansengerSyncClient
+
+# 异步
+client = LansengerClient.from_store(profile="default")
+cal = await client.fetch_primary_calendar(user_token="ut")
+schedules = await client.fetch_schedule_list(cal_id="xxx", start_time=1700000000, end_time=1709999999, user_token="ut")
+result = await client.create_schedule(cal_id="xxx", summary="会议", start_time=1700000000, end_time=1700003600, attendees=[{"staffId":"staff1","attendeeFlag":"yes"}], user_token="ut")
+await client.delete_schedule(cal_id="xxx", schedule_id="xxx", user_token="ut")
+attendees = await client.fetch_schedule_attendees(cal_id="xxx", schedule_id="xxx", user_token="ut")
+
+# 同步
+sync_client = LansengerSyncClient.from_store(profile="default")
+cal = sync_client.fetch_primary_calendar(user_token="ut")
+schedules = sync_client.fetch_schedule_list(cal_id="xxx", start_time=1700000000, end_time=1709999999, user_token="ut")
+```
+
+### 批量查询多月日程
+
+CLI 的 `list-schedules` 单次时间范围 ≤ 42 天。用 SyncClient 按月拆分循环查询：
+
+```python
+import calendar as cal_mod
+from datetime import datetime
+from lansenger_sdk import LansengerSyncClient
+
+def month_ranges(start_ts: int, end_ts: int) -> list[tuple[int, int]]:
+    """将时间范围按月拆分，返回 [(月起始秒, 月结束秒), ...]"""
+    ranges = []
+    start_dt = datetime.fromtimestamp(start_ts)
+    end_dt = datetime.fromtimestamp(end_ts)
+    year, month = start_dt.year, start_dt.month
+    while (year, month) <= (end_dt.year, end_dt.month):
+        last_day = cal_mod.monthrange(year, month)[1]
+        s = int(datetime(year, month, 1, 0, 0, 0).timestamp())
+        e = int(datetime(year, month, last_day, 23, 59, 59).timestamp())
+        ranges.append((s, e))
+        month += 1
+        if month > 12:
+            month = 1
+            year += 1
+    return ranges
+
+client = LansengerSyncClient.from_store(profile="default")
+cal_id = "cal_xxx"
+user_token = "ut"
+
+all_schedules = []
+for s, e in month_ranges(1700000000, 1709999999):  # 跨多月
+    result = client.fetch_schedule_list(
+        cal_id=cal_id,
+        start_time=s,
+        end_time=e,
+        user_token=user_token,
+    )
+    if result.success:
+        all_schedules.extend(result.schedules or [])
+    else:
+        print(f"查询 {s}-{e} 失败: {result.error}")
+
+print(f"共 {len(all_schedules)} 条日程")
+```
+
+**注意**：批量创建日程时注意参会人通知会自动触发，无需额外发消息。详见 `../lansenger-sdk/SKILL.md`。

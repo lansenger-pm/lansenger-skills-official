@@ -1,6 +1,6 @@
 ---
 name: lansenger-group
-version: 1.2.0
+version: 1.3.0
 description: "蓝信群组管理：创建群、查看群信息、群成员列表、群列表、成员检查、更新群设置、添加/移除成员、解散群。当用户需要管理群组时使用。"
 metadata:
   requires:
@@ -233,3 +233,50 @@ lansenger group dismiss group456 --user-token "ut1"
 | 不确认就解散群 | 解散群属于高风险操作（不可恢复），必须先确认 |
 | 群名/org_id 不传位置参数 | `create` 的 name 和 org_id 是必需位置参数 |
 | group_id 不传位置参数 | `info`/`members`/`check`/`update`/`update-members` 的 group_id 是必需位置参数 |
+
+## SDK 用法
+
+当需要批量查询群信息、或批量创建群时，用 SDK 替代逐条 CLI 调用。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+| 方法 | 说明 |
+|------|------|
+| `create_group(name, org_id, ...)` | 创建群 |
+| `fetch_group_info(group_id, ...)` | 查看群详情 |
+| `fetch_group_members(group_id, ...)` | 查看群成员 |
+| `fetch_group_list(...)` | 群列表 |
+| `check_is_in_group(group_id, ...)` | 检查成员是否在群内 |
+| `dismiss_group(group_id, ...)` | 解散群 |
+
+### 批量查询群信息
+
+用 AsyncClient + asyncio.gather + Semaphore(5) 并发查询多个群的详情。
+
+```python
+import asyncio
+from lansenger_sdk import LansengerClient
+
+async def batch_fetch_group_info(group_ids: list[str], max_concurrent: int = 5):
+    client = LansengerClient.from_store(profile="default")
+    semaphore = asyncio.Semaphore(max_concurrent)
+
+    async def fetch_one(group_id: str):
+        async with semaphore:
+            return await client.fetch_group_info(group_id=group_id)
+
+    results = await asyncio.gather(*[fetch_one(gid) for gid in group_ids])
+    await client.close()
+
+    for gid, result in zip(group_ids, results):
+        if result.success:
+            print(f"{gid}: {result.group_info.name} ({len(result.group_info.members or [])} 人)")
+        else:
+            print(f"{gid}: 查询失败 -> {result.error}")
+    return results
+
+group_ids = ["group1", "group2", "group3", "group4", "group5"]
+asyncio.run(batch_fetch_group_info(group_ids))
+```
+
+> 更多批量模式（顺序循环、断点续传、深分页）详见 `../lansenger-sdk/SKILL.md`。

@@ -1,6 +1,6 @@
 ---
 name: lansenger-personal-app
-version: 1.0.0
+version: 1.0.1
 description: "个人应用/个人机器人管理（4.38）：创建、更新、查询、删除个人应用（即个人机器人）。当用户需要创建自己的个人机器人时使用。"
 metadata:
   requires:
@@ -145,3 +145,27 @@ lansenger -j personal-app list --user-token "ut1"
 - 个人应用/机器人的 `secret` 仅在创建时返回一次，后续无法查询，请妥善保管
 - 个人应用/机器人创建后可以独立使用，拥有完整的机器人能力
 - 删除个人应用/机器人后无法恢复，请谨慎操作
+
+## SDK 用法
+
+当需要批量管理个人应用时，用 SDK 替代逐条 CLI 调用。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+```python
+from lansenger_sdk import LansengerClient
+
+client = LansengerClient.from_store(profile="default")
+
+# 创建个人应用（需 userToken）
+result = await client.create_personal_app(name="我的机器人", user_token="ut")
+
+# 查询个人应用列表
+result = await client.fetch_personal_app_list(user_token="ut")
+
+# 更新个人应用
+result = await client.update_personal_app(app_id="xxx", name="新名称", user_token="ut")
+
+# 删除个人应用
+result = await client.delete_personal_app(app_id="xxx", user_token="ut")
+```

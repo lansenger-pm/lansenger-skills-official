@@ -1,6 +1,6 @@
 ---
 name: lansenger-streaming
-version: 1.1.0
+version: 1.1.1
 description: "蓝信流式消息（AI Agent 实时推送）：创建流式消息会话、获取流式消息状态。当 AI Agent 需要实现打字式渐进输出时使用。"
 metadata:
   requires:
@@ -94,3 +94,27 @@ lansenger -j streaming fetch msg123
 | stream_id 不唯一 | 每次流式会话必须使用新的唯一 stream_id |
 | 流式消息代替最终消息 | 流式消息只是占位符，最终内容需通过 `lansenger message send-text` 发送 |
 | 不传 receiver_id 位置参数 | receiver_id 是必需位置参数 |
+
+## SDK 用法
+
+SDK 可直接在异步应用中创建流式消息，无需通过 CLI 进程调用。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+```python
+from lansenger_sdk import LansengerClient
+
+client = LansengerClient.from_store(profile="default")
+
+# 创建流式消息
+result = await client.create_stream_message(
+    receiver_id="staff123",
+    receiver_type="staff",
+    stream_id="stream_001",
+)
+
+# 获取流式消息状态
+status = await client.fetch_stream_message(msg_id="msg123")
+```
+
+**适合场景**：AI Agent 在生成回复时，用 SDK 直接推送流式片段，无需切换到 CLI 进程。

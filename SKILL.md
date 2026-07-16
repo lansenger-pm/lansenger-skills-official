@@ -1,16 +1,19 @@
 ---
 name: lansenger
-version: 1.9.2
-description: "蓝信 CLI 技能套件 — 使用 lansenger CLI 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、OAuth2 认证、文件上传下载、机器人指令、个人应用。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询等功能时加载此技能。"
+version: 1.10.0
+description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、批量操作等功能时加载此技能。"
 metadata:
   requires:
     bins: ["lansenger"]
   cliHelp: "lansenger --help"
 ---
 
-# 蓝信 Lansenger CLI 技能套件
+# 蓝信 Lansenger 技能套件
 
-`lansenger` 是蓝信平台的 CLI 工具，通过命令行完成消息发送、群组管理、通讯录查询、日历日程、待办任务、文件上传等操作。
+`lansenger` 是蓝信平台的 CLI 工具和 SDK，通过命令行或编程方式完成消息发送、群组管理、通讯录查询、日历日程、待办任务、文件上传等操作。
+
+- **CLI**：适合快速任务（发一条消息、建个群、查个员工）— 逐条执行、逐条检查
+- **SDK**：适合复杂任务（批量拉取、并发操作、数据管道）— 单进程复用连接、支持 async 并发
 
 ## 安装
 
@@ -34,13 +37,25 @@ npm install -g lansenger-cli
 
 ## 策略
 
-**L1（封装命令）→ L2（domain 命令）→ L3（raw API）**。优先使用高级封装命令：
+**L1（封装命令）→ L2（domain 命令）→ L3（SDK 编程）**。优先使用高级封装命令：
 
 - **L1**：`send-text`、`send-markdown`、`send-file` 等 Shortcut 命令 — 封装了通道选择和参数校验，Agent 应优先使用
 - **L2**：`send-bot-message`、`send-group-message`、`send-user-message` 等 domain 命令 — 需要手动构造 JSON 消息体，仅在 L1 不覆盖时使用
-- **L3**：直接调用 SDK API — 仅在 CLI 命令行无法满足需求时使用
+- **L3**：直接调用 SDK API — 当 CLI 逐条执行效率太低时使用（批量、并发、数据管道等复杂任务）
 
 添加 `--json` / `-j` 获取结构化输出，便于 Agent 解析。
+
+### CLI vs SDK 决策矩阵
+
+| 场景特征 | 用 CLI | 用 SDK |
+|----------|--------|--------|
+| 操作对象数量 | 1–2 个 | **≥3 个** |
+| 执行模式 | 逐条执行、逐条检查 | 批量、并发、管道 |
+| 数据传递 | 命令间无共享状态 | 前一步结果喂给后一步 |
+| 时间跨度 | 单次查询 | 深分页 + 按月拆分 + 断点续传 |
+| 错误恢复 | 手动重跑 | 自动重试 + 断点续传 |
+
+**经验法则**：如果你发现自己在写一个 for 循环来调 CLI 命令，或者需要把上一步的 JSON 输出解析后传给下一步，就应该用 SDK。详见 `lansenger-sdk` 技能。
 
 ---
 
@@ -92,6 +107,7 @@ lansenger config show
 | AI Agent 实时推送消息 | `lansenger-streaming` | SSE 流式消息 |
 | 管理机器人指令 | `lansenger-bot-command` | 创建/查询/删除机器人指令（4.37） |
 | 管理个人应用/机器人 | `lansenger-personal-app` | 创建/更新/查询/删除个人应用（4.38） |
+| 批量操作、并发拉取、数据管道 | `lansenger-sdk` | SDK 编程指南：批量模式、并发控制、断点续传 |
 
 > **External Token模式**：如需显式传入app_token和user_token的集成模式，请使用独立的 lansenger-skills-external 技能套件。
 
@@ -232,3 +248,108 @@ lansenger message send-text staff1 "您有一个新日程：项目评审会，�
 ```
 
 **关键原则**：先完成写入操作（创建日程），再执行通知操作（发消息）。
+
+---
+
+## SDK 场景化指南
+
+以下场景涉及批量操作或复杂数据流，CLI 逐条执行效率太低，推荐用 SDK。
+
+### 批量拉取聊天消息（SDK 并发）
+
+需要拉取多个聊天的消息记录时，用 SDK AsyncClient 并发拉取。
+
+```python
+import asyncio
+from lansenger_sdk import LansengerClient
+
+async def batch_fetch_messages():
+    client = LansengerClient.from_store(profile="default")
+    user_token = await client.get_user_token(staff_id="staff_001")
+
+    # Step 1: 获取聊天列表
+    chat_list = await client.fetch_chat_list(user_token=user_token)
+    if not chat_list.success:
+        print(f"获取聊天列表失败: {chat_list.error}")
+        return
+
+    # Step 2: 提取聊天目标
+    targets = []
+    for s in chat_list.staff_infos:
+        targets.append({"staff_id": s.staff_id})
+    for g in chat_list.group_infos:
+        targets.append({"group_id": g.group_id})
+
+    # Step 3: 并发拉取消息（限流 5 并发）
+    semaphore = asyncio.Semaphore(5)
+    today_start = 1770912000000000  # 今日 00:00:00 微秒时间戳
+
+    async def fetch_one(target):
+        async with semaphore:
+            return await client.fetch_chat_messages(
+                staff_id=target.get("staff_id", ""),
+                group_id=target.get("group_id", ""),
+                start_time=today_start,
+                user_token=user_token,
+            )
+
+    results = await asyncio.gather(*[fetch_one(t) for t in targets])
+    await client.close()
+
+    # Step 4: 汇总
+    total_msgs = sum(len(r.messages or []) for r in results if r.success)
+    print(f"成功 {sum(1 for r in results if r.success)}/{len(results)}, 共 {total_msgs} 条消息")
+
+asyncio.run(batch_fetch_messages())
+```
+
+详见 `lansenger-sdk` 技能的"模式 2：并发批量"。
+
+### 群发通知到多个群（SDK 并发）
+
+向 50+ 个群发送同一条通知时，用 SDK 并发发送。
+
+```python
+import asyncio
+from lansenger_sdk import LansengerClient
+
+async def batch_notify():
+    client = LansengerClient.from_store(profile="default")
+    groups = ["group1", "group2", "group3", ...]  # 50+ 个群 ID
+    message = "【通知】今晚 20:00 系统维护"
+
+    semaphore = asyncio.Semaphore(5)
+
+    async def send_one(group_id):
+        async with semaphore:
+            return await client.send_text(
+                chat_id=group_id,
+                content=message,
+                is_group=True,
+            )
+
+    results = await asyncio.gather(*[send_one(g) for g in groups])
+    await client.close()
+
+    success = sum(1 for r in results if r.success)
+    print(f"群发完成: {success}/{len(groups)} 成功")
+
+asyncio.run(batch_notify())
+```
+
+详见 `lansenger-sdk` 技能的"模式 2：并发批量"。
+
+### 完整历史拉取 + 断点续传（SDK）
+
+拉取跨越数月的完整聊天历史，支持中断后恢复。
+
+```python
+# 详见 lansenger-sdk 技能的"模式 3：深分页 + 按月拆分"和"模式 4：断点续传"
+# 核心流程：
+# 1. split_months() 按月拆分时间范围
+# 2. 每月内用 base_version 深分页翻取
+# 3. 每页完成后保存进度到 JSON 文件
+# 4. 中断后从上次 last_version 继续
+```
+
+详见 `lansenger-sdk` 技能的"模式 3"和"模式 4"。

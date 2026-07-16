@@ -1,7 +1,7 @@
 ---
 name: lansenger-shared
-version: 1.6.1
-description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
+version: 1.7.0
+description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理、SDK 客户端初始化 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -244,6 +244,80 @@ lansenger config set --profile "new-app-name"
 | 工作台模版写权限 | 获取工作台模版写权限 | — |
 
 > **Agent 指引**：当命令返回权限相关错误时，先检查 shared「身份能力矩阵」确认身份类型支持，再提示用户在开发者中心开启对应高级权限（如无法自行访问，联系组织管理员）。
+
+## SDK 客户端快速初始化
+
+当任务涉及批量操作（≥3 个对象）、并发拉取、或需要进程内数据传递时，应使用 Python SDK 而非逐条调 CLI。详见 `../lansenger-sdk/SKILL.md`。
+
+### 安装
+
+```bash
+pip install lansenger-sdk
+```
+
+SDK 只依赖 `httpx`，零框架耦合。
+
+### 三种创建方式
+
+```python
+from lansenger_sdk import LansengerClient, LansengerSyncClient
+
+# 方式 1：从环境变量创建（与 CLI 共享配置）
+client = LansengerClient.from_env()          # 异步（推荐批量任务）
+sync_client = LansengerSyncClient.from_env()  # 同步（简单脚本）
+
+# 方式 2：从 CLI 已有 profile 创建（复用 CLI 凭证和已持久化的 userToken）
+client = LansengerClient.from_store(profile="default")
+
+# 方式 3：直接传参数
+client = LansengerClient(
+    app_id="your-appid",
+    app_secret="your-secret",
+    api_gateway_url="https://your-gateway-url",
+)
+```
+
+**关键**：`from_store()` 会复用 CLI `config set` 配置的凭证，无需重复配置。
+
+### 异步 vs 同步
+
+| 客户端 | 类名 | 适合场景 |
+|--------|------|----------|
+| 异步 | `LansengerClient` | 并发批量（asyncio.gather）、长期运行服务 |
+| 同步 | `LansengerSyncClient` | 简单脚本、非 async 环境 |
+
+方法签名完全一致，区别仅在于异步需要 `await`：
+
+```python
+# 异步
+result = await client.send_text(chat_id="staff123", content="Hello")
+
+# 同步
+result = sync_client.send_text(chat_id="staff123", content="Hello")
+```
+
+### Token 管理（SDK 自动化）
+
+SDK 的 Token 管理比 CLI 更自动化：
+
+```python
+# appToken — 全自动，无需任何操作
+result = await client.send_text(chat_id="staff123", content="Hello")
+
+# userToken — 自动刷新（CLI 的 --as 等效）
+user_token = await client.get_user_token(staff_id="staff_001")
+result = await client.fetch_chat_list(user_token=user_token)
+```
+
+**与 CLI 的对应关系**：
+
+| CLI | SDK |
+|-----|-----|
+| `--as staff_001` | `client.get_user_token(staff_id="staff_001")` |
+| `--user-token "ut_xxx"` | `user_token="ut_xxx"` 传给方法参数 |
+| `--app-token "xxx"` | `LansengerClient(app_token="xxx")` |
+
+> 批量模式、并发控制、断点续传等高级用法详见 `../lansenger-sdk/SKILL.md`。
 
 ## 认证
 
@@ -495,4 +569,5 @@ lansenger --version
 | 媒体文件 | `../lansenger-media/SKILL.md` | 上传/下载文件、图片、视频、音频 |
 | 机器人指令 | `../lansenger-bot-command/SKILL.md` | 管理机器人指令（4.37） |
 | 个人应用 | `../lansenger-personal-app/SKILL.md` | 管理个人应用/机器人（4.38） |
+| SDK 编程 | `../lansenger-sdk/SKILL.md` | 批量操作、并发控制、断点续传、连接复用 |
 | External模式 | `../lansenger-external/SKILL.md` | 显式传入app_token/user_token的集成模式 |

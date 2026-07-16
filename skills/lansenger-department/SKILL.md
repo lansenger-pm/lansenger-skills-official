@@ -1,6 +1,6 @@
 ---
 name: lansenger-department
-version: 1.1.0
+version: 1.1.1
 description: "蓝信部门/组织架构导航：部门详情、子部门列表、部门员工列表。当用户需要浏览组织架构、查看部门信息时使用。"
 metadata:
   requires:

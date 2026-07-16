@@ -1,25 +1,32 @@
 {
-  "version": "1.9.2",
+  "version": "1.10.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
-  "description": "AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python, Go, and TypeScript CLI",
+  "description": "AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK",
   "structure": "<name>/SKILL.md",
   "root": "SKILL.md",
   "shared": "lansenger-shared/SKILL.md",
   "skills": [
     {
       "id": "lansenger",
-      "name": "Lansenger CLI Skills Suite",
+      "name": "Lansenger Skills Suite",
       "category": "root",
-      "description": "Master dispatcher for all Lansenger CLI skills — install, strategy, skill routing table, identity model, and Reverse Handoff rules",
+      "description": "Master dispatcher for all Lansenger skills — install, CLI/SDK strategy, skill routing table, identity model, and Reverse Handoff rules",
       "path": "SKILL.md"
     },
     {
       "id": "lansenger-shared",
       "name": "Lansenger Shared Rules",
       "category": "shared",
-      "description": "Authentication, config setup, error handling, security rules — auto-loaded by all other skills",
+      "description": "Authentication, config setup, error handling, security rules, SDK client init — auto-loaded by all other skills",
       "path": "lansenger-shared/SKILL.md"
+    },
+    {
+      "id": "lansenger-sdk",
+      "name": "Lansenger SDK Programming Guide",
+      "category": "sdk",
+      "description": "SDK programming guide — batch operations, concurrent fetching, deep pagination, checkpoint resume, error handling, connection reuse. Use when CLI per-command overhead is too high for batch tasks",
+      "path": "lansenger-sdk/SKILL.md"
     },
     {
       "id": "lansenger-messaging",

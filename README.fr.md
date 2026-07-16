@@ -5,11 +5,11 @@
 Skills pour Agent IA Lansenger CLI — documents Markdown structurés pour CLI Python, Go et TypeScript, couvrant la messagerie, les calendriers, les groupes, les contacts, les départements, les todos, le streaming, les callbacks, OAuth et plus encore.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.8.2-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.10.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## Qu'est-ce que les Skills ?
 
-Les Skills sont des documents Markdown structurés qui enseignent aux Agents IA comment utiliser le CLI `lansenger`. Chaque Skill couvre un domaine métier (messagerie, calendrier, groupes, etc.) avec :
+Les Skills sont des documents Markdown structurés qui enseignent aux Agents IA comment utiliser le CLI et le SDK `lansenger`. Chaque Skill couvre un domaine métier (messagerie, calendrier, groupes, etc.) avec :
 
 - **Concepts fondamentaux** et terminologie
 - **Référence des commandes CLI** avec paramètres et exemples
@@ -135,7 +135,7 @@ skill-template/                          # Templates pour créer de nouveaux ski
 | `lansenger-callback` | 25 types d'événements, parsing structuré, décryptage AES, vérification de signature |
 | `lansenger-media` | Upload/download de fichiers, images, vidéos, audio, récupérer le chemin média |
 
-## Compatibilité CLI
+## Compatibilité CLI & SDK
 
 **Recommandé** : Python SDK et CLI. Go et TypeScript comme alternatives.
 

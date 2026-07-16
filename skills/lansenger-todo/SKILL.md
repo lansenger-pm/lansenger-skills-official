@@ -1,6 +1,6 @@
 ---
 name: lansenger-todo
-version: 1.1.0
+version: 1.2.0
 description: "蓝信待办任务管理：创建、更新、查询、删除待办任务，管理执行人，查看状态统计。当用户需要创建/查询/管理待办任务时使用。"
 metadata:
   requires:
@@ -302,3 +302,58 @@ lansenger todo executor-list task123 org123 --staff-id staff1
 | executor-status 不传 JSON 格式 | 必须传 JSON 数组格式 |
 | 创建时不传 link/pc_link | link 和 pc_link 是必需参数 |
 | 不确认就创建/删除待办 | 创建/删除属于高风险操作，必须先确认 |
+
+## SDK 用法
+
+当需要批量创建待办、或批量更新状态时，用 SDK 替代逐条 CLI 调用。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+| 方法 | 说明 |
+|------|------|
+| `create_todo_task(title, link, pc_link, executor_ids, org_id, ...)` | 创建待办任务 |
+| `fetch_todo_task_list(org_id, ...)` | 查询待办列表 |
+| `update_todo_task_status(todotask_id, status, org_id, ...)` | 更新待办状态 |
+| `delete_todo_task(todotask_id, org_id, ...)` | 删除待办任务 |
+| `fetch_todo_task_status_counts(staff_id, org_id, ...)` | 查看状态统计 |
+
+### 批量创建待办
+
+用 SyncClient 顺序循环创建多个待办，复用同一 HTTP 连接，避免逐条 CLI 的进程开销。
+
+```python
+from lansenger_sdk import LansengerSyncClient
+
+client = LansengerSyncClient.from_store(profile="default")
+
+tasks = [
+    {
+        "title": "审批报销单",
+        "link": "https://app.com/a/1",
+        "pc_link": "https://pc.app.com/a/1",
+        "executor_ids": ["staff1", "staff2"],
+    },
+    {
+        "title": "审批请假申请",
+        "link": "https://app.com/a/2",
+        "pc_link": "https://pc.app.com/a/2",
+        "executor_ids": ["staff3"],
+    },
+]
+
+org_id = "org123"
+for task in tasks:
+    result = client.create_todo_task(
+        title=task["title"],
+        link=task["link"],
+        pc_link=task["pc_link"],
+        executor_ids=task["executor_ids"],
+        org_id=org_id,
+    )
+    if result.success:
+        print(f"创建成功: {task['title']} -> {result.todotask_id}")
+    else:
+        print(f"创建失败: {task['title']} -> {result.error}")
+```
+
+> 更多批量模式（并发、断点续传、深分页）详见 `../lansenger-sdk/SKILL.md`。

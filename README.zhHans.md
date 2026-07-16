@@ -2,14 +2,14 @@
 
 # lansenger-skills-official
 
-蓝信 CLI 的 AI Agent Skills — 为 Python、Go 和 TypeScript CLI 提供结构化 Markdown Skill 文档，涵盖消息、日历、群组、联系人、部门、待办、流式消息、回调、OAuth 等。
+蓝信 CLI 和 SDK 的 AI Agent Skills — 为 Python、Go 和 TypeScript CLI/SDK 提供结构化 Markdown Skill 文档，涵盖消息、日历、群组、联系人、部门、待办、流式消息、回调、OAuth、批量操作等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.8.2-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.10.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## 什么是 Skills？
 
-Skills 是结构化的 Markdown 文档，用于教会 AI Agent 如何使用 `lansenger` CLI。每个 Skill 覆盖一个业务领域（消息、日历、群组等），包含：
+Skills 是结构化的 Markdown 文档，用于教会 AI Agent 如何使用 `lansenger` CLI 和 SDK。每个 Skill 覆盖一个业务领域（消息、日历、群组等），包含：
 
 - **核心概念**和术语
 - **CLI 命令参考**，含参数和示例
@@ -114,6 +114,7 @@ skills/
   lansenger-streaming/SKILL.md          # 流式消息（AI-Agent SSE）
   lansenger-callback/SKILL.md           # 回调事件与 Webhook
   lansenger-media/SKILL.md              # 媒体文件上传/下载
+  lansenger-sdk/SKILL.md                 # SDK 编程指南（批量、并发、断点续传）
 skill_manifest.json                      # 所有 Skills 的索引
 skill-template/                          # 创建新 Skill 的模板
 ```
@@ -134,8 +135,9 @@ skill-template/                          # 创建新 Skill 的模板
 | `lansenger-streaming` | 基于 SSE 的 AI Agent 实时消息推送 |
 | `lansenger-callback` | 25 种事件类型、结构化解析、AES 解密、签名验证 |
 | `lansenger-media` | 上传/下载文件、图片、视频、音频，获取媒体路径 |
+| `lansenger-sdk` | SDK 编程指南 — 批量操作、并发拉取、深分页、断点续传、错误处理、连接复用 |
 
-## CLI 兼容性
+## CLI 和 SDK 兼容性
 
 **推荐**：Python SDK 和 CLI。Go 和 TypeScript 作为备选。
 

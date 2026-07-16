@@ -1,6 +1,6 @@
 ---
 name: lansenger-media
-version: 1.2.1
+version: 1.3.0
 description: "蓝信媒体文件管理：上传文件/图片/视频/音频、下载媒体文件、获取媒体路径。当用户需要上传附件、下载媒体、获取媒体URL时使用。"
 metadata:
   requires:
@@ -153,3 +153,48 @@ lansenger media path media123 --user-token "ut1"
 | 上传图片不指定 --media-type | 默认为 file，图片需 `--media-type image` |
 | 上传视频不传 width/height/duration | 视频和音频建议传尺寸和时长参数 |
 | 下载大文件用 `download` 而非 `download-to-file` | `download-to-file` 直接写入磁盘，避免内存占用 |
+
+## SDK 用法
+
+当需要批量上传或下载文件时，用 SDK 并发操作可大幅提升效率。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+| 方法 | 说明 |
+|------|------|
+| `upload_media(file_path="xxx", ...)` | 上传文件（通用通道，需 userToken） |
+| `download_media(media_id="xxx")` | 下载媒体文件（返回内容） |
+| `download_media_to_file(media_id="xxx", target_path="xxx")` | 下载媒体文件到本地路径 |
+| `fetch_media_path(media_id="xxx", ...)` | 获取媒体文件路径/URL |
+
+### 批量并发上传文件
+
+用 AsyncClient + asyncio.gather + Semaphore(5) 并发上传多个文件。
+
+```python
+import asyncio
+from lansenger_sdk import LansengerClient
+
+async def batch_upload_files(file_paths: list[str], user_token: str, max_concurrent: int = 5):
+    client = LansengerClient.from_store(profile="default")
+    semaphore = asyncio.Semaphore(max_concurrent)
+
+    async def upload_one(file_path: str):
+        async with semaphore:
+            return await client.upload_media(file_path=file_path, user_token=user_token)
+
+    results = await asyncio.gather(*[upload_one(fp) for fp in file_paths])
+    await client.close()
+
+    for fp, result in zip(file_paths, results):
+        if result.success:
+            print(f"{fp}: 上传成功 -> {result.media_id}")
+        else:
+            print(f"{fp}: 上传失败 -> {result.error}")
+    return results
+
+file_paths = ["/data/file1.pdf", "/data/file2.pdf", "/data/file3.pdf"]
+asyncio.run(batch_upload_files(file_paths, user_token="ut1"))
+```
+
+> 并发上传时注意文件大小和 API 限流，Semaphore 值建议 ≤3（文件上传比普通 API 更耗资源）。详见 `../lansenger-sdk/SKILL.md`。

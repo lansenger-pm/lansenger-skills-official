@@ -2,14 +2,14 @@
 
 # lansenger-skills-official
 
-AI Agent Skills for Lansenger CLI — structured Markdown skill docs for Python, Go, and TypeScript CLI, covering messaging, calendar, groups, contacts, departments, todos, streaming, callbacks, OAuth, and more.
+AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK, covering messaging, calendar, groups, contacts, departments, todos, streaming, callbacks, OAuth, batch operations, and more.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.8.2-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.10.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## What are Skills?
 
-Skills are structured Markdown documents that teach AI Agents how to use the `lansenger` CLI. Each Skill covers a business domain (messaging, calendar, groups, etc.) with:
+Skills are structured Markdown documents that teach AI Agents how to use the `lansenger` CLI and SDK. Each Skill covers a business domain (messaging, calendar, groups, etc.) with:
 
 - **Core concepts** and terminology
 - **CLI command reference** with parameters and examples
@@ -114,6 +114,7 @@ skills/
   lansenger-streaming/SKILL.md          # Streaming messages (AI-Agent SSE)
   lansenger-callback/SKILL.md           # Callback events & webhook
   lansenger-media/SKILL.md              # Media file upload/download
+  lansenger-sdk/SKILL.md                  # SDK programming guide (batch, concurrency, checkpoint)
 skill_manifest.json                      # Index of all skills
 skill-template/                          # Templates for creating new skills
 ```

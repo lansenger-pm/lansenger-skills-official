@@ -1,6 +1,6 @@
 ---
 name: lansenger-callback
-version: 1.1.2
+version: 1.1.3
 description: "蓝信回调事件解析：解析加密/明文回调数据、AES解密、验证签名、查看事件类型映射。当用户需要处理蓝信 Webhook 回调、解析或解密事件数据时使用。"
 metadata:
   requires:
@@ -176,3 +176,32 @@ lansenger -j callback event-types
 | 签名验证缺少 callback-token | 若开发者中心配置了回调 token，需通过 `--callback-token` 传入；否则回退到 encoding_key |
 | 解密后 orgId/appId 混在一起 | 提供 `--known-app-id` 可帮助正确拆分 |
 | 把回调当 API 调用 | 回调解析是本地数据处理，不发送 HTTP 请求 |
+
+## SDK 用法
+
+回调解析是纯数据操作，SDK 直接调用解析函数，无需 HTTP 请求。详见 `../lansenger-sdk/SKILL.md`。
+
+### 核心方法
+
+```python
+from lansenger_sdk import (
+    parse_callback_payload,
+    verify_callback_signature,
+    decrypt_callback_payload,
+    get_callback_event_types,
+)
+
+# 解析回调数据
+event = parse_callback_payload(raw_payload)
+
+# 验证签名
+is_valid = verify_callback_signature(token="callback_token", timestamp="123", nonce="abc", encrypted="xxx")
+
+# AES 解密
+decrypted = decrypt_callback_payload(encoding_key="base64_key", encrypted_data="xxx")
+
+# 查看所有事件类型
+event_types = get_callback_event_types()
+```
+
+**特点**：回调解析函数是同步的纯函数，不涉及网络请求，可在任何环境中直接调用。
