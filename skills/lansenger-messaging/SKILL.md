@@ -258,14 +258,11 @@ lansenger message send-user-message staff456 text '{"text":"Private message"}' -
 # 用户 → 用户 带 common 配置
 lansenger message send-user-message staff456 formatText '{"content":"**Bold** text"}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
 
-# 用户 → 用户 发送文件（需 userToken）
-lansenger message send-user-message staff456 text '{"text":"这是文件说明"}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
+# 用户 → 用户 发送文件（需 userToken，直接用 send-file）
+lansenger message send-file staff456 /path/to/file.pdf --user-token $TOKEN
 
-# 发送文件需先上传到素材库获取 mediaId，再用 file 类型发送
-# Step 1：上传文件
-lansenger media upload-app --type file /path/to/file.pdf --app-token "xxx" --user-token "yyy"
-# Step 2：用 file 类型发送
-lansenger message send-user-message staff456 file '{"mediaIds":["mediaId_from_step1"]}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
+# 用户 → 用户 发送视频文件（需 userToken + 封面图）
+lansenger message send-file staff456 /path/to/video.mp4 --media-type video --cover-image /path/to/cover.jpg --user-token $TOKEN
 ```
 
 ### 发送提醒
