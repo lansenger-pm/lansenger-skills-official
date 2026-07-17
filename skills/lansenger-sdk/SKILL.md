@@ -68,7 +68,7 @@ client = LansengerClient.from_store(profile="default")
 client = LansengerClient(
     app_id="your-appid",
     app_secret="your-secret",
-    api_gateway_url="https://your-gateway-url",
+    api_gateway_url="https://your-gateway-url",  # 推荐用 from_env() / from_store()，从环境变量 LANSENGER_API_GATEWAY_URL 或配置文件读取
 )
 ```
 

@@ -149,7 +149,6 @@ metadata:
 | `send-user-message` | 人→人私聊发消息（需userToken） | [`references/lansenger-messaging-send-user-message.md`](references/lansenger-messaging-send-user-message.md) |
 | `update-dynamic-card` | 更新动态卡片 | [`references/lansenger-messaging-update-dynamic-card.md`](references/lansenger-messaging-update-dynamic-card.md) |
 | `revoke` | 撤回消息 | [`references/lansenger-messaging-revoke.md`](references/lansenger-messaging-revoke.md) |
-| `query-groups` | 查询机器人可发消息的群列表 | 见下方「CLI 命令速查」→ `query-groups` |
 | `send-reminder` | 对消息发送提醒（弹窗/SMS/电话） | 见下方「CLI 命令速查」→ `send-reminder` |
 | `approve-card` | 发送审批卡片（4.6.4.13） | 见下方「审批卡片」章节 |
 | `update-approve-card` | 更新审批卡片状态（4.6.4.12） | 见下方「审批卡片」章节 |
@@ -218,19 +217,6 @@ lansenger message send-oacard staff123 "Leave Approval" --head "OA审批" --staf
 
 # 多图文
 lansenger message send-app-articles staff123 '{"title":"News","url":"https://..."}'
-```
-
-### 查询可发消息的群
-
-```bash
-# 查询机器人可发消息的群列表
-lansenger message query-groups
-
-# 分页查询（--page 从 0 开始）
-lansenger message query-groups --page 0 --size 50
-
-# JSON 输出
-lansenger -j message query-groups
 ```
 
 ### 消息管理
@@ -309,7 +295,6 @@ lansenger -j message send-reminder msg123 --type 1 --user staff456
 | appCard 群聊中用 --mention-all | appCard/linkCard/appArticles **不支持** @mention，reminder参数被静默忽略 |
 | Bot发群聊消息但Bot不在群里 | Bot必须先加入群聊才能发消息 |
 | 群聊不加 `--group` 参数 | 群聊必须加 `--group` 或使用 `send-group-message` |
-| 不知道Bot能在哪些群发消息 | 用 `query-groups` 查询机器人可发消息的群列表 |
 | 私聊中使用 send-reminder | reminder 只在群聊中有效 — 私聊无群语境 |
 | 发视频消息只传一个 mediaId | 视频消息 **必须** 用 `--cover-image` 提供封面图片；CLI 会自动上传封面并构造 `[视频mediaId, 封面mediaId]` |
 | 身份发送失败后换身份重试 | **严禁降级或换身份**。用户身份发就用用户身份，机器人身份发就用机器人身份。失败就如实告知用户，不允许切换身份重试 |
@@ -441,7 +426,6 @@ lansenger message update-approve-card msg123 \
 | `send_group_message` | 群聊发消息（完整能力） | `group_id`, `msg_type`, `msg_data`, `user_token`, `sender_id`, `reminder_all`, `reminder_user_ids`, `reminder_bot_ids`, `ref_msg_id` |
 | `send_bot_message` | Bot 批量发消息 | `msg_type`, `msg_data`, `chat_ids`, `user_token`, `entry_id`, `is_group`, `ref_msg_id` |
 | `send_reminder` | 发送弹窗/SMS/电话提醒 | `msg_id`, `reminder_types`(List[int]), `user_id_list`(List[str]) |
-| `query_groups` | 查询机器人所在群 | `page_offset`, `page_size` |
 
 > **注意**：SDK 参数使用 `reminder_*` 命名（如 `reminder_all`、`reminder_user_ids`），对应 CLI 的 `--mention-all`、`--mention`。这是 @提及功能，与 `send_reminder`（弹窗提醒）不同。
 
