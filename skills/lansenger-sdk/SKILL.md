@@ -74,6 +74,20 @@ client = LansengerClient(
 
 **关键**：`from_store()` 会复用 CLI `config set` 配置的凭证和已持久化的 userToken，无需重复配置。
 
+### 初始化模式：app_id+app_secret vs app_token
+
+`LansengerClient` 支持两种互斥的初始化模式，决定了谁负责 token 生命周期：
+
+| 模式 | 传入参数 | Token 管理 | 适用场景 |
+|------|----------|-----------|---------|
+| **app_id + app_secret**（标准模式） | `app_id`, `app_secret` 或 `from_env()` / `from_store()` | SDK 自动获取、缓存、刷新 appToken | 官方 Profile 模式（CLI 凭证文件） |
+| **app_token**（pass-through 模式） | `app_token`（直接传入） | SDK 不获取/不刷新，由集成方外部管理 | LanMate / External 模式 |
+
+- 标准模式下 SDK 的 `TokenManager` 会在 appToken 接近过期时自动重新换取（约 2 小时周期），调用方无感。
+- pass-through 模式下，SDK 检测到 `app_token` 后只做透传，token 过期后集成方必须自行重新获取并重建客户端。
+- 两种模式不可混用：同时传入 `app_id`/`app_secret` 与 `app_token` 时，以 `app_token` 为准（pass-through）。
+- 详细 pass-through 用法见 `lansenger-external-sdk` / `lansenger-lanmate-sdk` 技能。
+
 ### 异步 vs 同步选择
 
 | 客户端 | 类名 | 适合场景 |

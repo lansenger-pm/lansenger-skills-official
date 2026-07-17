@@ -425,10 +425,10 @@ lansenger message update-approve-card msg123 \
 
 | 方法 | 说明 | 关键参数 |
 |------|------|---------|
-| `send_text` | 发送文本消息 | `chat_id`, `content`, `is_group`(群聊), `user_token`(用户身份), `reminder_all`(@全体) |
+| `send_text` | 发送文本消息 | `chat_id`, `content`, `is_group`(群聊), `file_path`(附件), `user_token`(用户身份), `mention_all`(@全体), `mention_user_ids`(@指定人), `mention_bot_ids`(@指定bot), `ref_msg_id`(引用消息), `sender_id`(发送者) |
 | `send_markdown` | 发送 Markdown 消息 | `chat_id`, `content`, `is_group`, `user_token` |
-| `send_file` | 发送文件消息 | `chat_id`, `file_path`, `is_group`, `media_type` |
-| `send_group_message` | 群聊发消息（完整能力） | `group_id`, `msg_type`, `msg_data`, `user_token`, `reminder_all`, `reminder_members` |
+| `send_file` | 发送文件消息 | `chat_id`, `file_path`, `is_group`, `media_type`, `content`(说明文字), `cover_image`(视频封面), `user_token`, `sender_id` |
+| `send_group_message` | 群聊发消息（完整能力） | `group_id`, `msg_type`, `msg_data`, `user_token`, `mention_all`, `mention_user_ids` |
 
 ```python
 # 私聊文本
@@ -449,7 +449,7 @@ await client.send_group_message(group_id="group123", msg_type="text", msg_data={
 
 ```python
 import asyncio
-from lansenger import LansengerClient
+from lansenger_sdk import LansengerClient
 
 async def broadcast_notice(client: LansengerClient, group_ids: list[str], content: str):
     sem = asyncio.Semaphore(5)
@@ -460,7 +460,7 @@ async def broadcast_notice(client: LansengerClient, group_ids: list[str], conten
                 chat_id=group_id,
                 content=content,
                 is_group=True,
-                reminder_all=True,
+                mention_all=True,
             )
 
     results = await asyncio.gather(
@@ -480,7 +480,7 @@ async def broadcast_notice(client: LansengerClient, group_ids: list[str], conten
 
 ```python
 import asyncio
-from lansenger import LansengerClient
+from lansenger_sdk import LansengerClient
 
 async def send_batch_messages(client: LansengerClient, tasks: list[dict]):
     """tasks 示例:
