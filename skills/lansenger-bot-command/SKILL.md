@@ -83,7 +83,7 @@ lansenger bot-command delete 3 --chat-id staff123 --chat-type staff
 
 | 字段 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| `command` | string | ✓ | 指令名称，仅支持字母、数字、下划线，长度1-64 |
+| `command` | string | ✓ | 指令名称，仅支持字母、数字、下划线，**不允许以斜杠 / 开头**，长度1-64 |
 | `description` | string | ✓ | 指令描述 |
 | `icon` | string | ✗ | 指令图标 URL |
 
@@ -94,7 +94,7 @@ lansenger bot-command delete 3 --chat-id staff123 --chat-type staff
 | `权限不足` | 应用没有机器人能力 | 确认应用已开启机器人能力 |
 | `参数错误` | scope_type 与参数不匹配 | 检查 scope_type 对应的参数是否齐全 |
 | `指令已存在` | 同一作用域下指令名称重复 | 修改指令名称后重新创建 |
-| `命令格式错误` | command 包含非法字符 | 仅使用字母、数字、下划线 |
+| `命令格式错误` | command 包含非法字符或以斜杠 / 开头 | 仅使用字母、数字、下划线，**不要加斜杠前缀** |
 
 ## SDK 用法
 
@@ -108,7 +108,7 @@ from lansenger_sdk import LansengerClient
 client = LansengerClient.from_store(profile="default")
 
 # 创建指令
-result = await client.create_bot_commands(commands=[{"name": "/help", "description": "帮助"}])
+result = await client.create_bot_commands(commands=[{"command": "help", "description": "帮助"}])
 
 # 查询指令
 result = await client.fetch_bot_commands()

@@ -6,7 +6,7 @@
 
 **安全提醒：** 发送前务必与用户确认收件人和消息内容。请勿发送用户未明确批准的消息。
 
-**重要：** Markdown 格式仅通过 `formatText` 通道生效 — 具体为 4.6.3（用户私聊）和 4.6.2（群聊）。Bot 私聊**不支持** Markdown。向 Bot 私聊发送 Markdown 将以纯文本形式渲染。
+**重要：** Markdown 格式仅通过 `formatText` 通道生效 — 具体为 4.6.3（用户私聊）和 4.6.2（群聊）。
 
 ## 参数
 
@@ -39,7 +39,6 @@ lansenger message send-markdown user_123 "```python\nprint('hello')\n```" --user
 
 ## 常见错误
 
-- 向 Bot 私聊发送 Markdown — Markdown 不会渲染；请改用普通的 `send-text`。
 - 未在群聊中使用 `--mention` — @提及仅在群聊中有效。
 - 未对 Markdown 内容中的特殊 Shell 字符进行转义 — 请用引号包裹内容或使用换行转义。
 - 在用户私聊通道中忘记 `--user-token` — Markdown 需要 formatText 通道，该通道需要用户令牌。

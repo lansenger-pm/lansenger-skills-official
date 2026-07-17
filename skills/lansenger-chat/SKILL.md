@@ -175,10 +175,10 @@ lansenger chat messages --staff-id staff123 --split-month --progress --user-toke
 | `--sender-id` | str | "" | 按发送者 staffId 过滤 |
 | `--split-month` | flag | false | 自动按月拆分拉取（时间跨度超过1个月时必须使用） |
 | `--progress` | flag | false | 显示拉取进度（配合 --split-month 使用） |
-| `--json` | flag | false | JSON 格式输出，便于结构化解析 |
 | `--user-token` | str | "" | 用户 Token（推荐传入，获取用户视角数据） |
 
 **注意**：`--staff-id` 和 `--group-id` 二选一，必须提供其中一个。
+**注意**：JSON 输出使用全局选项 `-j`，必须放在子命令之前：`lansenger -j ... chat messages ...`
 
 ## 批量操作与限制说明
 
