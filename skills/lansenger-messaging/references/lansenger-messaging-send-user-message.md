@@ -29,6 +29,15 @@ lansenger message send-user-message user_123 markdown '{"content":"**Important**
 lansenger message send-user-message user_123 interactive '{"header":{"title":{"tag":"plain_text","content":"Action needed"}},"elements":[{"tag":"div","text":{"tag":"plain_text","content":"Click below"}}]}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
 
 lansenger message send-user-message user_123 text '{"text":"Unique notification"}' --user-token $TOKEN --uuid "notif-001"
+
+# 发送文件（需先上传到素材库获取 mediaId，再用 file 类型发送）
+# Step 1：上传文件到素材库
+lansenger media upload-app --type file /path/to/file.pdf --app-token "xxx" --user-token "yyy"
+# Step 2：用 file 类型发送
+lansenger message send-user-message user_123 file '{"mediaIds":["mediaId_from_step1"]}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
+
+# 发送文本带文件说明
+lansenger message send-user-message user_123 text '{"text":"这是文件说明"}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
 ```
 
 ## 常见错误

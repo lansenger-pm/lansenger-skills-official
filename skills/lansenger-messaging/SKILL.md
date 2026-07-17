@@ -1,6 +1,6 @@
 ---
 name: lansenger-messaging
-version: 1.4.1
+version: 1.4.2
 description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles/approveCard），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
@@ -257,6 +257,15 @@ lansenger message send-user-message staff456 text '{"text":"Private message"}' -
 
 # 用户 → 用户 带 common 配置
 lansenger message send-user-message staff456 formatText '{"content":"**Bold** text"}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
+
+# 用户 → 用户 发送文件（需 userToken）
+lansenger message send-user-message staff456 text '{"text":"这是文件说明"}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
+
+# 发送文件需先上传到素材库获取 mediaId，再用 file 类型发送
+# Step 1：上传文件
+lansenger media upload-app --type file /path/to/file.pdf --app-token "xxx" --user-token "yyy"
+# Step 2：用 file 类型发送
+lansenger message send-user-message staff456 file '{"mediaIds":["mediaId_from_step1"]}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
 ```
 
 ### 发送提醒
@@ -289,6 +298,7 @@ lansenger -j message send-reminder msg123 --type 1 --user staff456
 | 不知道Bot能在哪些群发消息 | 用 `query-groups` 查询机器人可发消息的群列表 |
 | 私聊中使用 send-reminder | reminder 只在群聊中有效 — 私聊无群语境 |
 | 发视频消息只传一个 mediaId | 视频消息 **必须** 用 `--cover-image` 提供封面图片；CLI 会自动上传封面并构造 `[视频mediaId, 封面mediaId]` |
+| 身份发送失败后换身份重试 | **严禁降级或换身份**。用户身份发就用用户身份，机器人身份发就用机器人身份。失败就如实告知用户，不允许切换身份重试 |
 
 ### AppCard 样式与字段陷阱
 

@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.7.0
+version: 1.7.1
 description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理、SDK 客户端初始化 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
@@ -403,6 +403,13 @@ lansenger --app-token "xxx" --profile "default" message send-text staff123 "Hell
 | `需要 userToken` | 访问用户级资源但未传 token | 添加 `--user-token` 参数（参见 lansenger-oauth） |
 | `token 过期` | userToken 过期 | 通过 OAuth2 重新获取或刷新 |
 | **`errCode=51011`（建群申请等待审核）** | 组织开启了建群审核 | **非报错，正常业务流程。告知用户"申请已提交，等待管理员审核"** |
+
+**CRITICAL — 权限错误处理原则**：
+- 接口调用失败（权限不足、scope 缺失、token 过期等）时，**如实告知用户**错误信息和原因
+- **严禁静默重试** — 不要在用户不知情的情况下自动重试
+- **严禁换身份/换通道重试** — 选定的身份失败后，不得切换到另一身份或另一通道重试
+- **严禁换方式重试** — 不得改变调用方式（如从 SDK 换 CLI、从群聊换私聊）来绕过权限
+- 应用权限可能被管理员在后台随时调整，遇到权限错误是正常的业务情况，应如实反馈
 
 ## Profile 管理（多应用/多机器人）
 
