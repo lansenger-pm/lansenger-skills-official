@@ -206,72 +206,12 @@ lansenger staff org-info org123
 
 ## SDK 用法
 
-当需要批量查询多个员工信息、或批量做 ID 映射时，用 SDK 替代逐条 CLI 调用。详见 `../lansenger-sdk/SKILL.md`。
-
-### 核心方法
-
-`LansengerClient` / `LansengerSyncClient` 提供与 CLI 一一对应的员工/通讯录方法：
-
-| SDK 方法 | 对应 CLI 命令 | 关键参数 |
-|----------|--------------|---------|
-| `fetch_staff_basic_info(staff_id="xxx")` | `staff basic-info` | `staff_id`，可选 `user_token` |
-| `fetch_staff_detail(staff_id="xxx", user_token="ut")` | `staff detail` | `staff_id`，推荐传 `user_token` |
-| `fetch_staff_id_mapping(org_id="xxx", id_type="mobile", id_value="13800138000")` | `staff id-mapping` | `org_id`、`id_type`（mobile/mail/login/external_id/employ_id）、`id_value` |
-| `search_staff(keyword="张三", user_token="ut")` | `staff search` | `keyword`，`user_token` 或 `user_id`（必需），可选 `recursive`、`sector_ids`、`page`、`page_size` |
-| `fetch_department_ancestors(staff_id="xxx")` | `staff ancestors` | `staff_id`，可选 `user_token` |
-
-### 批量查询员工详情（模式 1：顺序批量）
-
-适合 10–50 个员工，使用 `SyncClient` 简单 for 循环：
+批量查询员工信息、批量 ID 映射等场景用 SDK。详见 `../lansenger-sdk/SKILL.md`。
 
 ```python
-from lansenger_sdk import LansengerSyncClient
-
-client = LansengerSyncClient.from_store(profile="default")
-
-staff_ids = ["staff1", "staff2", "staff3", "staff4", "staff5"]
-results = []
-for sid in staff_ids:
-    result = client.fetch_staff_detail(staff_id=sid, user_token="ut1")
-    if result.success:
-        results.append(result)
-    else:
-        print(f"查询 {sid} 失败: {result.error}")
-
-print(f"成功 {len(results)}/{len(staff_ids)}")
-```
-
-### 批量并发查询（100+ 员工）
-
-适合 100+ 员工，使用 `AsyncClient` + `asyncio.gather` + `Semaphore` 限流：
-
-```python
-import asyncio
 from lansenger_sdk import LansengerClient
-
-async def batch_fetch_staff_detail(staff_ids: list[str], user_token: str = "", max_concurrent: int = 5):
-    client = LansengerClient.from_store(profile="default")
-    semaphore = asyncio.Semaphore(max_concurrent)  # 限流，建议 ≤5
-
-    async def fetch_one(staff_id: str):
-        async with semaphore:
-            return await client.fetch_staff_detail(staff_id=staff_id, user_token=user_token)
-
-    results = await asyncio.gather(*[fetch_one(sid) for sid in staff_ids])
-    await client.close()
-
-    success = [r for r in results if r.success]
-    failed = [(staff_ids[i], results[i].error) for i, r in enumerate(results) if not r.success]
-    return success, failed
-
-# 运行
-staff_ids = ["staff1", "staff2", ..., "staff100"]
-success, failed = asyncio.run(batch_fetch_staff_detail(staff_ids, user_token="ut1"))
+client = LansengerClient.from_store(profile="default")
+result = await client.fetch_staff_basic_info(staff_id="staff123")
 ```
 
-**并发控制要点**：
-- `Semaphore` 值建议 ≤5，避免触发 API 限流
-- 必须在结束时 `await client.close()` 释放 HTTP 连接
-- `search_staff` 因需要 userToken/userId，批量时建议统一传入同一个 `user_token`
-
-> 更多 SDK 用法（深分页、断点续传、错误重试等）详见 [`../lansenger-sdk/SKILL.md`](../lansenger-sdk/SKILL.md)。
+> 批量并发查询（100+ 员工）用 `asyncio.Semaphore(5)` 限流，详见 `lansenger-sdk` 技能。

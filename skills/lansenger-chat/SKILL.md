@@ -65,30 +65,15 @@ metadata:
 
 不同 msgType 的 `content` 字段格式不同，解析时需按类型区分：
 
-| 消息类型 | content 格式 | plain_text 提取方式 |
-|---------|-------------|-------------------|
-| text | `{"text": "xxx"}` | `content.text` |
-| formatText | `{"formatText": {"content": "xxx"}}` | `content.formatText.content` |
-| image | `{"text": "", "attachments": [...], "mediaIds": [...]}` | 图片消息，mediaIds[0] 为图片 mediaId |
-| video | `{"text": "", "attachments": [...], "mediaIds": [videoId, coverId]}` | 视频消息，mediaIds 为 [视频mediaId, 封面图mediaId] |
-| file | `{"text": "", "attachments": [...], "mediaIds": [...]}` | 文件消息，mediaIds[0] 为文件 mediaId |
-| voice | `{"text": "", "mediaIds": [...]}` | 语音消息，mediaIds[0] 为语音 mediaId |
-| appCard | `{"appCard": {...}}` | 需按 div 结构逐段提取 |
-| linkCard | `{"linkCard": {...}}` | `.linkCard.title` + `.linkCard.desc` |
-| oacard | `{"oacard": {...}}` | 需按 oaCard 结构提取 |
-| 其他 | 字符串或嵌套dict | 直接取字符串或需自定义解析 |
+- **text**：`{"text": "xxx"}`，提取 `content.text`
+- **formatText**：`{"formatText": {"content": "xxx"}}`，提取 `content.formatText.content`
+- **image**：`{"text": "", "mediaIds": [...]}`，mediaIds[0] 为图片 mediaId
+- **video**：`{"text": "", "mediaIds": [videoId, coverId]}`，mediaIds 为 [视频mediaId, 封面图mediaId]
+- **file**：`{"text": "", "mediaIds": [...]}`，mediaIds[0] 为文件 mediaId
+- **voice**：`{"text": "", "mediaIds": [...]}`，mediaIds[0] 为语音 mediaId
+- **appCard / linkCard / oacard**：嵌套 dict 结构，需按对应结构提取
 
-**Python SDK 提取方法**：Python SDK v1.5+ 的 `ChatMessageInfo` 提供 `plain_text()` 方法，自动处理所有格式并返回纯文本字符串：
-
-```python
-# Python SDK
-msg = chat_messages[0]  # ChatMessageInfo 对象
-text = msg.plain_text()  # 自动提取纯文本，无论 content 是哪种格式
-
-# CLI --json 输出后用 jq 提取
-# text 类型: .content.text
-# formatText 类型: .content.formatText.content
-```
+**Python SDK 提取方法**：Python SDK v1.5+ 的 `ChatMessageInfo` 提供 `plain_text()` 方法，自动处理所有格式并返回纯文本字符串，无需手动按类型解析。
 
 ### 从消息中提取 mediaId 并重新下载附件
 
@@ -265,78 +250,13 @@ lansenger chat messages --staff-id staff123 --version v1 --size 100 --user-token
 
 ## SDK 用法
 
-当需要批量拉取多个聊天的消息、或拉取跨多月的历史记录时，用 SDK 替代逐条 CLI 调用。详见 `../lansenger-sdk/SKILL.md`。
-
-### 核心方法
+批量拉取多个聊天消息、跨多月历史记录等场景用 SDK。详见 `../lansenger-sdk/SKILL.md`。
 
 ```python
-from lansenger_sdk import LansengerClient, LansengerSyncClient
-
-# 异步
-client = LansengerClient.from_store(profile="default")
-chat_list = await client.fetch_chat_list(chat_type=0, user_token="ut1")
-messages = await client.fetch_chat_messages(staff_id="staff123", start_time=1700000000000000, user_token="ut1")
-
-# 同步
-sync_client = LansengerSyncClient.from_store(profile="default")
-chat_list = sync_client.fetch_chat_list(chat_type=0, user_token="ut1")
-messages = sync_client.fetch_chat_messages(staff_id="staff123", start_time=1700000000000000, user_token="ut1")
-```
-
-### 批量并发拉取多个聊天
-
-```python
-import asyncio
 from lansenger_sdk import LansengerClient
-
-async def batch_fetch_all_chats():
-    client = LansengerClient.from_store(profile="default")
-    user_token = await client.get_user_token(staff_id="staff_001")
-
-    # 获取聊天列表
-    chat_list = await client.fetch_chat_list(user_token=user_token)
-    if not chat_list.success:
-        return
-
-    # 构建目标列表
-    targets = [{"staff_id": s.staff_id} for s in chat_list.staff_infos]
-    targets += [{"group_id": g.group_id} for g in chat_list.group_infos]
-
-    # 并发拉取（限流 5）
-    semaphore = asyncio.Semaphore(5)
-    async def fetch_one(target):
-        async with semaphore:
-            return await client.fetch_chat_messages(
-                staff_id=target.get("staff_id", ""),
-                group_id=target.get("group_id", ""),
-                start_time=1770912000000000,  # 今日零点
-                user_token=user_token,
-            )
-
-    results = await asyncio.gather(*[fetch_one(t) for t in targets])
-    await client.close()
-
-    total = sum(len(r.messages or []) for r in results if r.success)
-    print(f"成功 {sum(1 for r in results if r.success)}/{len(results)}, 共 {total} 条")
-
-asyncio.run(batch_fetch_all_chats())
+client = LansengerClient.from_store(profile="default")
+chat_list = await client.fetch_chat_list(user_token="ut1")
+messages = await client.fetch_chat_messages(staff_id="staff123", start_time=1700000000000000, user_token="ut1")
 ```
 
-### 深分页 + 按月拆分（完整历史）
-
-CLI 的 `--split-month` 在 SDK 中需要手动实现按月拆分逻辑。完整代码模板详见 `../lansenger-sdk/SKILL.md` 的"模式 3：深分页 + 按月拆分"。
-
-### 断点续传
-
-长时间拉取任务支持中断后恢复，进度保存到 JSON 文件。详见 `../lansenger-sdk/SKILL.md` 的"模式 4：断点续传"。
-
-### plain_text() 提取消息文本
-
-SDK 的 `ChatMessageInfo` 对象提供 `plain_text()` 方法，自动处理所有消息格式：
-
-```python
-messages = result.messages
-for msg in messages:
-    text = msg.plain_text()  # 自动提取纯文本，无论 content 是 text/formatText/附件
-    print(f"{msg.sender}: {text}")
-```
+> `ChatMessageInfo.plain_text()` 自动提取纯文本，深分页/按月拆分/断点续传模式详见 `lansenger-sdk` 技能。

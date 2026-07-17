@@ -247,77 +247,9 @@ lansenger config set --profile "new-app-name"
 
 ## SDK 客户端快速初始化
 
-当任务涉及批量操作（≥3 个对象）、并发拉取、或需要进程内数据传递时，应使用 Python SDK 而非逐条调 CLI。详见 `../lansenger-sdk/SKILL.md`。
+当任务涉及批量操作（≥3 个对象）、并发拉取、或需要进程内数据传递时，应使用 Python SDK 而非逐条调 CLI。初始化、并发控制、断点续传详见 `../lansenger-sdk/SKILL.md`。
 
-### 安装
-
-```bash
-pip install lansenger-sdk
-```
-
-SDK 只依赖 `httpx`，零框架耦合。
-
-### 三种创建方式
-
-```python
-from lansenger_sdk import LansengerClient, LansengerSyncClient
-
-# 方式 1：从环境变量创建（与 CLI 共享配置）
-client = LansengerClient.from_env()          # 异步（推荐批量任务）
-sync_client = LansengerSyncClient.from_env()  # 同步（简单脚本）
-
-# 方式 2：从 CLI 已有 profile 创建（复用 CLI 凭证和已持久化的 userToken）
-client = LansengerClient.from_store(profile="default")
-
-# 方式 3：直接传参数
-client = LansengerClient(
-    app_id="your-appid",
-    app_secret="your-secret",
-    api_gateway_url="https://your-gateway-url",
-)
-```
-
-**关键**：`from_store()` 会复用 CLI `config set` 配置的凭证，无需重复配置。
-
-### 异步 vs 同步
-
-| 客户端 | 类名 | 适合场景 |
-|--------|------|----------|
-| 异步 | `LansengerClient` | 并发批量（asyncio.gather）、长期运行服务 |
-| 同步 | `LansengerSyncClient` | 简单脚本、非 async 环境 |
-
-方法签名完全一致，区别仅在于异步需要 `await`：
-
-```python
-# 异步
-result = await client.send_text(chat_id="staff123", content="Hello")
-
-# 同步
-result = sync_client.send_text(chat_id="staff123", content="Hello")
-```
-
-### Token 管理（SDK 自动化）
-
-SDK 的 Token 管理比 CLI 更自动化：
-
-```python
-# appToken — 全自动，无需任何操作
-result = await client.send_text(chat_id="staff123", content="Hello")
-
-# userToken — 自动刷新（CLI 的 --as 等效）
-user_token = await client.get_user_token(staff_id="staff_001")
-result = await client.fetch_chat_list(user_token=user_token)
-```
-
-**与 CLI 的对应关系**：
-
-| CLI | SDK |
-|-----|-----|
-| `--as staff_001` | `client.get_user_token(staff_id="staff_001")` |
-| `--user-token "ut_xxx"` | `user_token="ut_xxx"` 传给方法参数 |
-| `--app-token "xxx"` | `LansengerClient(app_token="xxx")` |
-
-> 批量模式、并发控制、断点续传等高级用法详见 `../lansenger-sdk/SKILL.md`。
+核心对应关系：`--app-token` → `LansengerClient(app_token=...)`，`--user-token` → `user_token=...` 传给方法参数，`--as staff_id` → `client.get_user_token(staff_id=...)`，`config set` 凭证复用 → `LansengerClient.from_store(profile="default")`。SDK 的 TokenManager 自动管理 appToken 获取/刷新和 userToken 刷新。
 
 ## 认证
 
@@ -495,17 +427,7 @@ LANSENGER_JSON=1 lansenger calendar primary
 
 ## 高风险操作防护
 
-以下操作属于高风险，执行前 **MUST 向用户确认**：
-
-| 操作 | 命令 | 风险等级 |
-|------|------|---------|
-| 发消息给他人 | `lansenger message send-text/send-markdown/...` | 中 — 消息对他人可见 |
-| 删除日程 | `lansenger calendar delete-schedule` | 高 — 不可恢复 |
-| 移除群成员 | `lansenger group remove-member` | 高 — 影响他人 |
-| 删除待办 | `lansenger todo delete` | 高 — 不可恢复 |
-| 撤回消息 | `lansenger message revoke` | 中 — 影响他人 |
-
-**规则**：遇到以上操作时，先向用户展示操作细节（目标、内容），等待用户明确确认后再执行。
+发消息、删日程、移除群成员、删除待办、撤回消息等操作执行前 MUST 向用户确认。详见各子技能的具体 CRITICAL 规则。
 
 ## 常见错误处理
 
