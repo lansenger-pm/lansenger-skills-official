@@ -245,12 +245,14 @@ lansenger group dismiss group456 --user-token "ut1"
 
 | 方法 | 说明 |
 |------|------|
-| `create_group(name, org_id, ...)` | 创建群 |
-| `fetch_group_info(group_id, ...)` | 查看群详情 |
-| `fetch_group_members(group_id, ...)` | 查看群成员 |
-| `fetch_group_list(...)` | 群列表 |
-| `check_is_in_group(group_id, ...)` | 检查成员是否在群内 |
-| `dismiss_group(group_id, ...)` | 解散群 |
+| `create_group` | 创建群 |
+| `fetch_group_info` | 查询群信息 |
+| `fetch_group_members` | 查询群成员 |
+| `fetch_group_list` | 查询群列表 |
+| `check_is_in_group` | 检查是否在群中 |
+| `update_group_info` | 更新群信息 |
+| `update_group_members` | 添加/移除群成员 |
+| `dismiss_group` | 解散群 |
 
 ### 批量查询群信息
 

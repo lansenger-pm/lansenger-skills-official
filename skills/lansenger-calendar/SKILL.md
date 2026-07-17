@@ -230,6 +230,20 @@ lansenger calendar attendee-meta calOpenId schOpenId --remind-times '[5,15]' --u
 
 `LansengerClient` / `LansengerSyncClient` 提供以下日历日程方法：
 
+| 方法 | 说明 |
+|------|------|
+| `fetch_primary_calendar` | 获取主日历 |
+| `create_schedule` | 创建日程 |
+| `fetch_schedule` | 查询单个日程 |
+| `fetch_schedule_list` | 查询日程列表 |
+| `update_schedule` | 更新日程 |
+| `delete_schedule` | 删除日程 |
+| `fetch_schedule_attendees` | 查询参会人 |
+| `add_schedule_attendees` | 添加参会人 |
+| `delete_schedule_attendees` | 删除参会人 |
+| `update_schedule_attendee_meta` | 更新参会人元数据 |
+| `update_schedule_attendees` | 批量增删参会人 |
+
 ```python
 from lansenger_sdk import LansengerClient, LansengerSyncClient
 

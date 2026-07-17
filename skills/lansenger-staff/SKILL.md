@@ -208,6 +208,16 @@ lansenger staff org-info org123
 
 批量查询员工信息、批量 ID 映射等场景用 SDK。详见 `../lansenger-sdk/SKILL.md`。
 
+| 方法 | 说明 |
+|------|------|
+| `search_staff` | 搜索员工 |
+| `fetch_staff_basic_info` | 查询员工基本信息 |
+| `fetch_staff_detail` | 查询员工详情 |
+| `fetch_staff_id_mapping` | ID 映射 |
+| `fetch_department_ancestors` | 查询部门祖先链 |
+| `fetch_org_extra_field_ids` | 查询组织扩展字段 |
+| `fetch_org_info` | 查询组织信息 |
+
 ```python
 from lansenger_sdk import LansengerClient
 client = LansengerClient.from_store(profile="default")

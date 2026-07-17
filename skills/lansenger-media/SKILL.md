@@ -190,10 +190,11 @@ lansenger media path media123 --user-token "ut1"
 
 | 方法 | 说明 |
 |------|------|
-| `upload_media(file_path="xxx", ...)` | 上传文件（通用通道，需 userToken） |
-| `download_media(media_id="xxx")` | 下载媒体文件（返回内容） |
-| `download_media_to_file(media_id="xxx", target_path="xxx")` | 下载媒体文件到本地路径 |
-| `fetch_media_path(media_id="xxx", ...)` | 获取媒体文件路径/URL |
+| `upload_media` | 上传素材（通用通道，需 userToken） |
+| `upload_app_media` | 上传素材（App/Bot 通道，不需 userToken） |
+| `download_media` | 下载素材 |
+| `download_media_to_file` | 下载素材到文件 |
+| `fetch_media_path` | 获取素材路径 |
 
 ### 批量并发上传文件
 

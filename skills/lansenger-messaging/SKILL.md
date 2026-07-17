@@ -425,10 +425,25 @@ lansenger message update-approve-card msg123 \
 
 | 方法 | 说明 | 关键参数 |
 |------|------|---------|
-| `send_text` | 发送文本消息 | `chat_id`, `content`, `is_group`(群聊), `file_path`(附件), `user_token`(用户身份), `mention_all`(@全体), `mention_user_ids`(@指定人), `mention_bot_ids`(@指定bot), `ref_msg_id`(引用消息), `sender_id`(发送者) |
-| `send_markdown` | 发送 Markdown 消息 | `chat_id`, `content`, `is_group`, `user_token` |
-| `send_file` | 发送文件消息 | `chat_id`, `file_path`, `is_group`, `media_type`, `content`(说明文字), `cover_image`(视频封面), `user_token`, `sender_id` |
-| `send_group_message` | 群聊发消息（完整能力） | `group_id`, `msg_type`, `msg_data`, `user_token`, `mention_all`, `mention_user_ids` |
+| `send_text` | 发送文本消息（支持附件） | `chat_id`, `content`, `file_path`, `media_type`, `cover_image_path`, `reminder_all`, `reminder_user_ids`, `reminder_bot_ids`, `is_group`, `user_token`, `sender_id`, `ref_msg_id` |
+| `send_markdown` | 发送 Markdown 消息 | `chat_id`, `content`, `reminder_all`, `reminder_user_ids`, `reminder_bot_ids`, `is_group`, `user_token`, `sender_id`, `ref_msg_id` |
+| `send_file` | 发送文件附件 | `chat_id`, `file_path`, `caption`, `media_type`, `cover_image_path`, `is_group`, `user_token`, `sender_id` |
+| `send_image_url` | 从 URL 发送图片 | `chat_id`, `image_url`, `caption`, `is_group`, `user_token`, `sender_id` |
+| `send_link_card` | 发送链接卡片 | `chat_id`, `title`, `link`, `description`, `icon_link`, `pc_link`, `is_group`, `user_token`, `sender_id` |
+| `send_app_articles` | 发送多图文消息 | `chat_id`, `articles`(List[Dict]), `is_group`, `user_token`, `sender_id` |
+| `send_app_card` | 发送应用卡片 | `chat_id`, `body_title`, `head_title`, `body_sub_title`, `body_content`, `fields`, `links`, `is_dynamic`, `head_status_info`, `is_group`, `user_token`, `sender_id` |
+| `send_oacard` | 发送 OA 审批卡片 | `chat_id`, `title`, `head`, `sub_title`, `fields`, `link`, `is_group`, `user_token`, `sender_id` |
+| `send_approve_card` | 发送审批卡片（交互按钮） | `body_title`, `body_content`, `chat_id`, `head_status_describe`, `head_status_colour`, `buttons`, `is_group`, `user_token`, `sender_id` |
+| `update_dynamic_card` | 更新动态卡片 | `msg_id`, `head_status_info`, `links`, `is_last_update` |
+| `update_approve_card` | 更新审批卡片状态 | `msg_id`, `head_status_describe`, `head_status_colour`, `buttons` |
+| `revoke_message` | 撤回消息 | `message_ids`(List[str]), `chat_type`, `sender_id` |
+| `send_user_message` | 人→人私聊发消息 | `receiver_id`, `msg_type`, `msg_data`, `user_token`, `common`, `uuid` |
+| `send_group_message` | 群聊发消息（完整能力） | `group_id`, `msg_type`, `msg_data`, `user_token`, `sender_id`, `reminder_all`, `reminder_user_ids`, `reminder_bot_ids`, `ref_msg_id` |
+| `send_bot_message` | Bot 批量发消息 | `msg_type`, `msg_data`, `chat_ids`, `user_token`, `entry_id`, `is_group`, `ref_msg_id` |
+| `send_reminder` | 发送弹窗/SMS/电话提醒 | `msg_id`, `reminder_types`(List[int]), `user_id_list`(List[str]) |
+| `query_groups` | 查询机器人所在群 | `page_offset`, `page_size` |
+
+> **注意**：SDK 参数使用 `reminder_*` 命名（如 `reminder_all`、`reminder_user_ids`），对应 CLI 的 `--mention-all`、`--mention`。这是 @提及功能，与 `send_reminder`（弹窗提醒）不同。
 
 ```python
 # 私聊文本
@@ -460,7 +475,7 @@ async def broadcast_notice(client: LansengerClient, group_ids: list[str], conten
                 chat_id=group_id,
                 content=content,
                 is_group=True,
-                mention_all=True,
+                reminder_all=True,
             )
 
     results = await asyncio.gather(

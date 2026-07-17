@@ -252,6 +252,13 @@ lansenger chat messages --staff-id staff123 --version v1 --size 100 --user-token
 
 批量拉取多个聊天消息、跨多月历史记录等场景用 SDK。详见 `../lansenger-sdk/SKILL.md`。
 
+| 方法 | 说明 |
+|------|------|
+| `fetch_chat_list` | 获取聊天列表 |
+| `fetch_chat_messages` | 拉取聊天消息 |
+
+> **注意**：SDK 参数 `base_version` 对应 CLI 参数 `--version`（深分页游标）。
+
 ```python
 from lansenger_sdk import LansengerClient
 client = LansengerClient.from_store(profile="default")
