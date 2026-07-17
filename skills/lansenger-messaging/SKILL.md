@@ -1,6 +1,6 @@
 ---
 name: lansenger-messaging
-version: 1.4.0
+version: 1.4.1
 description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles/approveCard），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
@@ -289,6 +289,18 @@ lansenger -j message send-reminder msg123 --type 1 --user staff456
 | 不知道Bot能在哪些群发消息 | 用 `query-groups` 查询机器人可发消息的群列表 |
 | 私聊中使用 send-reminder | reminder 只在群聊中有效 — 私聊无群语境 |
 | 发视频消息只传一个 mediaId | 视频消息 **必须** 用 `--cover-image` 提供封面图片；CLI 会自动上传封面并构造 `[视频mediaId, 封面mediaId]` |
+
+### AppCard 样式与字段陷阱
+
+| 陷阱 | 正确做法 |
+|------|----------|
+| `font-size: 14px` | 用 `pt` 单位，范围 12pt-36pt。px 会被企业 API 拒绝 |
+| `text-indent: 0`（无单位） | 写 `text-indent: 0em`（必须带单位） |
+| `font-size` 用在 fields/links/signature 中 | 仅 bodyTitle、bodySubTitle、bodyContent 支持 font-size；fields 仅支持 color；links.title 仅支持 color + text-align |
+| headStatusInfo.description 写纯文本 | 支持单个 `<div style="color:#FFB116">文字</div>` 控制颜色，<30 字节，不可嵌套 div |
+| headStatusInfo.colour 用于文字颜色 | colour 是状态圆点颜色（如 #FFB116）；文字颜色由 description 内的 div style 控制，二者独立 |
+| AppArticles 用 `description` 字段 | 用 `summary` 字段。`description` 会被 API 静默忽略 |
+| 消息内容超过 ~4000 字符 | 拆分为多条消息发送 |
 
 ## 审批卡片（4.6.4.13）
 

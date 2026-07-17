@@ -1,6 +1,6 @@
 ---
 name: lansenger-chat
-version: 1.4.0
+version: 1.4.1
 description: "蓝信聊天列表与消息历史：查看聊天列表（私聊+群聊）、拉取聊天消息记录。当用户需要查看聊天记录、浏览聊天列表时使用。"
 metadata:
   requires:
@@ -69,7 +69,10 @@ metadata:
 |---------|-------------|-------------------|
 | text | `{"text": "xxx"}` | `content.text` |
 | formatText | `{"formatText": {"content": "xxx"}}` | `content.formatText.content` |
-| 附件 | `{"text": "", "attachments": [...], "mediaIds": [...]}` | `content.text`（正文可能为空） |
+| image | `{"text": "", "attachments": [...], "mediaIds": [...]}` | 图片消息，mediaIds[0] 为图片 mediaId |
+| video | `{"text": "", "attachments": [...], "mediaIds": [videoId, coverId]}` | 视频消息，mediaIds 为 [视频mediaId, 封面图mediaId] |
+| file | `{"text": "", "attachments": [...], "mediaIds": [...]}` | 文件消息，mediaIds[0] 为文件 mediaId |
+| voice | `{"text": "", "mediaIds": [...]}` | 语音消息，mediaIds[0] 为语音 mediaId |
 | appCard | `{"appCard": {...}}` | 需按 div 结构逐段提取 |
 | linkCard | `{"linkCard": {...}}` | `.linkCard.title` + `.linkCard.desc` |
 | oacard | `{"oacard": {...}}` | 需按 oaCard 结构提取 |
@@ -86,6 +89,23 @@ text = msg.plain_text()  # 自动提取纯文本，无论 content 是哪种格�
 # text 类型: .content.text
 # formatText 类型: .content.formatText.content
 ```
+
+### 从消息中提取 mediaId 并重新下载附件
+
+聊天记录中的图片、视频、文件、语音消息都包含 mediaId。提取后可调用 `media download` 或 `media download-to-file` 重新下载：
+
+```bash
+# Step 1：拉取聊天消息（获取 content 中的 mediaIds）
+lansenger -j --app-token "xxx" chat messages --staff-id staff123 --user-token "yyy"
+
+# Step 2：从返回的 JSON 中提取 mediaIds
+# 例如：content = {"text": "", "mediaIds": ["13107200-abc..."]}
+
+# Step 3：用 mediaId 下载附件
+lansenger --app-token "xxx" media download-to-file "13107200-abc..." /path/to/save/file.pdf --user-token "yyy"
+```
+
+> **注意**：视频消息的 mediaIds 数组长度为 2：`[视频mediaId, 封面图mediaId]`。下载视频时用 mediaIds[0]。
 
 ## CLI 命令
 

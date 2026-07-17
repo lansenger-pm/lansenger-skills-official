@@ -1,6 +1,6 @@
 ---
 name: lansenger-media
-version: 1.3.0
+version: 1.3.1
 description: "蓝信媒体文件管理：上传文件/图片/视频/音频、下载媒体文件、获取媒体路径。当用户需要上传附件、下载媒体、获取媒体URL时使用。"
 metadata:
   requires:
@@ -40,6 +40,17 @@ metadata:
 | `image` | 图片 |
 | `audio` | 音频 |
 
+### 文件大小限制
+
+| 类型 | 最大大小 |
+|------|----------|
+| image | 10MB |
+| file | 20MB |
+| video | 20MB |
+| audio | 20MB |
+
+> 私有部署的实际限制可能因组织配置不同而异。
+
 ## CLI 命令
 
 ### 上传文件（通用通道）
@@ -73,6 +84,21 @@ lansenger media upload-app /path/to/file.pdf --context '{"key":"value"}'
 # JSON 输出
 lansenger -j media upload-app /path/to/file.pdf
 ```
+
+### 视频元数据提取
+
+上传视频时需要提供 width、height、duration 参数。如自动检测失败，可手动提取：
+
+```bash
+# 提取封面图
+ffmpeg -i video.mp4 -vframes 1 -q:v 2 cover.jpg
+
+# 提取宽高和时长
+ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 video.mp4
+ffprobe -v error -select_streams v:0 -show_entries stream=duration -of csv=p=0 video.mp4
+```
+
+**视频消息需要封面图**：发送视频消息时需要 2 个 mediaId：`[视频mediaId, 封面图片mediaId]`。封面图片需单独通过 `upload-app --type image` 上传。CLI 的 `send-file` 命令支持 `--cover-image` 参数自动上传封面。
 
 ### 下载媒体文件
 
@@ -153,6 +179,8 @@ lansenger media path media123 --user-token "ut1"
 | 上传图片不指定 --media-type | 默认为 file，图片需 `--media-type image` |
 | 上传视频不传 width/height/duration | 视频和音频建议传尺寸和时长参数 |
 | 下载大文件用 `download` 而非 `download-to-file` | `download-to-file` 直接写入磁盘，避免内存占用 |
+
+**上传端点区分**：消息附件上传使用 `/v1/app/medias/create`（4.5.4，无大小限制差异）。`/v1/medias/create` 是头像上传接口（1MB 限制），不可用于消息附件。CLI 的 `upload` / `upload-app` 命令已正确选择端点，但使用 SDK 时需注意区分。
 
 ## SDK 用法
 
