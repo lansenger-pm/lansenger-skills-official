@@ -390,6 +390,11 @@ lansenger message update-approve-card msg123 \
 
 当需要群发通知到多个群、或批量发送不同消息时，用 SDK 并发发送。详见 `../lansenger-sdk/SKILL.md`。
 
+**SDK 消息类型选择规则**：
+- 蓝信只有 `text` 类型支持文件附件，`formatText`（Markdown）**不支持**附件
+- 如需发送 Markdown + 文件，必须分两条消息：先 `send_markdown`，再 `send_file`
+- SDK 的 `send_text` 方法支持 `file_path` 参数（附件），`send_markdown` 不支持
+
 ### 核心方法
 
 `LansengerClient` 提供以下消息发送方法：

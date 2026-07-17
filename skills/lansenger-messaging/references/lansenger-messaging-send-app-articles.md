@@ -23,7 +23,7 @@ lansenger message send-app-articles user_123 '[{"title":"News 1","url":"https://
 
 lansenger message send-app-articles grp_456 '[{"title":"Weekly Report","url":"https://app.example.com/report","summary":"Team metrics"},{"title":"Action Items","url":"https://app.example.com/actions"}]' --group
 
-lansenger message send-app-articles user_123 '[{"title":"Feature","url":"https://docs.example.com","icon":"https://example.com/icon.png"}]' --user-token $TOKEN --sender-id staff_001
+lansenger message send-app-articles user_123 '[{"title":"Feature","url":"https://docs.example.com","imgUrl":"https://example.com/icon.png"}]' --user-token $TOKEN --sender-id staff_001
 ```
 
 ## 常见错误
