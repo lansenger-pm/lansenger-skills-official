@@ -48,7 +48,10 @@
         "lansenger-messaging/references/lansenger-messaging-send-account-message.md",
         "lansenger-messaging/references/lansenger-messaging-send-user-message.md",
         "lansenger-messaging/references/lansenger-messaging-update-dynamic-card.md",
-        "lansenger-messaging/references/lansenger-messaging-revoke.md"
+        "lansenger-messaging/references/lansenger-messaging-revoke.md",
+        "lansenger-messaging/references/lansenger-messaging-send-reminder.md",
+        "lansenger-messaging/references/lansenger-messaging-send-approve-card.md",
+        "lansenger-messaging/references/lansenger-messaging-update-approve-card.md"
       ]
     },
     {
@@ -91,7 +94,8 @@
         "lansenger-calendar/references/lansenger-calendar-fetch-schedule.md",
         "lansenger-calendar/references/lansenger-calendar-delete-schedule.md",
         "lansenger-calendar/references/lansenger-calendar-list-schedules.md",
-        "lansenger-calendar/references/lansenger-calendar-attendees.md"
+        "lansenger-calendar/references/lansenger-calendar-attendees.md",
+        "lansenger-calendar/references/lansenger-calendar-update-schedule.md"
       ]
     },
     {
