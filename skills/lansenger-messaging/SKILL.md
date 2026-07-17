@@ -243,7 +243,7 @@ lansenger message revoke msg123 --chat-type bot
 lansenger message update-dynamic-card msg123 --last --status-desc "Approved ✓" --status-colour "#00FF00"
 ```
 
-### 公号私聊和人→人私聊
+### 公号私聊
 
 ```bash
 # 公号 → 多人
@@ -251,19 +251,36 @@ lansenger message send-account-message text '{"text":"Notice from ops account"}'
 
 # 公号 → 部门
 lansenger message send-account-message text '{"text":"Team update"}' --dept dept1 --account-id acct_ops
-
-# 用户 → 用户（需userToken，OAuth2获取）
-lansenger message send-user-message staff456 text '{"text":"Private message"}' --user-token $TOKEN
-
-# 用户 → 用户 带 common 配置
-lansenger message send-user-message staff456 formatText '{"content":"**Bold** text"}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
-
-# 用户 → 用户 发送文件（需 userToken，直接用 send-file）
-lansenger message send-file staff456 /path/to/file.pdf --user-token $TOKEN
-
-# 用户 → 用户 发送视频文件（需 userToken + 封面图）
-lansenger message send-file staff456 /path/to/video.mp4 --media-type video --cover-image /path/to/cover.jpg --user-token $TOKEN
 ```
+
+### 人→人私聊
+
+用户以自己身份给第三方发私聊消息，使用应用 appToken + userToken。
+
+```bash
+# 发普通文本消息
+lansenger message send-user-message staff456 text '{"text":"你好，这是消息内容"}' --user-token $TOKEN
+
+# 发 Markdown 消息
+lansenger message send-user-message staff456 formatText '{"content":"**重要通知**\n\n请今天下班前完成审批"}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
+
+# 发文件附件
+lansenger message send-file staff456 /path/to/report.pdf --user-token $TOKEN
+
+# 发文件附件带说明文字（caption）
+lansenger message send-file staff456 /path/to/report.pdf --user-token $TOKEN --content "这是本周的周报"
+
+# 发图片
+lansenger message send-file staff456 /path/to/photo.png --media-type image --user-token $TOKEN
+
+# 发图片带说明文字
+lansenger message send-file staff456 /path/to/screenshot.png --media-type image --user-token $TOKEN --content "这是系统截图"
+
+# 发视频（必须提供封面图）
+lansenger message send-file staff456 /path/to/demo.mp4 --media-type video --cover-image /path/to/cover.jpg --user-token $TOKEN
+```
+
+> **注意**：`send-user-message` 用于发文本和 Markdown，`send-file` 用于发文件/图片/视频附件。两者不支持合并为一条消息 — 如需同时发 Markdown + 文件，分两条消息发送。
 
 ### 发送提醒
 
