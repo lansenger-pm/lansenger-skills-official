@@ -1,6 +1,6 @@
 ---
 name: lansenger-group
-version: 1.3.0
+version: 1.3.1
 description: "蓝信群组管理：创建群、查看群信息、群成员列表、群列表、成员检查、更新群设置、添加/移除成员、解散群。当用户需要管理群组时使用。"
 metadata:
   requires:

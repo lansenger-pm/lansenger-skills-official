@@ -1,6 +1,6 @@
 ---
 name: lansenger-bot-command
-version: 1.0.1
+version: 1.0.2
 description: "机器人指令管理（4.37）：创建、查询、删除机器人指令。当用户需要管理机器人指令时使用。"
 metadata:
   requires:

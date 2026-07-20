@@ -1,6 +1,6 @@
 ---
 name: lansenger-sdk
-version: 1.0.0
+version: 1.0.1
 description: "蓝信 SDK 编程指南 — 批量操作、并发拉取、数据管道等复杂任务。当 CLI 命令需要逐条执行超过3个对象、需要并发、或需要进程内数据传递时，切换到 SDK 模式。"
 metadata:
   requires:

@@ -1,6 +1,6 @@
 ---
 name: lansenger-messaging
-version: 1.4.2
+version: 1.4.3
 description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles/approveCard），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
