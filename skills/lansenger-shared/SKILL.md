@@ -210,6 +210,22 @@ lansenger config set --profile "new-app-name"
 >
 > **蓝信应用 vs 蓝信应用+机器人**：两者使用同一个 appID/appSecret，能力几乎完全相同。唯一区别在于**消息通道**——只有机器人身份能发 bot 私聊和群聊消息。所有机器人（个人机器人、组织机器人）均可发群聊。其他所有 API（通讯录、日历、待办、聊天记录、OAuth2、流式消息等）两者完全一致。**目前仅蓝信自建应用支持开启机器人能力。**
 
+### API 权限/能力前置条件
+
+| 操作 | 身份 | 所需权限/能力 | 常见错误 |
+|------|------|-------------|---------|
+| 发消息（bot私聊） | 机器人 | Bot 消息发送 | — |
+| 发文件/图片/视频 | 机器人/助理 | Bot 消息发送 + **机器人能力**（send-file 内部走 Bot 通道上传） | errCode=-10: 应用需要开启机器人能力 |
+| 发群消息（机器人） | 机器人 | Bot 消息发送 + 机器人在群内 | — |
+| 发群消息（用户身份） | 助理 | Bot 消息发送（底层依赖） | errCode=-10（但消息可能已投递） |
+| 人→人私聊 | 助理 | userToken | — |
+| 建群 | 机器人/助理 | 群管理 API | errCode=10005: API服务无权限 |
+| 解散群 | 机器人（需群管理权限）或助理（群主本人） | 群管理 API 或群主身份 | errCode=10005（Bot 无权限时换助理身份） |
+| 群成员管理 | 机器人/助理 | 群管理 API | errCode=10005 |
+| 通讯录查询 | 助理 | 通讯录读取 | — |
+| 日历操作 | 助理 | 日历 API | — |
+| 机器人指令管理 | 机器人 | 机器人能力 | — |
+
 ### 开发者中心权限
 
 **CRITICAL — 即使身份类型支持，具体 API 能否调用还取决于开发者中心的权限开关。Agent 遇到权限报错时，应提示用户检查对应权限是否已开启。**
@@ -428,6 +444,29 @@ LANSENGER_JSON=1 lansenger calendar primary
 ## 高风险操作防护
 
 发消息、删日程、移除群成员、删除待办、撤回消息等操作执行前 MUST 向用户确认。详见各子技能的具体 CRITICAL 规则。
+
+## 快速连通性检查
+
+一次调用验证所有凭证有效性：
+
+```bash
+# 验证 appToken（应用/机器人身份）
+lansenger -j health check
+
+# 验证 userToken（用户身份，需先 OAuth2 授权）
+lansenger -j staff search --keyword "test" --as staff_001
+```
+
+## Pre-flight 检查清单
+
+首次使用或遇到问题时，逐项检查：
+
+- [ ] `lansenger --version` ≥ 0.10.19
+- [ ] `api_gateway_url` 配置正确（测试: `lansenger health check`）
+- [ ] appID/appSecret 有效（测试: `lansenger health check`）
+- [ ] userToken 有效（测试: `lansenger calendar primary --as staff_001`）
+- [ ] 应用是否开启机器人能力（影响 send-file / 群消息）
+- [ ] App 是否有群管理 API 权限（影响 group create/dismiss/update-members）
 
 ## 常见错误处理
 

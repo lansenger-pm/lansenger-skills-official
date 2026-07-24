@@ -147,8 +147,14 @@ lansenger -j group update-members group456 --add staff1
 lansenger group dismiss group456
 
 # 以用户身份解散
-lansenger group dismiss group456 --user-token "ut1"
+lansenger group dismiss group456 --user-token $TOKEN
 ```
+
+> **双身份路由**：解散群支持两种身份：
+> - 机器人身份（默认，不传 `--user-token`）：需 App 开通群管理 API 权限，否则返回 `errCode=10005`
+> - 用户身份（`--user-token $TOKEN`）：群主本人可直接解散，无需 Bot 群管理权限
+> 
+> 当 Bot 无权限时，若用户是群主，切换到用户身份重试（需用户确认）。
 
 ## 参数说明
 
