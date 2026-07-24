@@ -97,6 +97,8 @@ metadata:
 | 仅 `--sender-id` | 以指定 staffId 身份（Bot 通道） |
 | 两者都传 | `--user-token` 认证 + `--sender-id` 显示身份 |
 
+> **已知问题**：以助理身份发群消息时，API 可能返回 `errCode=-10`（应用需要开启机器人能力），但消息**实际已成功投递**。建议发送后通过 `chat messages` 验证投递状态。
+
 **CRITICAL — 私聊中不存在群语境，绝对禁止在私聊中使用 @mention/reminder。@mention 只在群聊中有效，且仅限 text 和 formatText 类型。**
 
 **CRITICAL — 不要在消息内容中手动写 `@姓名`！蓝信 API 会根据 `--mention` 传入的 staffId / `--mention-bot` 传入的 botId 自动拼接 @名称到消息前面，Agent 只需传 ID 即可。**
@@ -243,12 +245,19 @@ lansenger message send-account-message text '{"text":"Team update"}' --dept dept
 
 用户以自己身份给第三方发私聊消息，使用应用 appToken + userToken。
 
+**CRITICAL — send-user-message 的 `--user-token` 是子命令级参数，必须放在位置参数（receiver_id、msg_type、msg_data）之后。** 这与 `staff search`、`calendar *`、`chat *` 等命令的 `--user-token`（全局级参数）位置不同。
+
+**CRITICAL — msg_data JSON 格式**：
+- text 类型：`{"text":{"content":"消息内容"}}`（text 字段是对象，不是字符串）
+- formatText 类型：`{"formatText":{"formatType":1,"text":"Markdown 内容"}}`
+- 如果 formatText 返回 errCode=40060（Stage 环境可能不支持），降级为 text 类型发送纯文本
+
 ```bash
 # 发普通文本消息
-lansenger message send-user-message staff456 text '{"text":"你好，这是消息内容"}' --user-token $TOKEN
+lansenger message send-user-message staff456 text '{"text":{"content":"你好，这是消息内容"}}' --user-token $TOKEN
 
 # 发 Markdown 消息
-lansenger message send-user-message staff456 formatText '{"content":"**重要通知**\n\n请今天下班前完成审批"}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
+lansenger message send-user-message staff456 formatText '{"formatText":{"formatType":1,"text":"**重要通知**\n\n请今天下班前完成审批"}}' --user-token $TOKEN --common '{"chat_type":"p2p"}'
 
 # 发文件附件
 lansenger message send-file staff456 /path/to/report.pdf --user-token $TOKEN
@@ -265,6 +274,8 @@ lansenger message send-file staff456 /path/to/screenshot.png --media-type image 
 # 发视频（必须提供封面图）
 lansenger message send-file staff456 /path/to/demo.mp4 --media-type video --cover-image /path/to/cover.jpg --user-token $TOKEN
 ```
+
+> **前置条件**：`send-file` 内部通过 Bot 通道上传文件（`upload-app`），即使以助理身份发送（传 `--user-token`），应用也**必须开启机器人能力**。如未开启，将返回 `errCode=-10: 应用需要开启机器人能力`。
 
 > **注意**：`send-user-message` 用于发文本和 Markdown，`send-file` 用于发文件/图片/视频附件。两者不支持合并为一条消息 — 如需同时发 Markdown + 文件，分两条消息发送。
 
