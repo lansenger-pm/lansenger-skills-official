@@ -24,7 +24,7 @@ lansenger calendar create-schedule \
   '[{"staffId":"sid001","attendeeFlag":"yes"},{"staffId":"sid002","attendeeFlag":"no"}]' \
   --all-day yes \
   --date "2026-01-01" \
-  --repeat weekly \
+  --repeat week \
   --reminder no \
   --tz "UTC"
 ```
@@ -41,7 +41,7 @@ lansenger calendar create-schedule \
 | --desc / -d | 否 | 日程描述 |
 | --all-day | 否 | "yes" 或 "no"（默认 "no"） |
 | --date | 否 | 全天事件的日期字符串，如 "2026-01-01" |
-| --repeat | 否 | 重复类型：no, daily, weekly, monthly, yearly, work_day, custom（默认 "no"） |
+| --repeat | 否 | 重复类型：no, day, week, month, year, work_day, custom（默认 "no"） |
 | --reminder | 否 | 提醒类型："yes" 或 "no"（默认 "yes"） |
 | --tz | 否 | 时区，如 "Asia/Shanghai"（默认 "Asia/Shanghai"） |
 | --user-token | 否 | 用于认证的用户令牌 |

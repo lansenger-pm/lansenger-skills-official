@@ -87,7 +87,7 @@ lansenger -j --app-token "xxx" chat messages --staff-id staff123 --user-token "y
 # 例如：content = {"text": "", "mediaIds": ["13107200-abc..."]}
 
 # Step 3：用 mediaId 下载附件
-lansenger --app-token "xxx" media download-to-file "13107200-abc..." /path/to/save/file.pdf --user-token "yyy"
+lansenger --app-token "xxx" media download-to-file "13107200-abc..." --output /path/to/save/file.pdf
 ```
 
 > **注意**：视频消息的 mediaIds 数组长度为 2：`[视频mediaId, 封面图mediaId]`。下载视频时用 mediaIds[0]。

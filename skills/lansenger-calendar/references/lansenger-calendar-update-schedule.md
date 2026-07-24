@@ -47,7 +47,7 @@ lansenger calendar update-schedule \
 | --end-time | 否 | 新结束时间 JSON 对象：`{"time":"秒级时间戳","date":"日期","timeZone":"时区"}` |
 | --all-day | 否 | "yes" 或 "no" |
 | --date | 否 | 全天事件的日期字符串，如 "2026-01-01" |
-| --repeat | 否 | 重复类型：no, daily, weekly, monthly, yearly, work_day, custom |
+| --repeat | 否 | 重复类型：no, day, week, month, year, work_day, custom |
 | --rule | 否 | 自定义重复规则 JSON |
 | --expire | 否 | 重复结束日期 |
 | --reminder | 否 | 提醒类型："yes" 或 "no" |

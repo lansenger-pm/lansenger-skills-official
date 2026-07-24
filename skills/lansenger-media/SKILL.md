@@ -114,7 +114,7 @@ lansenger -j media download media123 --user-token "ut1"
 
 ```bash
 # 下载到指定路径
-lansenger media download-to-file media123 /path/to/output.pdf
+lansenger media download-to-file media123 --output /path/to/output.pdf
 
 # 下载到默认文件名（基于 media ID）
 lansenger media download-to-file media123 --output /path/to/dir/

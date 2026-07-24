@@ -160,7 +160,7 @@ lansenger calendar add-attendees calOpenId schOpenId '["staff3"]' --op modify_cu
 # 更新RSVP状态
 lansenger calendar attendee-meta calOpenId schOpenId --rsvp accept --user-token "ut1"
 
-# 更新颜色标记
+# 更新颜色标记（仅允许：#FF347AFC, #FF0096E7, #FF0CBDD7, #FFFF495C, #FFF55D2A, #FFFFB116, #FF00C6A7, #FF22D25F, #FF6935F7, #FF677C9E, #FFF53F82, #FF333232）
 lansenger calendar attendee-meta calOpenId schOpenId --color "#FF347AFC" --user-token "ut1"
 
 # 更新可见性
