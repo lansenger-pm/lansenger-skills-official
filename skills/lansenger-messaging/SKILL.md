@@ -245,7 +245,7 @@ lansenger message send-account-message text '{"text":"Team update"}' --dept dept
 
 用户以自己身份给第三方发私聊消息，使用应用 appToken + userToken。
 
-**CRITICAL — send-user-message 的 `--user-token` 是子命令级参数，必须放在位置参数（receiver_id、msg_type、msg_data）之后。** 这与 `staff search`、`calendar *`、`chat *` 等命令的 `--user-token`（全局级参数）位置不同。
+**CRITICAL — send-user-message 的 `--user-token` 是子命令级参数，必须放在位置参数（receiver_id、msg_type、msg_data）之后。** **所有域命令（message/staff/calendar/chat/group/media）的 `--user-token` 都是子命令级参数，必须放在位置参数之后。**
 
 **CRITICAL — msg_data JSON 格式**：
 - text 类型：`{"text":{"content":"消息内容"}}`（text 字段是对象，不是字符串）

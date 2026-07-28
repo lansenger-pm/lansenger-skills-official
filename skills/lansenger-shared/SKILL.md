@@ -322,7 +322,7 @@ lansenger calendar primary --user-token "userToken123"
 lansenger --app-token "xxx" message send-text staff123 "Hello"
 
 # External模式：同时传入app_token和user_token
-lansenger --app-token "xxx" --user-token "yyy" calendar primary
+lansenger --app-token "xxx" calendar primary --user-token "yyy"
 
 # External模式下，--profile参数被忽略（不读取凭证文件）
 lansenger --app-token "xxx" --profile "default" message send-text staff123 "Hello"
