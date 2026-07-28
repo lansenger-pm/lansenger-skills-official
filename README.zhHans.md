@@ -5,7 +5,7 @@
 蓝信 CLI 和 SDK 的 AI Agent Skills — 为 Python、Go 和 TypeScript CLI/SDK 提供结构化 Markdown Skill 文档，涵盖消息、日历、群组、联系人、部门、待办、流式消息、回调、OAuth、批量操作等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.11.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.11.1-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## 什么是 Skills？
 

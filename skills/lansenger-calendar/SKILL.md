@@ -1,6 +1,6 @@
 ---
 name: lansenger-calendar
-version: 1.3.1
+version: 1.3.2
 description: "蓝信日历/日程（4.23）：主日历查询、日程CRUD、参会人管理、参会人元数据更新。注意：日历容器CRUD暂不开放，仅日程操作可用。涉及创建/修改日程必须先确认用户意图（新建 vs 编辑已有）。"
 metadata:
   requires:
