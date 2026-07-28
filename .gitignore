@@ -8,3 +8,4 @@ build/
 .agents/
 skills-lock.json
 CROSS_SDK_SPEC*.md
+.trae/
