@@ -58,6 +58,8 @@ lansenger message approve-card "订单审核" "**订单号**：ORD-20240101" \
   --head-status-colour "orange"
 ```
 
+> **Windows PowerShell 注意**：`--field`、`--link`、`--fields`、`--buttons` 等参数需要传 JSON 字符串。PowerShell 下双引号会被解析器吃掉，导致 JSON 格式错误。请确保 JSON 用单引号包裹，内部双引号用反引号转义，或等 CLI 支持 key=value 格式后使用该格式。
+
 ## 常见错误
 
 - 未指定 `--chat-id` — 必须指定接收人。

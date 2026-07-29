@@ -42,6 +42,8 @@ lansenger message send-app-card user_123 "Report" --field '[{"name":"Status","va
 lansenger message send-app-card grp_456 "Alert" --group --head-icon "https://example.com/alert.png" --staff-id staff_001 --card-link "https://app.example.com/alerts" --user-token $TOKEN
 ```
 
+> **Windows PowerShell 注意**：`--field`、`--link`、`--fields`、`--buttons` 等参数需要传 JSON 字符串。PowerShell 下双引号会被解析器吃掉，导致 JSON 格式错误。请确保 JSON 用单引号包裹，内部双引号用反引号转义，或等 CLI 支持 key=value 格式后使用该格式。
+
 ## 常见错误
 
 - 使用群 ID 但未加 `--group` 标志 — 命令会将其视为私聊 ID。
