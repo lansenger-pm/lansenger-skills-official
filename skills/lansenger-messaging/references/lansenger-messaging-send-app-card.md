@@ -47,6 +47,8 @@ lansenger message send-app-card grp_456 "Alert" --group --head-icon "https://exa
 > - `--link "View=https://app.example.com"` 代替 `--link '{"name":"View","url":"https://app.example.com"}'`
 > - 同时兼容旧 JSON 格式，json.loads() 失败时自动尝试 key=value 解析
 
+> **Windows PowerShell 注意**：如果仍需传 JSON 格式，PowerShell 下双引号会被解析器吃掉。建议优先使用上面的 key=value 格式。
+
 ## 常见错误
 
 - 使用群 ID 但未加 `--group` 标志 — 命令会将其视为私聊 ID。

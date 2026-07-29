@@ -34,6 +34,8 @@ lansenger message update-dynamic-card msg_abc123 --status-desc "In Review" --sta
 > - `--link "View Result=https://app.example.com/result"` 代替 `--link '{"name":"View Result","url":"https://app.example.com/result"}'`
 > - 同时兼容旧 JSON 格式，json.loads() 失败时自动尝试 key=value 解析
 
+> **Windows PowerShell 注意**：如果仍需传 JSON 格式，PowerShell 下双引号会被解析器吃掉。建议优先使用上面的 key=value 格式。
+
 ## 常见错误
 
 - 尝试更新未以 `--dynamic` 发送的卡片 — 只有动态卡片才能更新。
