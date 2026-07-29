@@ -364,7 +364,10 @@ lansenger message approve-card "订单审核" "**订单号**：ORD-20240101" \
 > - `--link "View=https://app.example.com"` 代替 `--link '{"name":"View","url":"https://app.example.com"}'`
 > - 同时兼容旧 JSON 格式，json.loads() 失败时自动尝试 key=value 解析
 
-> **Windows PowerShell 注意**：PowerShell 环境下建议优先使用 key=value 格式，避免 JSON 引号转义问题。
+> **Windows PowerShell 注意**：推荐使用 key=value 格式。如需传 JSON，PowerShell 下须用双引号包裹整个参数值，内部双引号用反引号 `` ` `` 转义：
+> ```powershell
+> lansenger message send-app-card user_123 "Report" --field "[{`"name`":`"Status`",`"value`":`"Done`"}]"
+> ```
 
 ### 更新审批卡片状态
 
