@@ -30,6 +30,10 @@ lansenger message update-dynamic-card msg_abc123 --link '[{"name":"View Result",
 lansenger message update-dynamic-card msg_abc123 --status-desc "In Review" --status-colour grey --link '[{"name":"Details","url":"https://app.example.com/details"},{"name":"History","url":"https://app.example.com/history"}]'
 ```
 
+> **key=value 格式**：`--link` 参数支持 key=value 简写格式，避免命令行传 JSON 的引号问题：
+> - `--link "View Result=https://app.example.com/result"` 代替 `--link '{"name":"View Result","url":"https://app.example.com/result"}'`
+> - 同时兼容旧 JSON 格式，json.loads() 失败时自动尝试 key=value 解析
+
 ## 常见错误
 
 - 尝试更新未以 `--dynamic` 发送的卡片 — 只有动态卡片才能更新。

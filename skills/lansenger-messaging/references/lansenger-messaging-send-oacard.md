@@ -36,6 +36,11 @@ lansenger message send-oacard user_123 "Annual Review" --staff-id staff_001 --ca
 lansenger message send-oacard grp_456 "Holiday Notice" --group --pc-link "https://hr.example.com/holidays" --pad-link "https://m.hr.example.com/holidays" --sender-id staff_001
 ```
 
+> **key=value 格式**：`--field`、`--link` 参数支持 key=value 简写格式，避免命令行传 JSON 的引号问题：
+> - `--field "Time=2026-05-22 02:00" --field "Duration=2h"` 代替 `--field '{"name":"Time","value":"2026-05-22 02:00"}'`
+> - `--link "Details=https://ops.example.com"` 代替 `--link '{"name":"Details","url":"https://ops.example.com"}'`
+> - 同时兼容旧 JSON 格式，json.loads() 失败时自动尝试 key=value 解析
+
 ## 常见错误
 
 - 使用群 ID 但未加 `--group` 标志 — 命令会将其视为私聊 ID。

@@ -359,7 +359,10 @@ lansenger message approve-card "订单审核" "**订单号**：ORD-20240101" \
   --head-status-colour "orange"
 ```
 
-> **Windows PowerShell 注意**：`--field`、`--link`、`--fields`、`--buttons` 等参数需要传 JSON 字符串。PowerShell 下双引号会被解析器吃掉，导致 JSON 格式错误。请确保 JSON 用单引号包裹，内部双引号用反引号转义，或等 CLI 支持 key=value 格式后使用该格式。
+> **key=value 格式**：`--field`、`--link`、`--fields` 参数支持 key=value 简写格式，避免命令行传 JSON 的引号问题：
+> - `--field "Status=Done" --field "Score=95"` 代替 `--field '{"name":"Status","value":"Done"}'`
+> - `--link "View=https://app.example.com"` 代替 `--link '{"name":"View","url":"https://app.example.com"}'`
+> - 同时兼容旧 JSON 格式，json.loads() 失败时自动尝试 key=value 解析
 
 ### 更新审批卡片状态
 
