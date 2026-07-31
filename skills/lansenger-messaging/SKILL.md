@@ -1,6 +1,6 @@
 ---
 name: lansenger-messaging
-version: 1.4.3
+version: 1.4.5
 description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles/approveCard），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
@@ -25,6 +25,31 @@ metadata:
 | OAuth2 获取 userToken | `lansenger-oauth` | userToken 来源 |
 
 **只有用户明确要"发消息"、"回复消息"、"撤回消息"、"更新卡片"或"发提醒"时才用本技能。**
+
+## 收件人解析前置流程
+
+**先解析收件人，再选通道。** 当用户用姓名或群名指代收件人（而非直接给出 staffId/group_id）时，**MUST 先解析出唯一 ID，再进入通道选择**。解析失败或歧义未消解前，禁止发送。
+
+### 解析决策树
+
+```
+收件人是什么？
+├── staffId / group_id（用户直接给了 ID）
+│   └── 直接进入通道选择
+├── 姓名（如"张三"）
+│   └── 调用 lansenger-staff 的 search / id-mapping 解析
+│       ├── 唯一结果 → 取 staffId，进入通道选择
+│       ├── 多结果 → 让用户选择（见 staff 技能「多结果消歧」）
+│       └── 无结果 → 让用户补充部门/手机号，或如实告知找不到
+└── 群名（如"技术群"）
+    ├── 用 group list 拉取群列表后按群名模糊匹配
+    │   ├── 唯一匹配 → 取 group_id，进入通道选择
+    │   ├── 多匹配 → 用 AskUserQuestion 让用户选（展示群名 + member_count + group_id）
+    │   └── 无匹配 → 用 chat list --type 2 --keyword "群名" 再试，仍无则如实告知
+    └── 注意：群聊发送身份决定查哪份群列表（bot 身份查 bot 的群，用户身份查用户的群）
+```
+
+**CRITICAL — 解析失败或歧义未消解前，禁止发送消息。** 不要用"猜一个"、"发第一个试试"的方式绕过消歧。
 
 ## 四种消息通道 — 场景诊断表
 

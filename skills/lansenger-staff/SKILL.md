@@ -1,6 +1,6 @@
 ---
 name: lansenger-staff
-version: 1.2.1
+version: 1.2.2
 description: "蓝信员工/通讯录查询：基本信息、详细资料、部门祖先、ID映射（手机/邮箱→staffId）、组织扩展字段、员工搜索、组织信息。当用户需要查询员工信息、搜索员工、做ID映射时使用。"
 metadata:
   requires:
@@ -22,6 +22,55 @@ metadata:
 
 **CRITICAL — 通讯录仅组织级应用可用，个人机器人不可用。** 详见 shared「身份能力矩阵」。
 **CRITICAL — `search` 是用户级操作，需传入 `--as staff_id`（推荐）、`--user-token` 或 `--user-id`。其他命令（`basic-info`、`detail`、`ancestors`、`id-mapping`、`org-extra-fields`、`org-info`）以机器人身份即可调用，`--user-token` 可选。**
+
+## 实体解析与消歧（姓名 → staffId）
+
+当用户用姓名（如"张三"）指代目标对象，而 Agent 没有其 staffId 时，**MUST 先通过 `search` 或 `id-mapping` 解析出唯一 staffId，再进入下游操作**（发消息、建日程等）。禁止把姓名直接当作 staffId 传入下游命令。
+
+### 解析流程
+
+```
+用户提到姓名（如"给张三发消息"）
+├── 是否有手机号/邮箱/登录名？
+│   └── 是 → 用 id-mapping 精确解析（返回唯一 staffId）
+│       ├── 返回成功 → 解析完成，进入下游
+│       └── 返回失败 → 降级为 search 搜索
+└── 否 → 用 search 按姓名搜索
+    ├── 0 条结果 → 见「无结果处理」
+    ├── 1 条结果 → 解析完成，进入下游
+    └── ≥2 条结果 → 见「多结果消歧」
+```
+
+### 多结果消歧
+
+`search` 返回多条候选时，**MUST 让用户明确选择**，禁止默认取第一条：
+
+1. **首选 AskUserQuestion 工具**（结构化选项，用户点击即可）：
+   - 每个选项展示：姓名 + 部门 + staffId（如 `张三 - 技术部 - staff_001`）
+   - 最多列 4 个候选（AskUserQuestion 上限），超过 4 个时让用户补充部门关键词缩小范围
+   - 用户选择后，取对应 staffId 进入下游操作
+
+2. **fallback：纯文本列候选**（当 AskUserQuestion 不可用时）：
+   ```
+   找到以下"张三"，请告诉我要联系哪位：
+   1. 张三 - 技术部 - staff_001
+   2. 张三 - 市场部 - staff_078
+   3. 张三 - 财务部 - staff_156
+   请回复编号或补充部门信息。
+   ```
+
+### 无结果处理
+
+`search` 返回 0 条时，按以下顺序尝试：
+
+1. **追问更精确的标识**：询问用户的部门、手机号或邮箱
+   - 有手机号/邮箱 → 用 `id-mapping` 精确解析
+   - 有部门信息 → 用 `--sector` 限定部门范围重新 `search`
+2. **二次仍无结果**：如实告知用户"未找到匹配的员工"，不要编造 staffId
+
+### 单结果直通
+
+`search` 返回唯一结果时，可直接取 staffId 进入下游操作的确认环节（发消息前仍需按 messaging 技能规则确认收件人+内容+身份）。
 
 ## 核心概念
 

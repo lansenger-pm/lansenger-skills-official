@@ -1,6 +1,6 @@
 ---
 name: lansenger
-version: 1.11.1
+version: 1.11.3
 description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、批量操作等功能时加载此技能。"
 metadata:
   requires:
@@ -179,3 +179,80 @@ lansenger message send-text staff1 "您有一个新日程：项目评审会，�
 **关键原则**：先完成写入操作（创建日程），再执行通知操作（发消息）。
 
 > 以上场景涉及的批量拉取、群发通知、断点续传等 SDK 用法，详见 `lansenger-sdk` 技能（并发批量、深分页+按月拆分、断点续传等模式）。
+
+### 给某人发消息（姓名 → staffId 解析）
+
+用户说"给张三发条消息"，但 Agent 不知道张三的 staffId 时，先解析再发送。
+
+**场景 1：唯一结果直发**
+
+```bash
+# Step 1：搜索员工（search 需 userToken，用 --as 自动加载）
+lansenger -j staff search "张三" --as staff_001
+# 返回唯一结果：staff_001，技术部
+
+# Step 2：确认收件人+内容+身份后发送
+lansenger message send-text staff_001 "你好，这是消息内容"
+```
+
+**场景 2：多结果让用户选**
+
+```bash
+# Step 1：搜索返回多个"张三"
+lansenger -j staff search "张三" --as staff_001
+# 返回：张三-技术部-staff_001、张三-市场部-staff_078、张三-财务部-staff_156
+
+# Step 2：用 AskUserQuestion 让用户选择（展示姓名+部门+staffId）
+# 用户选择"张三 - 技术部 - staff_001"
+
+# Step 3：确认后发送
+lansenger message send-text staff_001 "你好"
+```
+
+**场景 3：无结果追问**
+
+```bash
+# Step 1：搜索返回 0 条
+lansenger -j staff search "张三" --as staff_001
+# 返回空
+
+# Step 2：追问用户"请问他在哪个部门？或知道手机号吗？"
+# 用户提供部门 → 用 --sector 限定重新搜索
+lansenger -j staff search "张三" --as staff_001 --sector dept_tech
+# 仍无结果 → 如实告知"未找到匹配的员工"
+```
+
+### 给某群发消息（群名 → group_id 解析）
+
+用户说"在技术群里发条公告"，但 Agent 不知道 group_id 时，先解析群名。
+
+**唯一匹配直发：**
+
+```bash
+# Step 1：查群列表
+lansenger -j group list
+# 按群名模糊匹配"技术"→ 唯一匹配 group_123
+
+# Step 2：确认后发送
+lansenger message send-text group_123 "技术群公告内容" --group
+```
+
+**多群匹配让用户选：**
+
+```bash
+# Step 1：群列表中有多个含"技术"的群
+lansenger -j group list
+# 匹配：技术讨论群-group_123、技术支持群-group_456
+
+# Step 2：用 AskUserQuestion 让用户选（展示群名+group_id）
+# 用户选择"技术讨论群 - group_123"
+
+# Step 3：确认后发送
+lansenger message send-text group_123 "公告内容" --group
+```
+
+**关键提示**：
+- 群名无匹配时，可用 `chat list --type 2 --keyword "群名"` 再试
+- 解析失败/歧义未消解前，禁止发送
+
+---
