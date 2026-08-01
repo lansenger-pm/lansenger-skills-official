@@ -1,6 +1,6 @@
 ---
 name: lansenger
-version: 1.11.3
+version: 1.11.4
 description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、批量操作等功能时加载此技能。"
 metadata:
   requires:

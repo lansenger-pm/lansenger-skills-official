@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.7.3
+version: 1.7.4
 description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理、SDK 客户端初始化 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
@@ -198,7 +198,9 @@ lansenger config set --profile "new-app-name"
 | `group *` (群管理 V2) | N | N | **Y** | 只有机器人能进群，应用无法管理群组 |
 | `media upload` | **Y** | **Y** | **Y** | 通用上传 |
 | `media upload-app` | **Y** | **Y** | **Y** | App/Bot 上传仅自建应用，ISV 不支持 |
+| `media upload-app-v2` | **Y** | **Y** | **Y** | V2 需 userToken，跨平台上传，仅自建应用 |
 | `media download/path` | **Y** | **Y** | **Y** | 通用下载 |
+| `media download-share` | **Y** | **Y** | **Y** | 按分享 ID 下载（4.5.6） |
 | `oauth *` (OAuth2) | N | **Y** | **Y** | 仅组织级应用可发起 OAuth2 |
 | `streaming *` (流式消息) | N | **Y** | **Y** | 组织级应用均可 |
 | `callback *` (回调解析) | N/A | N/A | N/A | 纯数据侧操作，无身份要求 |
@@ -255,7 +257,7 @@ lansenger config set --profile "new-app-name"
 | 群编辑权限 | 获取群编辑权限 | `lansenger-group`（创建/更新/解散/成员变更） |
 | 日历日程只读权限 | 获取日历日程只读权限 | `lansenger-calendar`（查询） |
 | 日历日程编辑权限 | 获取日历日程编辑权限 | `lansenger-calendar`（创建/更新/删除） |
-| 上传素材权限 | 获取上传素材文件权限 | `lansenger-media`（upload、upload-app） |
+| 上传素材权限 | 获取上传素材文件权限 | `lansenger-media`（upload、upload-app、upload-app-v2） |
 | 工作台模版读权限 | 获取工作台模版读权限 | — |
 | 工作台模版写权限 | 获取工作台模版写权限 | — |
 

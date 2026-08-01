@@ -1,6 +1,6 @@
 ---
 name: lansenger-media
-version: 1.3.3
+version: 1.4.0
 description: "蓝信媒体文件管理：上传文件/图片/视频/音频、下载媒体文件、获取媒体路径。当用户需要上传附件、下载媒体、获取媒体URL时使用。"
 metadata:
   requires:
@@ -30,6 +30,7 @@ metadata:
 |------|---------|------|
 | 通用上传 (4.5.3) | `upload` | 上传文件供消息附件使用（需 userToken） |
 | App/Bot上传 (4.5.4) | `upload-app` | 机器人/应用身份上传文件/图片/视频/音频 |
+| App/Bot上传V2 (4.5.5) | `upload-app-v2` | 跨平台上传，**必须提供 userToken**（以用户身份上传） |
 
 ### media_type 类型
 
@@ -85,6 +86,27 @@ lansenger media upload-app /path/to/file.pdf --context '{"key":"value"}'
 lansenger -j media upload-app /path/to/file.pdf
 ```
 
+### 上传文件（App/Bot通道 V2，需 userToken）
+
+V2 接口（4.5.5）用于跨平台上传场景，**必须提供 userToken**（以用户身份上传）。仅自建应用可用。
+
+```bash
+# 上传文件（需 userToken）
+lansenger media upload-app-v2 /path/to/file.pdf --user-token "ut1"
+
+# 上传图片
+lansenger media upload-app-v2 /path/to/image.png --media-type image --user-token "ut1"
+
+# 上传视频（含尺寸和时长）
+lansenger media upload-app-v2 /path/to/video.mp4 --media-type video --width 1920 --height 1080 --duration 60 --user-token "ut1"
+
+# 上传音频
+lansenger media upload-app-v2 /path/to/audio.mp3 --media-type audio --duration 30 --user-token "ut1"
+
+# JSON 输出
+lansenger -j media upload-app-v2 /path/to/file.pdf --user-token "ut1"
+```
+
 ### 视频元数据提取
 
 上传视频时需要提供 width、height、duration 参数。如自动检测失败，可手动提取：
@@ -120,6 +142,21 @@ lansenger media download-to-file media123 --output /path/to/output.pdf
 lansenger media download-to-file media123 --output /path/to/dir/
 ```
 
+### 按 share ID 下载文件
+
+通过消息内文件分享 ID 下载文件（4.5.6）。仅被分享的应用可下载，不提供下载链接获取接口（安全考虑）。
+
+```bash
+# 下载到 stdout
+lansenger -j media download-share share123
+
+# 下载到本地文件
+lansenger media download-share share123 --output /path/to/output.pdf
+
+# 带 userToken
+lansenger media download-share share123 --user-token "ut1" --output /path/to/output.pdf
+```
+
 ### 获取媒体路径
 
 ```bash
@@ -150,6 +187,17 @@ lansenger media path media123 --user-token "ut1"
 | `--duration` | int | 0 | 时长（秒，video/audio，0=自动检测） |
 | `--context` | str | "" | 上下文参数（OpenAPI 4.5.4） |
 
+### media upload-app-v2
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `file_path` (位置参数) | str | — | 本地文件路径（必需） |
+| `--media-type` / `-t` | str | "file" | 媒体类型：file, video, image, audio |
+| `--user-token` | str | — | 用户 Token（**必填**，V2 与 V1 的关键区别） |
+| `--width` | int | 0 | 宽度（video/image，0=自动检测） |
+| `--height` | int | 0 | 高度（video/image，0=自动检测） |
+| `--duration` | int | 0 | 时长（秒，video/audio，0=自动检测） |
+
 ### media download
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -164,6 +212,14 @@ lansenger media path media123 --user-token "ut1"
 | `media_id` (位置参数) | str | — | 媒体 ID（必需） |
 | `--output` / `-o` | str | — | 输出路径（默认基于 media ID） |
 
+### media download-share
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `share_id` (位置参数) | str | — | 文件分享 ID（必需） |
+| `--output` / `-o` | str | — | 输出路径（不指定则输出到 stdout） |
+| `--user-token` | str | "" | 用户 Token |
+
 ### media path
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -175,12 +231,13 @@ lansenger media path media123 --user-token "ut1"
 
 | 错误 | 正确做法 |
 |------|---------|
-| 用 `upload` 不传 --user-token | 通用上传需要 userToken，Bot上传用 `upload-app` |
+| 用 `upload` 不传 --user-token | 通用上传需要 userToken，Bot上传用 `upload-app`，跨平台上传用 `upload-app-v2`（也需 userToken） |
+| `upload-app-v2` 不传 --user-token | V2 接口 userToken 必填，与 V1 不同 |
 | 上传图片不指定 --media-type | 默认为 file，图片需 `--media-type image` |
 | 上传视频不传 width/height/duration | 视频和音频建议传尺寸和时长参数 |
 | 下载大文件用 `download` 而非 `download-to-file` | `download-to-file` 直接写入磁盘，避免内存占用 |
 
-**上传端点区分**：消息附件上传使用 `/v1/app/medias/create`（4.5.4，无大小限制差异）。`/v1/medias/create` 是头像上传接口（1MB 限制），不可用于消息附件。CLI 的 `upload` / `upload-app` 命令已正确选择端点，但使用 SDK 时需注意区分。
+**上传端点区分**：消息附件上传使用 `/v1/app/medias/create`（4.5.4 V1，无 userToken）或 `/v2/app/medias/create`（4.5.5 V2，需 userToken，跨平台）。`/v1/medias/create` 是头像上传接口（1MB 限制），不可用于消息附件。CLI 的 `upload` / `upload-app` / `upload-app-v2` 命令已正确选择端点，但使用 SDK 时需注意区分。
 
 ## SDK 用法
 
@@ -191,9 +248,11 @@ lansenger media path media123 --user-token "ut1"
 | 方法 | 说明 |
 |------|------|
 | `upload_media` | 上传素材（通用通道，需 userToken） |
-| `upload_app_media` | 上传素材（App/Bot 通道，不需 userToken） |
+| `upload_app_media` | 上传素材（App/Bot 通道 V1，不需 userToken） |
+| `upload_app_media_v2` | 上传素材（App/Bot 通道 V2，**需 userToken**，跨平台） |
 | `download_media` | 下载素材 |
 | `download_media_to_file` | 下载素材到文件 |
+| `download_media_by_share_id` | 按分享 ID 下载素材（4.5.6） |
 | `fetch_media_path` | 获取素材路径 |
 
 ### 批量并发上传文件
