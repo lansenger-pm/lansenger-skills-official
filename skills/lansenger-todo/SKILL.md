@@ -97,11 +97,13 @@ lansenger todo update-status task123 21 org123 --staff-id staff1
 ### 删除待办
 
 ```bash
-# 删除待办（仅创建者可删）
-lansenger todo delete task123 org123
+# 删除待办（仅创建者可删，高风险需 --yes 确认）
+lansenger todo delete task123 org123 --dry-run            # 先预览
+lansenger todo delete task123 org123 --yes                # 确认后执行
 
 # 指定发送者身份
-lansenger todo delete task123 org123 --staff-id sender1
+lansenger todo delete task123 org123 --staff-id sender1 --dry-run
+lansenger todo delete task123 org123 --staff-id sender1 --yes
 ```
 
 ### 查看待办列表
@@ -153,8 +155,9 @@ lansenger todo status-counts staff1 org123 --app-id app1 --status 21,22
 # 添加执行人
 lansenger todo add-executors "staff4,staff5" org123 --task-id task123
 
-# 删除执行人
-lansenger todo delete-executors "staff4" org123 --task-id task123
+# 删除执行人（高风险需 --yes 确认）
+lansenger todo delete-executors "staff4" org123 --task-id task123 --dry-run   # 先预览
+lansenger todo delete-executors "staff4" org123 --task-id task123 --yes       # 确认后执行
 
 # 更新执行人状态
 lansenger todo executor-status '[{"executorId":"staff1","status":"22"}]' org123 --task-id task123
@@ -216,6 +219,8 @@ lansenger todo executor-list task123 org123 --staff-id staff1
 | `org_id` (位置参数) | str | — | 组织 ID（必需） |
 | `--staff-id` | str | "" | 发送者 staffId |
 | `--user-token` | str | "" | 用户 Token |
+| `--yes` / `-y` | flag | False | 确认执行高风险删除（门禁要求，不带则退出码 10） |
+| `--dry-run` | flag | False | 校验参数并预览将删除的待办，不执行，退出 0 |
 
 ### todo list
 
@@ -281,6 +286,8 @@ lansenger todo executor-list task123 org123 --staff-id staff1
 | `org_id` (位置参数) | str | — | 组织 ID（必需） |
 | `--task-id` | str | "" | 待办任务 ID |
 | `--user-token` | str | "" | 用户 Token |
+| `--yes` / `-y` | flag | False | 确认执行高风险删除（门禁要求，不带则退出码 10） |
+| `--dry-run` | flag | False | 校验参数并预览将删除的执行人，不执行，退出 0 |
 
 ### todo executor-list
 
@@ -301,7 +308,7 @@ lansenger todo executor-list task123 org123 --staff-id staff1
 | executor_ids 不传逗号分隔 | 多个执行人用逗号分隔，如 "staff1,staff2" |
 | executor-status 不传 JSON 格式 | 必须传 JSON 数组格式 |
 | 创建时不传 link/pc_link | link 和 pc_link 是必需参数 |
-| 不确认就创建/删除待办 | 创建/删除属于高风险操作，必须先确认 |
+| 不确认就删除待办/执行人 | 删除触发门禁（exit 10），需 `--yes` 确认；可用 `--dry-run` 先预览 |
 
 ## SDK 用法
 

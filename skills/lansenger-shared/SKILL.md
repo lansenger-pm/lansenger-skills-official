@@ -447,6 +447,65 @@ LANSENGER_JSON=1 lansenger calendar primary
 
 发消息、删日程、移除群成员、删除待办、撤回消息等操作执行前 MUST 向用户确认。详见各子技能的具体 CRITICAL 规则。
 
+### 高风险写操作门禁（exit 10）
+
+以下 CLI 命令是**高风险写操作**，默认不执行——缺省调用会返回**退出码 `10`**，必须显式传 `--yes` 才会真正执行：
+
+- `message revoke`（撤回消息）
+- `group dismiss`（解散群）
+- `group update-members --remove`（移除群成员；`--add` 不触发门禁）
+- `calendar delete-schedule`（删除日程）
+- `calendar delete-attendees`（删除参会人）
+- `todo delete`（删除待办）
+- `todo delete-executors`（删除执行人）
+
+**处理流程（MUST 遵守）：**
+
+1. 调用命令（不带 `--yes`）
+2. 若退出码 `10` 且错误 `type == "confirmation_required"`：向用户展示 `error.risk.action`（如 "dismiss group g1"），用自然语言说明将要做什么
+3. **用户明确同意后**，追加 `--yes` 重新执行
+4. **禁止**看到退出码 10 就自动补 `--yes`——这等于绕过门禁，是违规行为
+
+`--json` 模式下退出码 10 的信封写入 **stderr**：
+
+```json
+{
+  "ok": false,
+  "error": {
+    "type": "confirmation_required",
+    "message": "High-risk operation requires confirmation: dismiss group g1.",
+    "hint": "add --yes to confirm and proceed.",
+    "risk": { "level": "high-risk-write", "action": "dismiss group g1" }
+  }
+}
+```
+
+**可选 `--dry-run`**：校验参数并预览将执行的动作，不调用 API，退出码 0。适合在确认前先看一眼"要动什么"：
+
+```bash
+# 预览（退出 0，不执行）
+lansenger group dismiss g1 --dry-run
+
+# 用户确认后执行
+lansenger group dismiss g1 --yes
+```
+
+**关键原则：**
+
+- **退出码 10 ≠ 失败**，是"待确认"。不要当错误上报，而是触发用户确认流程
+- **退出码 10 的 stderr JSON 不应被当成普通 API 错误重试**——重试只会再次返回 10
+- `group update-members` 只有 `--remove` 触发门禁，`--add` 不需要 `--yes`——纯加人不要硬加 `--yes`
+
+### JSON 模式退出码契约
+
+`--json` / `-j` 模式下：
+
+- **成功**：退出码 `0`，结构化 JSON 写 stdout
+- **失败**：退出码 `1`（API 调用失败、参数错误等）
+- **待确认**：退出码 `10`（高风险操作未带 `--yes`），JSON 写 stderr
+
+判断成功用 `success == true`（Result 对象字段）或退出码 `0`，两者一致。
+
 ## 快速连通性检查
 
 一次调用验证所有凭证有效性：

@@ -100,7 +100,8 @@ lansenger calendar fetch-schedule calOpenId schOpenId --user-token "ut1"
 ### 删除日程
 
 ```bash
-lansenger calendar delete-schedule calOpenId schOpenId --user-token "ut1"
+lansenger calendar delete-schedule calOpenId schOpenId --user-token "ut1" --dry-run   # 先预览
+lansenger calendar delete-schedule calOpenId schOpenId --user-token "ut1" --yes       # 确认后执行
 ```
 
 ### 更新日程
@@ -139,7 +140,8 @@ lansenger calendar attendees calOpenId schOpenId --user-token "ut1"
 lansenger calendar add-attendees calOpenId schOpenId '["staff1","staff2"]' --user-token "ut1"
 
 # 删除参会人
-lansenger calendar delete-attendees calOpenId schOpenId '["staff2"]' --user-token "ut1"
+lansenger calendar delete-attendees calOpenId schOpenId '["staff2"]' --user-token "ut1" --dry-run   # 先预览
+lansenger calendar delete-attendees calOpenId schOpenId '["staff2"]' --user-token "ut1" --yes       # 确认后执行
 
 # 重复日程添加参会人（仅影响当前实例）
 lansenger calendar add-attendees calOpenId schOpenId '["staff3"]' --op modify_current --current-time 1656468000 --user-token "ut1"

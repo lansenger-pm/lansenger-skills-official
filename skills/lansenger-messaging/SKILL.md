@@ -249,8 +249,9 @@ lansenger message send-app-articles staff123 '{"title":"News","url":"https://...
 ### 消息管理
 
 ```bash
-# 撤回消息
-lansenger message revoke msg123 --chat-type bot
+# 撤回消息（高风险，需 --yes 确认）
+lansenger message revoke msg123 --chat-type bot --dry-run   # 先预览
+lansenger message revoke msg123 --chat-type bot --yes       # 确认后执行
 
 # 更新动态卡片
 lansenger message update-dynamic-card msg123 --last --status-desc "Approved ✓" --status-colour "#00FF00"

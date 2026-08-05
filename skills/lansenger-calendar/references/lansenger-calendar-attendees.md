@@ -33,7 +33,9 @@ lansenger calendar add-attendees "cal_xxx" "sch_xxx" '["sid001","sid002"]' --use
 ### delete-attendees
 
 ```bash
-lansenger calendar delete-attendees "cal_xxx" "sch_xxx" '["sid001"]' --user-token "ut_xxx"
+# 推荐先预览，确认后执行
+lansenger calendar delete-attendees "cal_xxx" "sch_xxx" '["sid001"]' --user-token "ut_xxx" --dry-run
+lansenger calendar delete-attendees "cal_xxx" "sch_xxx" '["sid001"]' --user-token "ut_xxx" --yes
 ```
 
 ## 参数
@@ -68,6 +70,8 @@ lansenger calendar delete-attendees "cal_xxx" "sch_xxx" '["sid001"]' --user-toke
 | attendees | 是（arg） | 员工 ID 字符串的 JSON 列表：["sid1","sid2"] |
 | --user-token | 否 | 用于认证的用户令牌 |
 | --user-id | 否 | 用于认证的用户 ID |
+| --yes / -y | 否 | 确认执行高风险删除（门禁要求，不带则退出码 10） |
+| --dry-run | 否 | 校验参数并预览将删除的参会人，不执行，退出 0 |
 
 ## 返回值
 
@@ -95,3 +99,4 @@ schedule_id    : string   - 更新后的日程 ID
 - **格式差异**：`add-attendees` 和 `delete-attendees` 接受员工 ID **字符串**的纯 JSON 列表（`["sid001","sid002"]`），而非对象。这与 `create-schedule` 不同，后者期望包含 `{staffId, attendeeFlag}` 字段的对象。对 add/delete 使用对象格式将导致解析错误。
 - 交换 `calendar_id` 和 `schedule_id` 的顺序。日历 ID 始终在前。
 - 向 add/delete 命令传入参与人对象而非纯字符串。
+- `delete-attendees` 缺省调用返回退出码 10（待确认）。`add-attendees` 不触发门禁，无需 `--yes`。

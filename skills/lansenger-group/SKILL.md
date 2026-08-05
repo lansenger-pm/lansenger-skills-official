@@ -127,8 +127,9 @@ lansenger group update group456 --name "项目V2" --desc "更新描述" --user-t
 # 添加成员
 lansenger group update-members group456 --add staff1 --add staff2
 
-# 移除成员
-lansenger group update-members group456 --remove staff3
+# 移除成员（高风险，需 --yes 确认）
+lansenger group update-members group456 --remove staff3 --dry-run   # 先预览
+lansenger group update-members group456 --remove staff3 --yes       # 确认后执行
 
 # 添加部门成员（需要 userToken）
 lansenger group update-members group456 --add-dept dept1 --user-token "ut1"
@@ -143,11 +144,13 @@ lansenger -j group update-members group456 --add staff1
 ### 解散群
 
 ```bash
-# 解散群（高风险操作，必须先确认）
-lansenger group dismiss group456
+# 解散群（高风险，需 --yes 确认）
+lansenger group dismiss group456 --dry-run       # 先预览
+lansenger group dismiss group456 --yes           # 确认后执行
 
 # 以用户身份解散
-lansenger group dismiss group456 --user-token $TOKEN
+lansenger group dismiss group456 --user-token $TOKEN --dry-run
+lansenger group dismiss group456 --user-token $TOKEN --yes
 ```
 
 > **双身份路由**：解散群支持两种身份：
@@ -164,6 +167,8 @@ lansenger group dismiss group456 --user-token $TOKEN
 |------|------|--------|------|
 | `group_id` (位置参数) | str | — | 群 ID（必需） |
 | `--user-token` | str | "" | 用户 Token |
+| `--yes` / `-y` | flag | False | 确认执行高风险解散（门禁要求，不带则退出码 10） |
+| `--dry-run` | flag | False | 校验参数并预览将解散的群，不执行，退出 0 |
 
 ### group create
 
@@ -225,10 +230,12 @@ lansenger group dismiss group456 --user-token $TOKEN
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
 | `group_id` (位置参数) | str | — | 群 ID（必需） |
-| `--add` | list | None | 添加的员工 ID 列表 |
-| `--remove` | list | None | 移除的员工 ID 列表 |
+| `--add` | list | None | 添加的员工 ID 列表（不触发门禁） |
+| `--remove` | list | None | 移除的员工 ID 列表（触发门禁，需 `--yes`） |
 | `--add-dept` | list | None | 添加的部门 ID 列表（需 userToken） |
 | `--user-token` | str | "" | 用户 Token |
+| `--yes` / `-y` | flag | False | 确认执行移除操作（仅 `--remove` 时需要） |
+| `--dry-run` | flag | False | 校验参数并预览将移除的成员，不执行，退出 0 |
 
 ## 常见错误
 
@@ -237,8 +244,8 @@ lansenger group dismiss group456 --user-token $TOKEN
 | 创建群时 --staff 不足 3 人 | --staff 列表最少 3 人，不足则不传 --staff |
 | 机器人身份用 --dept 添加部门成员 | 必须传 `--user-token` 以用户身份添加部门成员 |
 | 转让群主不传 --user-token | 转让群主操作必须传 `--user-token` |
-| 不确认就添加/移除群成员 | 添加/移除成员属于高风险操作，必须先确认 |
-| 不确认就解散群 | 解散群属于高风险操作（不可恢复），必须先确认 |
+| 不确认就移除群成员 | 移除成员触发门禁（exit 10），需 `--yes` 确认；`--add` 不触发门禁 |
+| 不确认就解散群 | 解散群触发门禁（exit 10），需 `--yes` 确认（不可恢复） |
 | 群名/org_id 不传位置参数 | `create` 的 name 和 org_id 是必需位置参数 |
 | group_id 不传位置参数 | `info`/`members`/`check`/`update`/`update-members` 的 group_id 是必需位置参数 |
 | **创建群返回 errCode=51011** | **这是建群审核，非报错。告知用户"申请已提交，等待管理员审核"，不要重试** |
