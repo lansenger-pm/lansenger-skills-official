@@ -2,7 +2,7 @@
 
 向聊天发送审批卡片消息（支持@mention、按钮组、权限控制、到期时间）。
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
+**继承** [`../../lansenger-shared/SKILL.md`](../../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
 **安全提醒：** 发送前务必与用户确认审批内容和接收人。审批卡片涉及业务流程，需格外谨慎。
 

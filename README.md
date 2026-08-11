@@ -159,7 +159,7 @@ All three CLIs share the same command structure, parameter names, and output for
 
 ## Multi-App / Multi-Bot Configuration
 
-The CLI supports multiple profiles (each corresponding to an appID). Credentials are isolated per profile and stored in `~/.lansenger/sdk_state.json` (0600 permissions). See `lansenger-shared/SKILL.md` for details:
+The CLI supports multiple profiles (each corresponding to an appID). Credentials are isolated per profile and stored in `~/.lansenger/sdk_state.json` (0600 permissions). See `skills/lansenger-shared/SKILL.md` for details:
 
 ### Credential fields
 

@@ -59,7 +59,7 @@ metadata:
 消息返回的 `sender` 字段是**姓名**而非 staffId（如 `"张三"`），同名员工无法区分。API 也会返回 `sender_id`（如果有的话），可用于精确定位发送者。如需确认身份：
 
 1. 若 API 返回了 `sender_id`，直接调用 `lansenger staff detail <sender_id> --user-token $TOKEN` 获取完整信息
-2. 若只有 `sender`（姓名），用 `lansenger staff search --keyword "张三" --user-token $TOKEN` 反查，再从结果中确认对应 staffId
+2. 若只有 `sender`（姓名），用 `lansenger staff search "张三" --user-token $TOKEN` 反查，再从结果中确认对应 staffId
 
 ### 消息 content 格式说明
 

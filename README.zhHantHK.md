@@ -158,7 +158,7 @@ lansenger message send-text staff123 "Hello"
 
 ## 多應用 / 多機械人設定
 
-CLI 支援多個設定檔（每個對應一個 appID），憑證按 appID 隔離儲存在 `~/.lansenger/sdk_state.json`（0600 權限）。詳見 `lansenger-shared/SKILL.md`：
+CLI 支援多個設定檔（每個對應一個 appID），憑證按 appID 隔離儲存在 `~/.lansenger/sdk_state.json`（0600 權限）。詳見 `skills/lansenger-shared/SKILL.md`：
 
 ### 憑證欄位
 

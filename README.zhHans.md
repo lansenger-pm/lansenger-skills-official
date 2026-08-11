@@ -160,7 +160,7 @@ lansenger message send-text staff123 "Hello"
 
 ## 多应用 / 多机器人配置
 
-CLI 支持多个配置档案（每个对应一个 appID），凭证按 appID 隔离存储在 `~/.lansenger/sdk_state.json`（0600 权限）。详见 `lansenger-shared/SKILL.md`：
+CLI 支持多个配置档案（每个对应一个 appID），凭证按 appID 隔离存储在 `~/.lansenger/sdk_state.json`（0600 权限）。详见 `skills/lansenger-shared/SKILL.md`：
 
 ### 凭证字段
 

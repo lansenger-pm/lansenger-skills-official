@@ -2,7 +2,7 @@
 
 通过群通道向群聊发送消息。
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
+**继承** [`../../lansenger-shared/SKILL.md`](../../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
 **安全提醒：** 发送前务必与用户确认群组和消息内容。群消息对所有成员可见 — 未经用户明确批准请勿发送。
 

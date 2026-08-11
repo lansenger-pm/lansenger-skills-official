@@ -158,7 +158,7 @@ Les trois CLIs partageant la même structure de commandes, les mêmes noms de pa
 
 ## Configuration Multi-App / Multi-Bot
 
-Le CLI supporte plusieurs profils ( chaque profil correspondant à un appID). Les identifiants sont isolés par profil et stockés dans `~/.lansenger/sdk_state.json` (permissions 0600). Voir `lansenger-shared/SKILL.md` pour plus de détails :
+Le CLI supporte plusieurs profils ( chaque profil correspondant à un appID). Les identifiants sont isolés par profil et stockés dans `~/.lansenger/sdk_state.json` (permissions 0600). Voir `skills/lansenger-shared/SKILL.md` pour plus de détails :
 
 ### Champs d'identifiants
 

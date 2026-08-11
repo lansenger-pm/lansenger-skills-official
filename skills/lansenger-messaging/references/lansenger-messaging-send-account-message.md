@@ -2,7 +2,7 @@
 
 通过账户通道（使用特定账户身份）向聊天或部门发送消息。
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
+**继承** [`../../lansenger-shared/SKILL.md`](../../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
 **安全提醒：** 发送前务必与用户确认收件人和消息内容。账户消息显示为来自特定人员的账户 — 未经用户明确批准请勿发送，因为消息将携带该账户的身份信息。
 

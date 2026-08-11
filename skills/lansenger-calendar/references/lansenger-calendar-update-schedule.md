@@ -2,7 +2,7 @@
 
 ## 前置条件
 
-../lansenger-shared/SKILL.md
+../../lansenger-shared/SKILL.md
 
 ## 描述
 

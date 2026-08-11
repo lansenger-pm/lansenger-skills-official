@@ -2,7 +2,7 @@
 
 更新先前发送的审批卡片消息的状态和按钮。
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
+**继承** [`../../lansenger-shared/SKILL.md`](../../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
 **安全提醒：** 修改已发送卡片前务必与用户确认更新内容。审批卡片更新会改变所有收到原始卡片的收件人可见的内容。
 

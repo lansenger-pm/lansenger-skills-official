@@ -2,7 +2,7 @@
 
 向聊天发送 OA 卡片消息（官方公告卡片）。
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
+**继承** [`../../lansenger-shared/SKILL.md`](../../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
 **安全提醒：** 发送前务必与用户确认收件人和卡片内容。OA 卡片属于正式消息 — 未经用户明确批准，切勿发送。
 

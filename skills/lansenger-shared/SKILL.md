@@ -515,7 +515,7 @@ lansenger group dismiss g1 --yes
 lansenger -j health check
 
 # 验证 userToken（用户身份，需先 OAuth2 授权）
-lansenger -j staff search --keyword "test" --as staff_001
+lansenger -j staff search "test" --as staff_001
 ```
 
 ## Pre-flight 检查清单
@@ -600,4 +600,4 @@ lansenger --version
 | 机器人指令 | `../lansenger-bot-command/SKILL.md` | 管理机器人指令（4.37） |
 | 个人应用 | `../lansenger-personal-app/SKILL.md` | 管理个人应用/机器人（4.38） |
 | SDK 编程 | `../lansenger-sdk/SKILL.md` | 批量操作、并发控制、断点续传、连接复用 |
-| External模式 | `../lansenger-external/SKILL.md` | 显式传入app_token/user_token的集成模式 |
+| External模式 | 独立技能集（仓库 `lansenger-skills-external`） | 显式传入app_token/user_token的集成模式 |

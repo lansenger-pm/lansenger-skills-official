@@ -2,7 +2,7 @@
 
 向指定用户发送消息提醒（弹窗/SMS/电话）。
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
+**继承** [`../../lansenger-shared/SKILL.md`](../../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
 **安全提醒：** 发送前务必与用户确认提醒内容和接收人。电话提醒会产生实际通话费用，需格外谨慎。
 

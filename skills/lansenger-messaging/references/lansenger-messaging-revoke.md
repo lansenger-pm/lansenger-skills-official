@@ -2,7 +2,7 @@
 
 撤回（删除）先前发送的消息。
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
+**继承** [`../../lansenger-shared/SKILL.md`](../../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
 **安全提醒：** 务必与用户确认要撤回哪些消息。撤回操作会从收件人视角移除消息 — 此操作不可撤销。
 

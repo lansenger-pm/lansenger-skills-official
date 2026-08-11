@@ -2,7 +2,7 @@
 
 通过用户消息通道直接向用户发送消息。
 
-**继承** [`../lansenger-shared/SKILL.md`](../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
+**继承** [`../../lansenger-shared/SKILL.md`](../../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
 **通道 4.6.3 — 模拟真实用户身份；`--user-token` 为必填（通过 lansenger-oauth 获取）。**
 
