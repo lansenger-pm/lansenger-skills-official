@@ -1,4 +1,4 @@
-# lansenger message send-approve-card
+# lansenger message approve-card
 
 向聊天发送审批卡片消息（支持@mention、按钮组、权限控制、到期时间）。
 

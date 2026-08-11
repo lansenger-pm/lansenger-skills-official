@@ -79,9 +79,6 @@ lansenger media upload-app /path/to/video.mp4 --media-type video --width 1920 --
 # 上传音频
 lansenger media upload-app /path/to/audio.mp3 --media-type audio --duration 30
 
-# 上传文件并指定 context（OpenAPI 4.5.4）
-lansenger media upload-app /path/to/file.pdf --context '{"key":"value"}'
-
 # JSON 输出
 lansenger -j media upload-app /path/to/file.pdf
 ```
@@ -185,7 +182,6 @@ lansenger media path media123 --user-token "ut1"
 | `--width` | int | 0 | 宽度（video/image，0=自动检测） |
 | `--height` | int | 0 | 高度（video/image，0=自动检测） |
 | `--duration` | int | 0 | 时长（秒，video/audio，0=自动检测） |
-| `--context` | str | "" | 上下文参数（OpenAPI 4.5.4） |
 
 ### media upload-app-v2
 
