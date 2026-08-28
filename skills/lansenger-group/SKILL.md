@@ -1,6 +1,6 @@
 ---
 name: lansenger-group
-version: 1.3.2
+version: 1.3.3
 description: "蓝信群组管理：创建群、查看群信息、群成员列表、群列表、成员检查、更新群设置、添加/移除成员、解散群。当用户需要管理群组时使用。"
 metadata:
   requires:
@@ -95,6 +95,12 @@ lansenger group list --page 0 --size 50
 lansenger group list --user-token "ut1"
 ```
 
+> **双身份路由 — 查谁的群**：`group list` 返回的是**当前 appToken 身份**所在的群。双身份模式下严格区分：
+> - 查用户的群 → 助理身份：`lansenger --app-token "$LANSENGER_APP_TOKEN" group list --user-token "$LANSENGER_USER_TOKEN"`（或 `--profile org-app`）
+> - 查个人机器人的群 → 机器人身份：`lansenger --app-token "$LANSENGER_BOT_APP_TOKEN" group list`
+>
+> 发消息前先确定发送身份，再查对应身份的群列表（机器人身份发消息必须机器人在群内），查错群列表会导致 group_id 无效或发送失败。
+
 ### 检查成员是否在群内
 
 ```bash
@@ -104,6 +110,8 @@ lansenger group check group456 --staff-id staff789
 # 检查机器人自己是否在群内（不传 --staff-id）
 lansenger group check group456
 ```
+
+> 双身份模式下：检查指定成员用助理身份（组织应用凭证）；检查个人机器人自身是否在群内用机器人身份（`--app-token "$LANSENGER_BOT_APP_TOKEN"`）。
 
 ### 更新群信息
 
@@ -249,6 +257,8 @@ lansenger group dismiss group456 --user-token $TOKEN --yes
 | 群名/org_id 不传位置参数 | `create` 的 name 和 org_id 是必需位置参数 |
 | group_id 不传位置参数 | `info`/`members`/`check`/`update`/`update-members` 的 group_id 是必需位置参数 |
 | **创建群返回 errCode=51011** | **这是建群审核，非报错。告知用户"申请已提交，等待管理员审核"，不要重试** |
+| 双身份模式下查群列表用错身份 | `group list` 按当前 appToken 身份返回群列表 — 查用户的群用助理身份 + userToken，查机器人的群用机器人身份 |
+| 个人机器人身份执行群管理写操作（create/update/dismiss/update-members） | 个人机器人无群管理权限，双身份下用助理身份（组织应用 + userToken）执行 |
 
 ## SDK 用法
 

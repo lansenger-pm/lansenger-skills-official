@@ -1,6 +1,6 @@
 ---
 name: lansenger-messaging
-version: 1.4.5
+version: 1.4.6
 description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles/approveCard），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
 metadata:
   requires:
@@ -85,6 +85,20 @@ metadata:
 | "给开发部的所有人发通知" | bot私聊(batch) | `send-bot-message ... --dept dept1` |
 | "用公号给用户发欢迎消息" | 公号私聊 | `send-account-message ... --account-id xxx` |
 | "以我的身份给李四发私聊" | 人→人私聊 | `send-user-message ... --user-token $TOKEN` |
+| "Agent 自己给我发条消息"（双身份） | bot私聊(机器人身份) | `send-text <staff_id> "..." --app-token "$LANSENGER_BOT_APP_TOKEN"` |
+
+### 双身份路由（组织应用 + 个人机器人并存时）
+
+当环境为双身份模式（见 shared「身份识别与双身份模式」）时，通道选择前先确定发送身份：
+
+| 发送场景 | 身份 | 命令模板 |
+|----------|------|---------|
+| Agent 自己发消息给用户本人 | **机器人身份** | `lansenger --app-token "$LANSENGER_BOT_APP_TOKEN" message send-text <staff_id> "..."`（或 `--profile personal-bot`） |
+| Agent 在机器人群发通知 | **机器人身份** | `lansenger --app-token "$LANSENGER_BOT_APP_TOKEN" message send-text <group_id> "..." --group` |
+| 以用户身份给第三方发私聊 | **助理身份** | `lansenger --app-token "$LANSENGER_APP_TOKEN" message send-user-message <staff_id> text '{...}' --user-token "$LANSENGER_USER_TOKEN"`（或 `--profile org-app`） |
+| 以用户身份在群里发消息 | **助理身份** | `lansenger --app-token "$LANSENGER_APP_TOKEN" message send-text <group_id> "..." --group --user-token "$LANSENGER_USER_TOKEN"` |
+
+**CRITICAL — 个人机器人的消息边界**：机器人身份只能发给创建者本人（`$LANSENGER_STAFF_ID`）或机器人所在的群。用户要求“给张三发消息”（第三方）时，禁止用机器人身份发，必须走助理身份的 `send-user-message`。发群消息前先用机器人身份 `group list` 确认机器人在该群。
 
 ### 私聊通道对比
 
@@ -335,6 +349,8 @@ lansenger -j message send-reminder msg123 --type 1 --user staff456
 | 私聊中使用 send-reminder | reminder 只在群聊中有效 — 私聊无群语境 |
 | 发视频消息只传一个 mediaId | 视频消息 **必须** 用 `--cover-image` 提供封面图片；CLI 会自动上传封面并构造 `[视频mediaId, 封面mediaId]` |
 | 身份发送失败后换身份重试 | **严禁降级或换身份**。用户身份发就用用户身份，机器人身份发就用机器人身份。失败就如实告知用户，不允许切换身份重试 |
+| 双身份模式下用机器人身份给第三方发私聊 | 个人机器人只能发创建者本人 + 所在群；发第三方必须用助理身份 `send-user-message` |
+| 双身份模式下查群列表用错身份 | 机器人身份发消息查机器人的群（机器人 appToken），用户身份发查用户的群（组织应用 appToken + userToken）——发消息前先确定身份再查对应群列表 |
 
 ### AppCard 样式与字段陷阱
 

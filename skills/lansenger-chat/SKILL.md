@@ -1,6 +1,6 @@
 ---
 name: lansenger-chat
-version: 1.4.3
+version: 1.4.4
 description: "蓝信聊天列表与消息历史：查看聊天列表（私聊+群聊）、拉取聊天消息记录。当用户需要查看聊天记录、浏览聊天列表时使用。"
 metadata:
   requires:
@@ -20,7 +20,7 @@ metadata:
 | 查员工信息 | `lansenger-staff` | chat list 的 staff_infos 只含 staffId+姓名 |
 | OAuth2 获取 userToken | `lansenger-oauth` | 推荐使用 userToken 以获得用户视角数据 |
 
-**CRITICAL — 聊天读取仅组织级应用可用，个人机器人不可用。** 详见 shared「身份能力矩阵」。需要 appToken，`--user-token` 可选但推荐传入。不传 userToken 时以机器人身份调用；传 userToken 时可以读到用户视角的聊天列表和消息内容（如 sender 为真实姓名）。
+**CRITICAL — 聊天读取仅组织级应用可用，个人机器人不可用。** 详见 shared「身份能力矩阵」。双身份模式下必须用**助理身份**（组织应用凭证：`--profile org-app` 或 `--app-token "$LANSENGER_APP_TOKEN"`），个人机器人身份（`LANSENGER_BOT_APP_TOKEN`）无法读取聊天记录。需要 appToken，`--user-token` 可选但推荐传入。不传 userToken 时以机器人身份调用；传 userToken 时可以读到用户视角的聊天列表和消息内容（如 sender 为真实姓名）。
 
 **CRITICAL — 消息查询时间跨度不宜超过约1个月。超过1个月时，API 只返回最近的数据，更早消息会丢失。需要按月拆分查询才能完整拉取历史数据（见下方"批量操作与限制说明"章节）。**
 
@@ -247,6 +247,7 @@ lansenger chat messages --staff-id staff123 --version v1 --size 100 --user-token
 | 时间跨度超过1个月 | **必须按月拆分**，超过1个月历史数据会丢失；使用 `--split-month` |
 | 以为 sender 是 staffId | sender 是**姓名**，不是 staffId，同名员工无法区分；结合 `sender_id` 或用 `staff search` 反查 |
 | 需要对方部门/职位但只看 chat list | chat list 的 staff_infos 只含 staffId+staffName，需额外调 `staff detail` |
+| 双身份模式下用个人机器人身份（$LANSENGER_BOT_APP_TOKEN）拉聊天记录 | 聊天读取仅组织级应用可用，必须用助理身份（组织应用凭证）调用 |
 
 ## SDK 用法
 

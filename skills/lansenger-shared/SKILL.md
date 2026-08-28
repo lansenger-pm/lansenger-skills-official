@@ -1,7 +1,7 @@
 ---
 name: lansenger-shared
-version: 1.7.4
-description: "认证与配置：appToken/secret 配置、权限处理、安全规则、错误处理、SDK 客户端初始化 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
+version: 1.8.1
+description: "认证与配置：身份识别与双身份模式（组织应用/个人机器人）、appToken/secret 配置、权限处理、安全规则、错误处理、SDK 客户端初始化 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -19,7 +19,7 @@ metadata:
 lansenger CLI 是对蓝信 OpenAPI 的命令行封装。每条命令对应一个或一组 API 调用：
 
 - **CLI 命令** → 解析参数 → 调用 SDK → 发送 HTTP 请求到蓝信 API 网关 → 返回结构化结果
-- **身份模型**：两级 Token 体系 — `appToken`（应用/机器人身份）+ `userToken`（个人用户身份，可选）
+- **身份模型**：两级 Token 体系 — `appToken`（应用/机器人身份）+ `userToken`（个人用户身份，可选）；同时支持**双身份模式**（组织应用 + 个人机器人并存，见下方「身份识别与双身份模式」）
 - **凭证存储**：所有凭证保存在 `~/.lansenger/sdk_state.json`（0600 权限），按 profile 隔离，支持多用户 token 存储
 - **多用户模式（v0.10.15+）**：`--as <staff_id>` 全局标志自动加载并刷新该用户的 userToken，无需每次手动传 `--user-token`
 - **External Token 模式（v0.10.17+）**：通过 `--app-token` 和 `--user-token` 全局参数直接传入 token，无需配置凭证文件，适用于集成场景
@@ -81,6 +81,57 @@ npm install -g lansenger-cli
 
 首次使用需运行 `lansenger config set` 完成应用凭证配置。
 
+### 首次配置引导 — 先确认凭证类型
+
+**CRITICAL — Agent 执行 `config set` 前 MUST 先向用户确认凭证类型（个人机器人 / 蓝信应用 / 组织机器人 / 不确定），禁止跳过直接配置。** 类型决定身份能力矩阵的走向（个人机器人不能查通讯录/日历/聊天记录），配置时不问、运行时猜会导致操作失败或消息以错误名义发出。
+
+确认后按类型执行：
+
+| 用户回答 | identity_type | 获取凭证指引 |
+|----------|--------------|--------------|
+| 个人机器人 | `personal-bot` | 蓝信桌面端 → 通讯录 → 智能机器人 → 个人机器人 → ℹ️ 图标（手机端不显示凭证） |
+| 蓝信应用（自建） | `org-app` | 蓝信开发者中心创建，可能需组织管理员审批 |
+| 组织机器人 | `org-bot` | 蓝信开发者中心创建，可能需组织管理员审批 |
+| 不确定 | 暂不设置 | 先看凭证来源：桌面端个人机器人页面拿到的=personal-bot；开发者中心拿到的=org-app/org-bot；仍不确定则按未声明配置，运行时走判定链 |
+
+```bash
+# 配置凭证（以个人机器人为例）
+lansenger config set --profile "personal-bot-main"
+lansenger config set identity_type personal-bot --profile "personal-bot-main"
+
+# 蓝信应用
+lansenger config set --profile "org-app-main"
+lansenger config set identity_type org-app --profile "org-app-main"
+```
+
+**profile 命名强约定**：profile 名必须含类型标识（`personal-bot-*` / `org-app-*` / `org-bot-*` 前缀或含类型词），与 identity_type 字段互为冗余线索——字段是结构化依据（优先），命名是人工可读兜底。
+
+**双身份用户引导**：用户同时持有组织应用凭证 + 个人机器人凭证时，建议建两个 profile 分别配置，走「身份识别与双身份模式」的路径 A：
+
+```bash
+lansenger config set --profile "org-app-main"          # 助理身份（组织应用）
+lansenger config set identity_type org-app --profile "org-app-main"
+lansenger config set --profile "personal-bot-main"     # 机器人身份（个人机器人）
+lansenger config set identity_type personal-bot --profile "personal-bot-main"
+```
+
+### 配置后正向验证
+
+配置完成后跑一次正向验证（只跑预期成功的命令，不跑预期失败的命令——失败可能由网络/网关引起，会误导判断）：
+
+```bash
+# 通用：验证凭证与网关连通
+lansenger health check --profile "personal-bot-main"
+
+# 个人机器人：验证消息能力（应返回机器人所在群列表）
+lansenger group list --profile "personal-bot-main"
+
+# 组织应用：验证 appToken 通道
+lansenger health check --profile "org-app-main"
+```
+
+验证失败时如实告知用户并按「常见错误处理」排查，**禁止**换身份或换命令重试来“绕过”。
+
 **CRITICAL — 凭证按 appID 隔离存储，每个 appID 对应一个 profile。多应用/多机器人场景下，务必通过 `--profile` 指定目标应用，避免用错凭证。**
 
 所有凭证存储在 `~/.lansenger/sdk_state.json`（文件权限 0600），密钥类字段在 `config show` 中脱敏显示（`***`）。
@@ -96,6 +147,8 @@ npm install -g lansenger-cli
 | `redirect_uri` | OAuth2 时填 | OAuth2 回调地址（需在蓝信开发者中心配置为可信域名，含协议头和端口号；CLI 默认 http://localhost:8765 也需配置，约10分钟生效） | `LANSENGER_REDIRECT_URI` |
 | `encoding_key` | 需接收回调时填 | 回调数据 AES 解密密钥（Base64 编码，来自开发者中心） | `LANSENGER_ENCODING_KEY` |
 | `callback_token` | 需接收回调时填 | 回调签名验证 token（未填时回退到 encoding_key） | `LANSENGER_CALLBACK_TOKEN` |
+| `identity_type` | 推荐填写 | 声明凭证身份类型：`personal-bot` / `org-app` / `org-bot`（空=未声明） | — |
+| `app_token`（直传） | 集成场景 | External Token 模式，跳过凭证文件 | `LANSENGER_APP_TOKEN` |
 
 ```bash
 # 基本凭证（所有用户必填）
@@ -211,6 +264,98 @@ lansenger config set --profile "new-app-name"
 > **个人机器人总结**：**能收发消息（含群聊）、上传下载文件**。不能查通讯录、不能管群（群管理）、不能操作日历日程、不能发起 OAuth2 授权。
 >
 > **蓝信应用 vs 蓝信应用+机器人**：两者使用同一个 appID/appSecret，能力几乎完全相同。唯一区别在于**消息通道**——只有机器人身份能发 bot 私聊和群聊消息。所有机器人（个人机器人、组织机器人）均可发群聊。其他所有 API（通讯录、日历、待办、聊天记录、OAuth2、流式消息等）两者完全一致。**目前仅蓝信自建应用支持开启机器人能力。**
+
+## 身份识别与双身份模式
+
+**CRITICAL — Agent 在执行任何蓝信操作前 MUST 先确定当前身份类型（组织应用 / 个人机器人）以及是否存在双身份。选错身份会导致操作失败或消息以错误名义发出。**
+
+### 身份类型判定
+
+按以下顺序判定（命中即停止）：
+
+| 判定条件 | 身份模式 |
+|----------|---------|
+| profile 存有 `identity_type` 字段（`config show` 可见，v0.12.3+） | 按字段判定：personal-bot → 个人机器人；org-app / org-bot → 组织应用 |
+| profile 命名含类型标识（personal-bot-* / org-app-* / org-bot-*） | 按命名判定（结构化字段缺失时的人工兜底） |
+| 环境变量 `LANSENGER_BOT_APP_TOKEN` 存在 | **双身份模式**（宿主预置，见路径 B） |
+| 环境变量 `LANSENGER_APP_TOKEN` 存在 | 单身份 External 模式（该 appToken 对应的身份） |
+| 存在多个 profile（`config list-profiles`） | 可能是双身份（见路径 A），按 profile 命名/用户说明判定 |
+| 单个 profile 凭证 | 单身份 — 凭证是什么类型就是什么（用户说"个人机器人"即个人机器人） |
+
+无法确定身份类型时，**直接询问用户**：「当前配置的是个人机器人还是组织应用（蓝信应用）？」禁止猜测。
+
+### 双身份体系
+
+双身份指**组织应用 + 个人机器人并存**的集成场景（典型：办公助理类 Agent 宿主，如 LanMate）。两种身份像一个人戴两顶帽子：
+
+- **助理身份（组织应用）**：以组织应用权限 + 用户身份替用户完成工作（查日历、拉聊天记录、搜通讯录、群管理写操作）。需要 userToken。
+- **机器人身份（个人机器人）**：Agent 以自己的名义发消息、发文件、在机器人群内发通知。不需要 userToken。
+
+**核心原则：帮用户做事用助理身份，Agent 自己说话用机器人身份。**
+
+双身份有两条实现路径，官方技能默认推荐路径 A（凭证自维护、appToken 自动刷新）；路径 B 适用于宿主环境预置环境变量的集成场景（token 由宿主管理，CLI 不自动刷新）：
+
+#### 路径 A：双 profile（推荐）
+
+```bash
+# 助理身份（组织应用凭证，appToken 自动管理）
+lansenger --profile org-app calendar primary --as staff_001
+
+# 机器人身份（个人机器人凭证，appToken 自动管理）
+lansenger --profile personal-bot message send-text staff123 "Hello"
+```
+
+建议 profile 命名直接标识身份类型（如 `org-app` / `personal-bot`），便于 Agent 判定。
+
+#### 路径 B：环境变量五件套（宿主预置）
+
+| 环境变量 | 说明 | 身份 |
+|----------|------|------|
+| `LANSENGER_APP_TOKEN` | 组织应用的 appToken | 助理身份 |
+| `LANSENGER_USER_TOKEN` | 用户 userToken | 助理身份 |
+| `LANSENGER_STAFF_ID` | 用户 staffId | 助理身份 |
+| `LANSENGER_BOT_APP_TOKEN` | 个人机器人的 appToken | 机器人身份 |
+| `LANSENGER_API_GATEWAY_URL` | API 网关地址 | 通用 |
+
+```bash
+# 助理身份（环境变量自动生效，v0.12.3+）
+lansenger chat list --user-token "$LANSENGER_USER_TOKEN"
+
+# 机器人身份（显式传入个人机器人 appToken）
+lansenger --app-token "$LANSENGER_BOT_APP_TOKEN" message send-text "$LANSENGER_STAFF_ID" "Hello"
+```
+
+> **注意**：路径 B 下 CLI 处于 External Token 模式，**不自动刷新 token**（有效期约 2 小时），由宿主/用户负责 token 生命周期。环境变量方式需 CLI ≥ 0.12.3。
+
+### 身份路由矩阵
+
+| 操作场景 | 凭证 | appToken 来源 | userToken |
+|----------|------|--------------|-----------|
+| Agent 发消息给用户本人/机器人群 | **机器人身份** | 个人机器人 appToken | 不需要 |
+| 以用户身份给第三方发私聊 | **助理身份** | 组织应用 | 需要 |
+| 拉取用户聊天列表/聊天记录 | **助理身份** | 组织应用 | 需要 |
+| 查用户所在的群列表 | **助理身份** | 组织应用 | 需要 |
+| 查个人机器人所在的群列表 | **机器人身份** | 个人机器人 | 不需要 |
+| 建群/解散群/群成员管理 | **助理身份** | 组织应用 | 必需 |
+| 日历/日程 CRUD | **助理身份** | 组织应用 | 需要 |
+| 通讯录/员工查询 | **助理身份** | 组织应用 | search 需 userToken |
+| 媒体上传（用于发消息） | **机器人身份** | 个人机器人 | 不需要 |
+| 媒体下载（拉取聊天附件） | **助理身份** | 组织应用 | 需要 |
+| 机器人指令管理 | **机器人身份** | 个人机器人 | 不需要 |
+
+### 个人机器人的消息边界
+
+**CRITICAL — 个人机器人不是万能发消息工具，它的消息范围非常受限：**
+
+| 能发消息给 | 能不能 | 原因 |
+|-----------|--------|------|
+| 创建者本人（用户） | **能** | 个人机器人就是为创建者服务的 |
+| 个人机器人所在的群 | **能** | 机器人被创建者拉进群后可在群内发消息 |
+| 任意第三方（如张三） | **不能** | 个人机器人无法给非创建者发私聊 |
+
+- 要给第三方发私聊，必须用助理身份的 `send-user-message`（以用户本人身份发）
+- 要在群里发消息，需先确认机器人在哪些群（`group list`，机器人身份查询）
+- 个人机器人只能由创建者拉到群里，创建者退群机器人也退群
 
 ### API 权限/能力前置条件
 
@@ -335,6 +480,7 @@ lansenger --app-token "xxx" --profile "default" message send-text staff123 "Hell
 - `--app-token` 是开启 External 模式的开关，只要提供了 `--app-token`，就进入 External 模式
 - `--user-token` 在 External 模式下是可选的，根据具体 API 是否需要决定是否传入
 - External 模式下，`--as` 参数无效（不读取持久化的 userToken）
+- 环境变量方式（v0.12.3+）：设置 `LANSENGER_APP_TOKEN`（或 `LANSENGER_USER_TOKEN`）环境变量等效于 `--app-token`（`--user-token`），无需传参；双身份场景另用 `LANSENGER_BOT_APP_TOKEN` 标识个人机器人身份（CLI 不读取该变量，Agent 显式以 `--app-token "$LANSENGER_BOT_APP_TOKEN"` 引用）
 
 ### 权限不足处理
 
@@ -528,6 +674,10 @@ lansenger -j staff search "test" --as staff_001
 - [ ] userToken 有效（测试: `lansenger calendar primary --as staff_001`）
 - [ ] 应用是否开启机器人能力（影响 send-file / 群消息）
 - [ ] App 是否有群管理 API 权限（影响 group create/dismiss/update-members）
+- [ ] 配置后正向验证通过：`lansenger health check`（个人机器人另可跑 `group list` 验证消息能力）
+- [ ] 双身份场景：确认区分组织应用与个人机器人两套凭证（见「身份识别与双身份模式」）
+- [ ] profile 的 identity_type 已声明（未声明时首次配置需补确认，见「首次配置引导」）
+- [ ] 个人机器人场景：确认收件人在消息边界内（仅创建者本人 + 机器人所在群）
 
 ## 常见错误处理
 
