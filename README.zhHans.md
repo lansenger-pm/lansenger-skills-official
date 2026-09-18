@@ -5,7 +5,7 @@
 蓝信 CLI 和 SDK 的 AI Agent Skills — 为 Python、Go 和 TypeScript CLI/SDK 提供结构化 Markdown Skill 文档，涵盖消息、日历、群组、联系人、部门、待办、流式消息、回调、OAuth、批量操作等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.12.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.13.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## 什么是 Skills？
 
@@ -115,6 +115,7 @@ skills/
   lansenger-callback/SKILL.md           # 回调事件与 Webhook
   lansenger-media/SKILL.md              # 媒体文件上传/下载
   lansenger-notice/SKILL.md             # 通知系统：官方账号通知
+  lansenger-questionnaire/SKILL.md       # 问卷系统
   lansenger-sdk/SKILL.md                 # SDK 编程指南（批量、并发、断点续传）
 skill_manifest.json                      # 所有 Skills 的索引
 skill-template/                          # 创建新 Skill 的模板
@@ -137,6 +138,7 @@ skill-template/                          # 创建新 Skill 的模板
 | `lansenger-callback` | 25 种事件类型、结构化解析、AES 解密、签名验证 |
 | `lansenger-media` | 上传/下载文件、图片、视频、音频，获取媒体路径 |
 | `lansenger-notice` | 通过官方账号发送通知（文本/链接、两种投放、确认/提醒策略），查询官方账号 |
+| `lansenger-questionnaire` | 创建/发布/分析问卷（16 种题型、分页列表、答卷导出） |
 | `lansenger-personal-app` | 创建/更新/查询/删除个人应用（4.38） |
 | `lansenger-bot-command` | 管理机器人指令（4.37） |
 | `lansenger-sdk` | SDK 编程指南 — 批量操作、并发拉取、深分页、断点续传、错误处理、连接复用 |

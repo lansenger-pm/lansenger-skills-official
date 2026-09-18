@@ -5,7 +5,7 @@
 Skills pour Agent IA Lansenger CLI — documents Markdown structurés pour CLI Python, Go et TypeScript, couvrant la messagerie, les calendriers, les groupes, les contacts, les départements, les todos, le streaming, les callbacks, OAuth et plus encore.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.12.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.13.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## Qu'est-ce que les Skills ?
 
@@ -115,6 +115,7 @@ skills/
   lansenger-callback/SKILL.md           # Événements callback & webhook
   lansenger-media/SKILL.md              # Upload/download de fichiers médias
   lansenger-notice/SKILL.md             # Notifications via comptes officiels (通知系统)
+  lansenger-questionnaire/SKILL.md       # Questionnaires (问卷系统)
 skill_manifest.json                      # Index de tous les skills
 skill-template/                          # Templates pour créer de nouveaux skills
 ```
@@ -136,6 +137,7 @@ skill-template/                          # Templates pour créer de nouveaux ski
 | `lansenger-callback` | 25 types d'événements, parsing structuré, décryptage AES, vérification de signature |
 | `lansenger-media` | Upload/download de fichiers, images, vidéos, audio, récupérer le chemin média |
 | `lansenger-notice` | Envoyer des notifications via un compte officiel (texte/lien, ciblage téléphone/staff, confirmation/rappels), lister les comptes officiels |
+| `lansenger-questionnaire` | Créer/publier/analyser des questionnaires (16 types de questions, listes paginées, export des réponses) |
 | `lansenger-sdk` | Guide de programmation SDK : lots, concurrence, reprise |
 | `lansenger-personal-app` | Créer/mettre à jour/interroger/supprimer des applications personnelles (4.38) |
 | `lansenger-bot-command` | Gérer les commandes slash du bot (4.37) |

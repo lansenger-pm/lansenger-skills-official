@@ -1,5 +1,5 @@
 {
-  "version": "1.12.0",
+  "version": "1.13.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK",
@@ -153,6 +153,16 @@
       "category": "notice",
       "description": "Lansenger notice APIs — send official-account notices (text/link content, phone/staff targeting, confirm/forward/reply flags, reminder policies, attachments) and query official accounts of an organization",
       "path": "lansenger-notice/SKILL.md"
+    },
+    {
+      "id": "lansenger-questionnaire",
+      "name": "Lansenger Questionnaire (问卷系统)",
+      "category": "questionnaire",
+      "description": "Lansenger questionnaire APIs — create/update/publish/withdraw/finish/delete questionnaires, batch question management (16 types), office-account/created/participated lists (paged), answer records and export, presigned upload URL",
+      "path": "lansenger-questionnaire/SKILL.md",
+      "references": [
+        "lansenger-questionnaire/references/lansenger-questionnaire-questions.md"
+      ]
     }
   ]
 }
