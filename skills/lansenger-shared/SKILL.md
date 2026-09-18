@@ -749,5 +749,6 @@ lansenger --version
 | 媒体文件 | `../lansenger-media/SKILL.md` | 上传/下载文件、图片、视频、音频 |
 | 机器人指令 | `../lansenger-bot-command/SKILL.md` | 管理机器人指令（4.37） |
 | 个人应用 | `../lansenger-personal-app/SKILL.md` | 管理个人应用/机器人（4.38） |
+| 通知 | `../lansenger-notice/SKILL.md` | 官方账号通知发送、官方账号列表查询 |
 | SDK 编程 | `../lansenger-sdk/SKILL.md` | 批量操作、并发控制、断点续传、连接复用 |
 | External模式 | 独立技能集（仓库 `lansenger-skills-external`） | 显式传入app_token/user_token的集成模式 |

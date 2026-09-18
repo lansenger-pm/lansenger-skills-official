@@ -5,7 +5,7 @@
 藍信 CLI 的 AI Agent Skills — 結構化 Markdown Skill 文件，適用於 Python、Go 和 TypeScript CLI，涵蓋訊息傳送、行事曆、群組、聯絡人、部門、待辦事項、串流訊息、回呼事件、OAuth 等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.11.4-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.12.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## 什麼是 Skills？
 
@@ -114,6 +114,7 @@ skills/
   lansenger-streaming/SKILL.md          # 串流訊息（AI-Agent SSE）
   lansenger-callback/SKILL.md           # 回呼事件與 Webhook
   lansenger-media/SKILL.md              # 媒體檔案上傳/下載
+  lansenger-notice/SKILL.md             # 通知系統：官方帳號通知
   lansenger-sdk/SKILL.md                  # SDK 程式設計指南（批次、並發、斷點續傳）
 skill_manifest.json                      # 所有 Skills 的索引
 skill-template/                          # 建立新 Skills 的模板
@@ -135,6 +136,10 @@ skill-template/                          # 建立新 Skills 的模板
 | `lansenger-streaming` | SSE 即時訊息傳遞，適用於 AI Agent |
 | `lansenger-callback` | 25 種事件類型、結構化解析、AES 解密、簽章驗證 |
 | `lansenger-media` | 上傳/下載檔案、圖片、影片、音訊，取得媒體路徑 |
+| `lansenger-notice` | 透過官方帳號發送通知（文字/連結、兩種投放、確認/提醒策略），查詢官方帳號 |
+| `lansenger-sdk` | SDK 編程指南：批次操作、並行控制、斷點續傳 |
+| `lansenger-personal-app` | 建立/更新/查詢/刪除個人應用（4.38） |
+| `lansenger-bot-command` | 管理機器人指令（4.37） |
 
 ## CLI 相容性
 

@@ -1,5 +1,5 @@
 {
-  "version": "1.11.4",
+  "version": "1.12.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK",
@@ -50,7 +50,7 @@
         "lansenger-messaging/references/lansenger-messaging-update-dynamic-card.md",
         "lansenger-messaging/references/lansenger-messaging-revoke.md",
         "lansenger-messaging/references/lansenger-messaging-send-reminder.md",
-        "lansenger-messaging/references/lansenger-messaging-send-approve-card.md",
+        "lansenger-messaging/references/lansenger-messaging-approve-card.md",
         "lansenger-messaging/references/lansenger-messaging-update-approve-card.md"
       ]
     },
@@ -132,6 +132,27 @@
       "category": "media",
       "description": "Lansenger media APIs — upload files/images/videos/audio, download media files, get media file path",
       "path": "lansenger-media/SKILL.md"
+    },
+    {
+      "id": "lansenger-bot-command",
+      "name": "Lansenger Bot Commands",
+      "category": "bot_commands",
+      "description": "Lansenger bot slash commands (4.37) — create, query, and delete Command entries for bot interaction menus",
+      "path": "lansenger-bot-command/SKILL.md"
+    },
+    {
+      "id": "lansenger-personal-app",
+      "name": "Lansenger Personal Apps",
+      "category": "personal_apps",
+      "description": "Lansenger personal apps (4.38) — create, update, query, delete, and list personal bots with user token",
+      "path": "lansenger-personal-app/SKILL.md"
+    },
+    {
+      "id": "lansenger-notice",
+      "name": "Lansenger Notice (通知系统)",
+      "category": "notice",
+      "description": "Lansenger notice APIs — send official-account notices (text/link content, phone/staff targeting, confirm/forward/reply flags, reminder policies, attachments) and query official accounts of an organization",
+      "path": "lansenger-notice/SKILL.md"
     }
   ]
 }
