@@ -51,6 +51,7 @@ metadata:
 |------|------|
 | `priority` | 0=较低，1=普通，2=紧急，3=非常紧急 |
 | `startTime` / `dueTime` / `finishTime` | epoch 毫秒 |
+| `finishTime` | 创建时默认 `0`，不要发送 `null` |
 | `executors` | 建议始终传入，否则待办可能不出现在创建人的列表 |
 | `resources` | 先通过 `upload-resource` 上传，再引用返回的 `resourceId` |
 | 资源大小 | 单次上传最大 9MB |
