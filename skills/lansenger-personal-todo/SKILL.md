@@ -68,7 +68,8 @@ lansenger personal-todo save "完成项目方案" staff001 org001 app001 \
 # Update selected fields
 lansenger personal-todo update TASK001 org001 \
   --update-fields "subject,dueTime" \
-  --subject "完成项目最终方案" --due-time 1720377600000
+  --subject "完成项目最终方案" --due-time 1720377600000 \
+  --create-user-id staff001 --appid app001
 
 # Query one user's personal todos
 lansenger personal-todo list org001 staff001 --status 0 --page 1 --size 20
@@ -97,6 +98,7 @@ lansenger personal-todo download-url RESOURCE_ID org001
 | 找不到个人待办命令 | 使用 `lansenger personal-todo`，不是 `lansenger todo` |
 | `orgId参数不可为空` | 显式传入 `org_id` / `--org-id`，user_token 不会自动回填 |
 | 编辑后主题未更新 | `--update-fields` 必须包含 `subject` |
+| 编辑报 `errCode=-1 unknown exception` | `createUserId` 和 `appid` 也必须放在 `updateContent`，即使不在 `updateFields` 中 |
 | 编辑报 orgId 为空 | `orgId` 必须放请求体顶层；SDK/CLI 已处理，自拼请求时注意 |
 | 创建成功但列表看不到 | 建议始终传入 executor，通常是创建人自己 |
 | 想完成/删除个人待办 | 当前接口不支持，不要调用 `lansenger todo` 混淆两套数据 |
