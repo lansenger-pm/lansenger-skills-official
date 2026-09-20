@@ -1,5 +1,5 @@
 {
-  "version": "1.13.0",
+  "version": "1.14.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK",
@@ -163,6 +163,13 @@
       "references": [
         "lansenger-questionnaire/references/lansenger-questionnaire-questions.md"
       ]
+    },
+    {
+      "id": "lansenger-boardroom",
+      "name": "Lansenger Boardroom (会议室预定 V2)",
+      "category": "boardroom",
+      "description": "Lansenger boardroom APIs — meeting-room lookup with area/floor/equipment/time filters, room detail and daily schedule, reserve/edit (single & repeating), cancel, scan-code confirmation, my reservations (paged), grading and office-area lists",
+      "path": "lansenger-boardroom/SKILL.md"
     }
   ]
 }

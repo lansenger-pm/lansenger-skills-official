@@ -5,7 +5,7 @@
 AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK, covering messaging, calendar, groups, contacts, departments, todos, streaming, callbacks, OAuth, batch operations, and more.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.13.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.14.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## What are Skills?
 
@@ -116,6 +116,7 @@ skills/
   lansenger-media/SKILL.md              # Media file upload/download
   lansenger-notice/SKILL.md             # Notice (通知系统) official-account notices
   lansenger-questionnaire/SKILL.md       # Questionnaire (问卷系统)
+  lansenger-boardroom/SKILL.md           # Boardroom (会议室预定 V2)
   lansenger-sdk/SKILL.md                  # SDK programming guide (batch, concurrency, checkpoint)
 skill_manifest.json                      # Index of all skills
 skill-template/                          # Templates for creating new skills
@@ -139,6 +140,7 @@ skill-template/                          # Templates for creating new skills
 | `lansenger-media` | Upload/download files, images, videos, audio, get media path |
 | `lansenger-notice` | Send official-account notices (text/link, phone/staff targeting, confirm/reminder policies), query official accounts |
 | `lansenger-questionnaire` | Create/publish/analyze questionnaires (16 question types, paged lists, answer export) |
+| `lansenger-boardroom` | Meeting-room reservation V2 (lookup, daily schedule, reserve/edit/cancel, confirm) |
 | `lansenger-sdk` | SDK programming guide: batch, concurrency, checkpoint resume |
 | `lansenger-personal-app` | Create/update/query/delete personal apps (4.38) |
 | `lansenger-bot-command` | Manage bot slash commands (4.37) |

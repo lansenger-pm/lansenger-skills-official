@@ -1,7 +1,7 @@
 ---
 name: lansenger
-version: 1.13.0
-description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、官方账号通知、问卷、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、通知、问卷、批量操作等功能时加载此技能。"
+version: 1.14.0
+description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、官方账号通知、问卷、会议室预定、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、通知、问卷、会议室、批量操作等功能时加载此技能。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -52,6 +52,7 @@ metadata:
 | 管理个人应用/机器人 | `lansenger-personal-app` | 创建/更新/查询/删除个人应用（4.38） |
 | 发送官方通知/公告 | `lansenger-notice` | 通知系统：官方账号发送，无撤回接口 |
 | 创建/发布/分析问卷 | `lansenger-questionnaire` | 问卷系统：16 题型、答卷导出 |
+| 预订/查询会议室 | `lansenger-boardroom` | 会议室预定 V2：检索、预订、取消 |
 | 批量操作、并发拉取、数据管道 | `lansenger-sdk` | SDK 编程指南：批量模式、并发控制、断点续传 |
 
 > **External Token模式**：如需显式传入app_token和user_token的集成模式，请使用独立的 lansenger-skills-external 技能套件。
