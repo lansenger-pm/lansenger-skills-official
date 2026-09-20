@@ -43,7 +43,7 @@ metadata:
 
 ### 身份字段与 user_token
 
-`--create-mobile`（userType=1）/ `--create-user-id`（userType=2）：带 `--as` 或 `--user-token` 时可省略，否则必填。
+`--create-mobile` / `--create-user-id`：服务端要求二者至少填一个。使用 `--as` 时 CLI 会自动补 `createUserId`；显式 `--user-token` 不替代创建人字段。
 
 ### 提醒策略（全部可选）
 
