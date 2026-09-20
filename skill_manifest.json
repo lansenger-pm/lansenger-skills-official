@@ -1,5 +1,5 @@
 {
-  "version": "1.14.0",
+  "version": "1.15.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK",
@@ -170,6 +170,13 @@
       "category": "boardroom",
       "description": "Lansenger boardroom APIs — meeting-room lookup with area/floor/equipment/time filters, room detail and daily schedule, reserve/edit (single & repeating), cancel, scan-code confirmation, my reservations (paged), grading and office-area lists",
       "path": "lansenger-boardroom/SKILL.md"
+    },
+    {
+      "id": "lansenger-personal-todo",
+      "name": "Lansenger Personal Todo (个人待办)",
+      "category": "personal_todo",
+      "description": "Lansenger user-owned personal todo APIs — create/edit/list personal todos and manage resources (upload, download URL, presigned upload URL), separate from application-identity todos",
+      "path": "lansenger-personal-todo/SKILL.md"
     }
   ]
 }

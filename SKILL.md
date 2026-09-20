@@ -1,7 +1,7 @@
 ---
 name: lansenger
-version: 1.14.0
-description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、待办任务、官方账号通知、问卷、会议室预定、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、通知、问卷、会议室、批量操作等功能时加载此技能。"
+version: 1.15.0
+description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、应用待办、个人待办、官方账号通知、问卷、会议室预定、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、待办、通知、问卷、会议室、批量操作等功能时加载此技能。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -43,7 +43,8 @@ metadata:
 | 查员工信息、通讯录搜索 | `lansenger-staff` | ID 映射、组织扩展字段 |
 | 浏览组织架构、查部门 | `lansenger-department` | 部门树、部门成员 |
 | 查日历、增删改日程 | `lansenger-calendar` | 日程 CRUD、参会人 |
-| 创建/管理待办任务 | `lansenger-todo` | 待办任务生命周期 |
+| 创建/管理应用待办 | `lansenger-todo` | 应用身份待办的任务生命周期 |
+| 创建/管理个人待办 | `lansenger-personal-todo` | 用户个人待办，与应用待办分属不同接口 |
 | OAuth2 登录、获取用户 Token | `lansenger-oauth` | 授权URL、code换token |
 | 上传/下载文件、图片、视频 | `lansenger-media` | 媒体文件上传下载 |
 | 接收蓝信 Webhook 回调 | `lansenger-callback` | 事件解析、AES解密 |

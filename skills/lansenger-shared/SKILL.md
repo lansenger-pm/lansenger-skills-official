@@ -743,6 +743,7 @@ lansenger --version
 | 部门 | `../lansenger-department/SKILL.md` | 组织架构导航、部门详情、部门员工 |
 | 日历/日程 | `../lansenger-calendar/SKILL.md` | 主日历、日程CRUD、参会人管理 |
 | 待办 | `../lansenger-todo/SKILL.md` | 创建/查询/更新/删除待办任务 |
+| 个人待办 | `../lansenger-personal-todo/SKILL.md` | 创建/编辑/查询个人待办及资源附件 |
 | OAuth2 | `../lansenger-oauth/SKILL.md` | 用户授权流程、userToken获取 |
 | 流式消息 | `../lansenger-streaming/SKILL.md` | AI Agent 实时消息推送 |
 | 回调事件 | `../lansenger-callback/SKILL.md` | Webhook 事件解析、AES解密、签名验证 |
