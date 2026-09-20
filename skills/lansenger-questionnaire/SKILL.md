@@ -126,9 +126,9 @@ lansenger questionnaire upload-url "logo.png" d41d8cd9... 10240
 | `questionnaire detail` / `brief` / `answer-url` / `copy` | `questionnaire_code` | `--operate-user-id`（brief 无） |
 | `questionnaire query-codes` | `--codes` | `--include-deleted`(0/1) |
 | `questionnaire accounts` | — | `--user-id` |
-| `questionnaire created-list` | `account_code` | `--page` `--size` `--status` |
+| `questionnaire created-list` | `account_code` | `--page` `--size` `--status` `--user-id` |
 | `questionnaire my-created` / `participated` | `org_id` | `--page` `--size` `--status` `--title`(my-created) `--user-id` |
-| `questionnaire answers` / `answer-data` | `account_code` `questionnaire_code` | `--page` `--size` |
+| `questionnaire answers` / `answer-data` | `account_code` `questionnaire_code` | `--page` `--size` `--user-id` |
 | `questionnaire answer-detail` | `account_code` `answer_code` | `--user-id` |
 | `questionnaire last-answer-detail` / `last-answer-record` | `questionnaire_code` | `--answer-record-code` `--user-id` |
 | `questionnaire upload-url` | `file_name` `md5` `size` (位置参数) | — |

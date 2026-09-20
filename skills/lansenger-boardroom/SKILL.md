@@ -111,13 +111,13 @@ lansenger boardroom reserve-detail res1 --grading-id g1
 
 | 命令 | 必需参数 | 关键可选参数 |
 |------|---------|-------------|
-| `boardroom gradings` | — | `--user-id` |
+| `boardroom gradings` | — | `--user-id` `--org-id` |
 | `boardroom area-offices` | `grading_id` (位置参数) | — |
 | `boardroom rooms` | — | `--grading-id` `--area-office-id` `--floor-ids` `--equipment` `--time-start/end` `--date` `--page` `--size` |
 | `boardroom room-detail` | `room_id` | — |
 | `boardroom schedule` | `room_id` `query_date` (位置参数) `--grading-id` | — |
 | `boardroom reserve-detail` | `reserve_room_id` (位置参数) | `--grading-id` |
-| `boardroom reserve` | `boardroom_id` `name` (位置参数) `--grading-id` `--start` `--end` `--notice-time` | `--people` `--toastmaster` `--leader` `--invite` `--approvers` `--is-video` `--reserve-type` `--repeat-type/days/end` `--skip` |
+| `boardroom reserve` | `boardroom_id` `name` (位置参数) `--grading-id` `--start` `--end` `--notice-time` | `--people` `--toastmaster` `--leader` `--leader-attend` `--other-demand` `--table-cards` `--invite` `--approvers` `--is-video` `--reserve-type` `--repeat-type/days/end` `--skip` |
 | `boardroom edit-reserve` | `reserve_id` `boardroom_id` `name` (位置参数) `--grading-id` `--start` `--end` `--notice-time` | `--edit-type`(1/2) |
 | `boardroom cancel` | `reserve_id` (位置参数) | `--reason` `--cancel-type`(1/2/3) `--notify`；门禁 `--yes`/`--dry-run` |
 | `boardroom confirm-sign` | `reserve_id` (位置参数) | — |
