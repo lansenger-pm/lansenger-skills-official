@@ -1,5 +1,5 @@
 {
-  "version": "1.15.0",
+  "version": "1.16.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK",
@@ -177,6 +177,13 @@
       "category": "personal_todo",
       "description": "Lansenger user-owned personal todo APIs — create/edit/list personal todos and manage resources (upload, download URL, presigned upload URL), separate from application-identity todos",
       "path": "lansenger-personal-todo/SKILL.md"
+    },
+    {
+      "id": "lansenger-videoconference",
+      "name": "Lansenger Videoconference (视频会议)",
+      "category": "videoconference",
+      "description": "Lansenger videoconference APIs — create/modify/cancel/stop meetings (exactly one admin host), meeting lists and batch status, host member control (opCode whitelist), member invite/list/records, recordings (max 3 download URLs per call), org config probe",
+      "path": "lansenger-videoconference/SKILL.md"
     }
   ]
 }

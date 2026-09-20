@@ -753,5 +753,6 @@ lansenger --version
 | 通知 | `../lansenger-notice/SKILL.md` | 官方账号通知发送、官方账号列表查询 |
 | 问卷 | `../lansenger-questionnaire/SKILL.md` | 创建/发布/分析问卷（16 题型、答卷导出） |
 | 会议室 | `../lansenger-boardroom/SKILL.md` | 会议室检索、预订/修改/取消（需 gradingId） |
+| 视频会议 | `../lansenger-videoconference/SKILL.md` | 会议创建/取消/结束、主持人会控（唯一 admin 主持人）、录像下载 |
 | SDK 编程 | `../lansenger-sdk/SKILL.md` | 批量操作、并发控制、断点续传、连接复用 |
 | External模式 | 独立技能集（仓库 `lansenger-skills-external`） | 显式传入app_token/user_token的集成模式 |

@@ -5,7 +5,7 @@
 AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK, covering messaging, calendar, groups, contacts, departments, todos, streaming, callbacks, OAuth, batch operations, and more.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.15.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.16.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## What are Skills?
 
@@ -117,6 +117,7 @@ skills/
   lansenger-notice/SKILL.md             # Notice (通知系统) official-account notices
   lansenger-questionnaire/SKILL.md       # Questionnaire (问卷系统)
   lansenger-boardroom/SKILL.md           # Boardroom (会议室预定 V2)
+  lansenger-videoconference/SKILL.md     # Videoconference (视频会议)
   lansenger-personal-todo/SKILL.md       # Personal Todo (个人待办)
   lansenger-sdk/SKILL.md                  # SDK programming guide (batch, concurrency, checkpoint)
 skill_manifest.json                      # Index of all skills
@@ -142,6 +143,7 @@ skill-template/                          # Templates for creating new skills
 | `lansenger-notice` | Send official-account notices (text/link, phone/staff targeting, confirm/reminder policies), query official accounts |
 | `lansenger-questionnaire` | Create/publish/analyze questionnaires (16 question types, paged lists, answer export) |
 | `lansenger-boardroom` | Meeting-room reservation V2 (lookup, daily schedule, reserve/edit/cancel, confirm) |
+| `lansenger-videoconference` | Videoconference APIs (create/cancel/stop meetings, host member control, recording downloads) |
 | `lansenger-personal-todo` | Create/edit/list user-owned personal todos and manage attachments (separate from application todos) |
 | `lansenger-sdk` | SDK programming guide: batch, concurrency, checkpoint resume |
 | `lansenger-personal-app` | Create/update/query/delete personal apps (4.38) |
