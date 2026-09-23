@@ -53,7 +53,7 @@ metadata:
 | `startTime` / `dueTime` / `finishTime` | epoch 毫秒 |
 | `finishTime` | 创建时默认 `0`，不要发送 `null` |
 | `executors` | 建议始终传入，否则待办可能不出现在创建人的列表 |
-| `resources` | 先通过 `upload-resource` 上传，再引用返回的 `resourceId` |
+| `resources` | 挂附件：`resources` 条目必填 `fileName` / `resourceId` / `fileType` / `fileSize`，`opt` 默认 1（添加，0=移除）。⚠️ 上传接口返回的是 `mimeType` / `size`，**挂附件必须映射成 `fileType` / `fileSize`**——直接把上传响应塞进 `resources` 会被后端 `errCode 500` 打回（实测 35997/35999/36000、181xxx 一类均属此）。列表侧读字段叫 `resourceList`，**只用于读，不能当写字段**（写了返回 0 但不落库） |
 | 资源大小 | 单次上传最大 9MB |
 | 下载 URL | 最长 1 小时有效 |
 
@@ -76,6 +76,11 @@ lansenger personal-todo list org001 staff001 --status 0 --page 1 --size 20
 
 # Upload an attachment and use the returned resourceId in --resources
 lansenger personal-todo upload-resource app001 report.pdf application/pdf org001 --file ./report.pdf
+# 上传后 CLI 会打印一段可直接粘进 --resources 的 JSON（已把 mimeType/size 映射成 fileType/fileSize）
+lansenger personal-todo update TASK001 org001 \
+  --update-fields "resources" \
+  --resources '[{"fileName":"report.pdf","resourceId":"RES_ID","fileType":"application/pdf","fileSize":10240,"opt":1}]' \
+  --create-user-id staff001 --appid app001
 lansenger personal-todo upload-url report.pdf MD5 10240 org001
 lansenger personal-todo download-url RESOURCE_ID org001
 ```
@@ -104,6 +109,8 @@ lansenger personal-todo download-url RESOURCE_ID org001
 | 想完成/删除个人待办 | 当前接口不支持，不要调用 `lansenger todo` 混淆两套数据 |
 | 资源上传超过限制 | 单文件最大 9MB |
 | 下载链接过期 | 下载 URL 最长 1 小时，过期后重新获取 |
+| 挂附件更新返回 `errCode 500`（35997/35999/36000/181xxx 一类） | `resources` 条目用了上传返回的 `mimeType`/`size`/`md5`，缺写体必填的 `fileType`/`fileSize`。用 `result.to_resource_entry()` 或 CLI 打印的片段拼 `--resources`，不要直接塞上传响应 |
+| 更新返回 `errCode 0` 但列表里 `resourceList` 仍为空 | 把写字段写成了 `resourceList`（那是列表读字段，写了被静默忽略）。写字段必须是 `resources` |
 
 ## SDK 用法
 
@@ -117,6 +124,8 @@ lansenger personal-todo download-url RESOURCE_ID org001
 | `fetch_personal_todo_resource_upload_url(...)` | 获取预签名上传 URL |
 
 ```python
+import base64
+
 from lansenger_sdk import LansengerSyncClient
 
 client = LansengerSyncClient.from_store(profile="default")
@@ -132,6 +141,50 @@ r = client.save_personal_todo(
 )
 page = client.fetch_personal_todo_list("org001", "staff001", status=0)
 print(r.todo_code, page.total)
+
+# 上传后把结果直接拼成挂附件条目（自动把 mimeType/size 映射成 fileType/fileSize）
+# raw 是文件字节内容，需自备
+up = client.upload_personal_todo_resource(
+    app_id="app001", size=10240, file_name="report.pdf",
+    content_type="application/pdf", file_data=base64.b64encode(raw).decode(), org_id="org001")
+client.update_personal_todo(
+    todo_code=r.todo_code, org_id="org001", update_fields=["resources"],
+    resources=[up.to_resource_entry()], create_user_id="staff001", appid="app001")
 ```
 
 > 更多批量模式详见 `../lansenger-sdk/SKILL.md`。
+
+### TypeScript / Go 等价写法
+
+挂附件条目的助手三个 SDK 同义，产出同一个条目：
+
+| Python | TypeScript | Go |
+|--------|-----------|-----|
+| `result.to_resource_entry()` | `result.toResourceEntry()` | `PersonalTodoResourceEntryFromUpload(result, 1)` |
+| `build_personal_todo_resource_entry(...)` | `buildPersonalTodoResourceEntry({...})` | `BuildPersonalTodoResourceEntry(...)` |
+| `resource_entry_from_upload(result)` | `resourceEntryFromUpload(result)` | `PersonalTodoResourceEntryFromUpload(result, 1)` |
+
+三者都接受「上传结果对象」或「原始响应」两种入参；无法解析时 Python/TS 抛 `TypeError`、Go 返回 error，**不会静默产出缺 `resourceId` 的条目**（那种条目会被后端 errCode 500 打回）。Go 的 `opt` 是必填位置参数：1=添加，0=移除。
+
+```ts
+const up = await client.uploadPersonalTodoResource(
+  "app001", 10240, "report.pdf", "application/pdf", fileDataBase64, "org001");
+await client.updatePersonalTodo(todoCode, "org001", ["resources"], {
+  resources: [up.toResourceEntry()],
+  create_user_id: "staff001", appid: "app001",
+});
+```
+
+```go
+up, err := client.UploadPersonalTodoResource(ctx, &lansenger.PersonalTodoResourceUploadParams{
+    AppID: "app001", Size: 10240, FileName: "report.pdf",
+    ContentType: "application/pdf", FileData: fileDataBase64, OrgID: "org001",
+})
+if err != nil { return err }
+entry, err := lansenger.PersonalTodoResourceEntryFromUpload(up, 1)
+if err != nil { return err }
+_, err = client.UpdatePersonalTodo(ctx, &lansenger.PersonalTodoUpdateParams{
+    TodoCode: todoCode, OrgID: "org001", UpdateFields: []string{"resources"},
+    Resources: []map[string]interface{}{entry},
+})
+```
