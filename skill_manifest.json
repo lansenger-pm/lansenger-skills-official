@@ -182,7 +182,7 @@
       "id": "lansenger-videoconference",
       "name": "Lansenger Videoconference (视频会议)",
       "category": "videoconference",
-      "description": "Lansenger videoconference APIs — create/modify/cancel/stop meetings (exactly one admin host), meeting lists and batch status, host member control (opCode whitelist), member invite/list/records, recordings (max 3 download URLs per call), org config probe",
+      "description": "Lansenger videoconference APIs — create/modify/cancel/stop meetings (exactly one admin host), meeting lists and batch status, host member control (opCode passed through), member invite/list/records, recordings (max 3 download URLs per call), org config probe",
       "path": "lansenger-videoconference/SKILL.md"
     }
   ]

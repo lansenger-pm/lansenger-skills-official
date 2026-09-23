@@ -57,11 +57,13 @@ metadata:
 | `createSource` | 0=平台客户端，1=第三方创建 |
 | `autoRecord` | 0=不自动录制，1=自动录制 |
 
-### 会控 opCode 白名单
+### 会控 opCode 取值
 
-`member/control` 的 `opCode` 只接受以下值（SDK 校验，自拼请求也必须从此集合取值）：
+`member/control` 的 `opCode` **由服务端校验**；SDK 与 CLI 一律原样透传，不在客户端拦截。
 
-`kick` `quit` `join` `handup` `openScreenShare` `closeScreenShare` `openVideo` `closeVideo` `applyAudio` `applyVideo` `shareVideo` `cancelShareVideo` `muteall` `unmuteall` `remove` `call` `enforceOpenVideo` `setJoinHost` `cancelJoinHost` `inviteOpenAudio` `setHost` `grabHost`
+以下为已知取值（**仅供参考、可能不全**，以服务端为准）：
+
+`kick` `quit` `join` `handup` `openScreenShare` `closeScreenShare` `openVideo` `closeVideo` `mute` `applyVideo` `shareVideo` `cancelShareVideo` `muteall` `unmuteall` `remove` `call` `enforceOpenVideo` `setJoinHost` `cancelJoinHost` `inviteOpenAudio` `setHost` `grabHost`
 
 ### 必填身份字段
 
@@ -107,7 +109,7 @@ lansenger videoconference params 88001234 --org-id 2285568 --operator st1
 lansenger videoconference cancel mid1 --org-id 2285568 --operator st1
 lansenger videoconference stop mid1 --org-id 2285568 --operator st1
 
-# 会控（opCode 白名单）/ 邀请 / 成员列表 / 进出记录
+# 会控（opCode 原样透传，服务端校验）/ 邀请 / 成员列表 / 进出记录
 lansenger videoconference member-control mid1 st2 muteall --org-id 2285568 --operator st1
 lansenger videoconference invite 88001234 --org-id 2285568 --operator st1 \
   --members '[{"staffId":"st2","employeeName":"李四","type":0,"video":1,"audio":1}]'
@@ -134,7 +136,7 @@ lansenger videoconference subscribe mid1 --org-id 2285568 \
 | 命令 | 必需参数 | 关键可选参数 |
 |------|---------|-------------|
 | `videoconference create` | `subject start_time` (位置参数) `--org-id --members` | `--type`(0/1) `--auto-record` `--group-new` `--conf-password` `--control-password` `--mask-type` `--ext-attr` `--join-mute` `--open-mute` `--enable-pre-join` `--user-stop-time` `--invite-admin` |
-| `videoconference modify` | `mid subject start_time` (位置参数) `--org-id --operator --members` | `--auto-record` `--type` `--group-new` `--conf-password` `--control-password` |
+| `videoconference modify` | `mid subject start_time` (位置参数) `--org-id --operator --members` | `--auto-record` `--type` `--group-new` `--conf-password` `--control-password` `--user-stop-time` |
 | `videoconference cancel` | `mid` (位置参数) `--org-id --operator` | 仅未开始的会议 |
 | `videoconference stop` | `mid` (位置参数) `--org-id --operator` | 已开始的会议用此结束 |
 | `videoconference detail` | `mid` (位置参数) `--org-id --operator` | — |
@@ -147,7 +149,7 @@ lansenger videoconference subscribe mid1 --org-id 2285568 \
 | `videoconference params` | `meeting_number` (位置参数) `--org-id --operator` | — |
 | `videoconference history` | `--org-id --operator` | `--limit` `--offset` |
 | `videoconference active` | `--org-id --operator` | `--limit` `--offset` |
-| `videoconference member-control` | `mid staff_id op_code` (位置参数) `--org-id --operator` | opCode 只能取白名单值 |
+| `videoconference member-control` | `mid staff_id op_code` (位置参数) `--org-id --operator` | opCode 原样透传，取值见上文 |
 | `videoconference invite` | `meeting_number` (位置参数) `--org-id --operator --members` | member `type`: 0=平台用户 1=小鱼终端；`video`/`audio` |
 | `videoconference member-list` | `mid` (位置参数) `--org-id --operator` | `--limit` `--offset` |
 | `videoconference vod-list` | `mid` (位置参数) `--org-id --operator` | — |
@@ -166,7 +168,7 @@ lansenger videoconference subscribe mid1 --org-id 2285568 \
 | `105102` 无下载权限 | 录像下载受权限控制，提示用户申请权限 |
 | `105225` 成员超上限 / `105244` 超组织最大方数 / `105245` 无剩余通话时长 | 组织容量/时长限制，向用户说明，不要盲目重试 |
 | `105105` 组织会议最大人数变更需重新入会 | 提示参会人重新入会 |
-| 会控 opCode 被拒 | 只能传白名单值（kick/muteall/setHost/grabHost 等），不要自造操作名 |
+| 会控 opCode 被拒（`105601`） | opCode 服务端不认识：换用上文已知取值，不要自造操作名 |
 | `fetch_range=person` 返回报错 | person 模式必须同时传 `staffId` |
 | `mids` 传空数组 | 批量状态查询 `mids` 必须非空 |
 | 自拼 URL 404 | 取消会议端点是历史拼写 `/meeting/cancle`，不是 `/meeting/cancel` |
@@ -186,7 +188,7 @@ lansenger videoconference subscribe mid1 --org-id 2285568 \
 | `subscribe_meeting_events(mid=, org_id=, events=)` | 订阅会议状态变更事件 |
 | `fetch_meeting_params(meeting_number=, org_id=, operator=)` | 会议号换会议配置（取 mid） |
 | `fetch_history_meetings(...)` / `fetch_active_meetings(...)` | 历史会议 / 进行中+预约会议（分页） |
-| `control_member(mid=, staff_id=, op_code=, operator=, org_id=)` | 主持人会控（opCode 白名单） |
+| `control_member(mid=, staff_id=, op_code=, operator=, org_id=)` | 主持人会控（opCode 原样透传） |
 | `invite_members(meeting_number=, members=, org_id=, operator=)` | 邀请成员加入进行中的会议 |
 | `fetch_member_list(mid=, org_id=, operator=)` | 成员列表（分页） |
 | `fetch_vod_list(mid=, org_id=, operator=)` / `fetch_vod_download_urls(vods=, org_id=, operator=)` | 录像列表 / 下载链接（≤3） |
@@ -215,7 +217,7 @@ mid = r.mid
 # 会议号换 mid（成员/录像操作按 mid 定位）
 p = client.fetch_meeting_params(meeting_number="88001234", org_id="2285568", operator="st1")
 
-# 会控：全体静音（opCode 白名单）
+# 会控：全体静音（opCode 原样透传）
 client.control_member(mid=mid, staff_id="st2", op_code="muteall",
                       operator="st1", org_id="2285568")
 
