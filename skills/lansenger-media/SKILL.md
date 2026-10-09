@@ -125,8 +125,8 @@ ffprobe -v error -select_streams v:0 -show_entries stream=duration -of csv=p=0 v
 # 下载到 stdout（JSON 输出）
 lansenger -j media download media123
 
-# 下载媒体文件（带 userToken，OpenAPI 4.5.2）
-lansenger -j media download media123 --user-token "ut1"
+# 下载媒体文件（带 userToken，OpenAPI 4.5.2；全局选项须置于子命令之前）
+lansenger -j --user-token "ut1" media download media123
 ```
 
 ### 下载到本地文件

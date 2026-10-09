@@ -148,10 +148,7 @@ open "$(lansenger -j oauth local-callback --port 8765 | jq -r '.authorize_url')"
 ### 构建授权 URL
 
 ```bash
-# 构建授权 URL（redirect_uri 自动从配置加载）
-lansenger oauth authorize-url
-
-# 指定 redirect_uri
+# 构建授权 URL（redirect_uri 为必填位置参数）
 lansenger oauth authorize-url "https://myapp.com/callback"
 
 # 指定 scope
@@ -161,7 +158,7 @@ lansenger oauth authorize-url "https://myapp.com/callback" --scope "basic_userin
 lansenger oauth authorize-url "https://myapp.com/callback" --state "random-state-string"
 ```
 
-**redirect_uri 持久化**：CLI 会自动保存 redirect_uri，下次调用 `authorize-url` 时可省略参数。
+**redirect_uri 是必填位置参数**：`authorize-url` 每次调用都必须显式传入（CLI 不持久化它，省略会报 `Missing argument 'redirect_uri'`）；`local-callback` 默认使用 `http://localhost:<port>`，需要时用 `--redirect-uri` 覆盖。
 
 ### 兑换授权码
 
@@ -242,9 +239,9 @@ lansenger oauth local-callback --timeout 300
 
 ```bash
 # 授权一次，之后全部用 --as
-lansenger calendar primary --as staff_001
-lansenger staff search "张三" --as staff_001
-lansenger chat list --as staff_001
+lansenger --as staff_001 calendar primary
+lansenger --as staff_001 staff search "张三"
+lansenger --as staff_001 chat list
 
 # 查看已授权的所有用户
 lansenger config list-users

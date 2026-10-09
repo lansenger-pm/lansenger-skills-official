@@ -109,16 +109,11 @@ skills/
   lansenger-staff/SKILL.md              # 聯絡人與員工
   lansenger-department/SKILL.md         # 部門層級
   lansenger-calendar/SKILL.md           # 行事曆與排程 + references/
-  lansenger-todo/SKILL.md               # 統一待辦事項
   lansenger-oauth/SKILL.md              # OAuth2 使用者認證
   lansenger-streaming/SKILL.md          # 串流訊息（AI-Agent SSE）
   lansenger-callback/SKILL.md           # 回呼事件與 Webhook
   lansenger-media/SKILL.md              # 媒體檔案上傳/下載
-  lansenger-notice/SKILL.md             # 通知系統：官方帳號通知
-  lansenger-questionnaire/SKILL.md       # 問卷系統
-  lansenger-boardroom/SKILL.md           # 會議室預訂 V2
   lansenger-videoconference/SKILL.md     # 視訊會議開放能力
-  lansenger-personal-todo/SKILL.md       # 個人待辦
   lansenger-sdk/SKILL.md                  # SDK 程式設計指南（批次、並發、斷點續傳）
 skill_manifest.json                      # 所有 Skills 的索引
 skill-template/                          # 建立新 Skills 的模板
@@ -135,16 +130,11 @@ skill-template/                          # 建立新 Skills 的模板
 | `lansenger-staff` | 取得員工資訊、ID 映射（手機/信箱→staffId）、組織額外欄位、搜尋 |
 | `lansenger-department` | 瀏覽組織層級、取得部門詳情/子部門、列出部門員工 |
 | `lansenger-calendar` | 主要行事曆、排程 CRUD、參與者管理、參與者元資料 |
-| `lansenger-todo` | 建立、更新、查詢、刪除待辦事項、管理執行者、狀態統計 |
 | `lansenger-oauth` | OAuth2 使用者認證流程、授權 URL、程式碼交換、憑證刷新、`local-callback` 命令、UserTokenManager 自動刷新 |
 | `lansenger-streaming` | SSE 即時訊息傳遞，適用於 AI Agent |
 | `lansenger-callback` | 25 種事件類型、結構化解析、AES 解密、簽章驗證 |
 | `lansenger-media` | 上傳/下載檔案、圖片、影片、音訊，取得媒體路徑 |
-| `lansenger-notice` | 透過官方帳號發送通知（文字/連結、兩種投放、確認/提醒策略），查詢官方帳號 |
-| `lansenger-questionnaire` | 建立/發布/分析問卷（16 種題型、分頁列表、答卷匯出） |
-| `lansenger-boardroom` | 會議室預訂 V2（檢索、當日預訂、預訂/修改/取消、掃碼確認） |
 | `lansenger-videoconference` | 視訊會議開放能力（建立/取消/結束會議、主持人會控、錄影下載） |
-| `lansenger-personal-todo` | 使用者個人待辦的建立/編輯/查詢及附件管理，與應用待辦分離 |
 | `lansenger-sdk` | SDK 編程指南：批次操作、並行控制、斷點續傳 |
 | `lansenger-personal-app` | 建立/更新/查詢/刪除個人應用（4.38） |
 | `lansenger-bot-command` | 管理機器人指令（4.37） |
@@ -206,7 +196,7 @@ lansenger config set app_id xxx2 --profile "my-app"
 lansenger config set encoding_key yyy2 --profile "my-app"
 
 # 透過 --profile 切換身份
-lansenger message send-text staff123 "Hello" --profile "my-bot"
+lansenger --profile "my-bot" message send-text staff123 "Hello"
 lansenger callback parse-payload DATA --profile "my-app"
 ```
 

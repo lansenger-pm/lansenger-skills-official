@@ -96,11 +96,13 @@ npm install -g lansenger-cli
 
 ```bash
 # 配置凭证（以个人机器人为例）
-lansenger config set --profile "personal-bot-main"
+lansenger config set app_id "YOUR_APP_ID" --profile "personal-bot-main"
+lansenger config set app_secret "YOUR_APP_SECRET" --profile "personal-bot-main"
 lansenger config set identity_type personal-bot --profile "personal-bot-main"
 
 # 蓝信应用
-lansenger config set --profile "org-app-main"
+lansenger config set app_id "YOUR_APP_ID" --profile "org-app-main"
+lansenger config set app_secret "YOUR_APP_SECRET" --profile "org-app-main"
 lansenger config set identity_type org-app --profile "org-app-main"
 ```
 
@@ -109,9 +111,11 @@ lansenger config set identity_type org-app --profile "org-app-main"
 **双身份用户引导**：用户同时持有组织应用凭证 + 个人机器人凭证时，建议建两个 profile 分别配置，走「身份识别与双身份模式」的路径 A：
 
 ```bash
-lansenger config set --profile "org-app-main"          # 助理身份（组织应用）
+lansenger config set app_id "YOUR_APP_ID" --profile "org-app-main"          # 助理身份（组织应用）
+lansenger config set app_secret "YOUR_APP_SECRET" --profile "org-app-main"
 lansenger config set identity_type org-app --profile "org-app-main"
-lansenger config set --profile "personal-bot-main"     # 机器人身份（个人机器人）
+lansenger config set app_id "YOUR_APP_ID" --profile "personal-bot-main"     # 机器人身份（个人机器人）
+lansenger config set app_secret "YOUR_APP_SECRET" --profile "personal-bot-main"
 lansenger config set identity_type personal-bot --profile "personal-bot-main"
 ```
 
@@ -121,13 +125,13 @@ lansenger config set identity_type personal-bot --profile "personal-bot-main"
 
 ```bash
 # 通用：验证凭证与网关连通
-lansenger health check --profile "personal-bot-main"
+lansenger --profile "personal-bot-main" health check
 
 # 个人机器人：验证消息能力（应返回机器人所在群列表）
-lansenger group list --profile "personal-bot-main"
+lansenger --profile "personal-bot-main" group list
 
 # 组织应用：验证 appToken 通道
-lansenger health check --profile "org-app-main"
+lansenger --profile "org-app-main" health check
 ```
 
 验证失败时如实告知用户并按「常见错误处理」排查，**禁止**换身份或换命令重试来“绕过”。
@@ -175,20 +179,20 @@ CLI 支持多 profile，每个 profile 对应一个 appID（一个应用或一�
 
 ```bash
 # 配置第一个应用（个人机器人）
-lansenger config set --profile "my-personal-bot"
-# 输入 app_id: xxx1, app_secret: xxx1
+lansenger config set app_id "xxx1" --profile "my-personal-bot"
+lansenger config set app_secret "xxx1" --profile "my-personal-bot"
 
 # 配置第二个应用（蓝信应用）
-lansenger config set --profile "my-lansenger-app"
-# 输入 app_id: xxx2, app_secret: xxx2
+lansenger config set app_id "xxx2" --profile "my-lansenger-app"
+lansenger config set app_secret "xxx2" --profile "my-lansenger-app"
 
 # 配置第三个应用（组织机器人）
-lansenger config set --profile "org-bot"
-# 输入 app_id: xxx3, app_secret: xxx3
+lansenger config set app_id "xxx3" --profile "org-bot"
+lansenger config set app_secret "xxx3" --profile "org-bot"
 
 # 切换应用
-lansenger message send-text staff123 "Hello" --profile "my-personal-bot"
-lansenger calendar primary --profile "my-lansenger-app" --user-token "ut1"
+lansenger --profile "my-personal-bot" message send-text staff123 "Hello"
+lansenger --profile "my-lansenger-app" --user-token "ut1" calendar primary
 
 # 查看所有已配置的 profile
 lansenger config list-profiles
@@ -218,9 +222,10 @@ lansenger config clear --all
 # Step 1: 先查询已有 profile
 lansenger config list-profiles
 # Step 2: 如果 AppID 已存在对应 profile → 直接复用它
-lansenger staff search --profile "existing-profile" ...
+lansenger --profile "existing-profile" staff search "张三"
 # Step 3: 如果不存在 → 创建新 profile
-lansenger config set --profile "new-app-name"
+lansenger config set app_id "YOUR_APP_ID" --profile "new-app-name"
+lansenger config set app_secret "YOUR_APP_SECRET" --profile "new-app-name"
 ```
 
 ### 获取凭证
@@ -299,7 +304,7 @@ lansenger config set --profile "new-app-name"
 
 ```bash
 # 助理身份（组织应用凭证，appToken 自动管理）
-lansenger --profile org-app calendar primary --as staff_001
+lansenger --profile org-app --as staff_001 calendar primary
 
 # 机器人身份（个人机器人凭证，appToken 自动管理）
 lansenger --profile personal-bot message send-text staff123 "Hello"
@@ -434,9 +439,9 @@ lansenger --app-token "$LANSENGER_BOT_APP_TOKEN" message send-text "$LANSENGER_S
 lansenger message send-text staff123 "Hello"
 
 # 需以用户身份操作时，用 --as 自动加载已持久化的 token
-lansenger calendar primary --as staff_001
-lansenger staff search "张三" --as staff_001
-lansenger chat list --as staff_001
+lansenger --as staff_001 calendar primary
+lansenger --as staff_001 staff search "张三"
+lansenger --as staff_001 chat list
 
 # 或手动传 --user-token（优先级高于 --as）
 lansenger calendar primary --user-token "userToken123"
@@ -516,7 +521,7 @@ CLI 支持多 profile（多套凭证），每个 profile 对应一个 appID。�
 lansenger message send-text staff123 "Hello"
 
 # 指定 profile（即指定使用哪个 appID 的凭证）
-lansenger message send-text staff123 "Hello" --profile "org-bot"
+lansenger --profile "org-bot" message send-text staff123 "Hello"
 
 # 查看所有已配置 profile
 lansenger config list-profiles
@@ -551,9 +556,9 @@ lansenger config list-users
 lansenger config list-users --show-tokens
 
 # 以指定用户身份执行任何需要 userToken 的命令
-lansenger calendar primary --as staff_001
-lansenger staff search "张三" --as staff_001
-lansenger chat list --as staff_001
+lansenger --as staff_001 calendar primary
+lansenger --as staff_001 staff search "张三"
+lansenger --as staff_001 chat list
 ```
 
 - `--as` 是全局标志，放在子命令之前
@@ -661,7 +666,7 @@ lansenger group dismiss g1 --yes
 lansenger -j health check
 
 # 验证 userToken（用户身份，需先 OAuth2 授权）
-lansenger -j staff search "test" --as staff_001
+lansenger -j --as staff_001 staff search "test"
 ```
 
 ## Pre-flight 检查清单
@@ -671,7 +676,7 @@ lansenger -j staff search "test" --as staff_001
 - [ ] `lansenger --version` ≥ 0.10.19
 - [ ] `api_gateway_url` 配置正确（测试: `lansenger health check`）
 - [ ] appID/appSecret 有效（测试: `lansenger health check`）
-- [ ] userToken 有效（测试: `lansenger calendar primary --as staff_001`）
+- [ ] userToken 有效（测试: `lansenger --as staff_001 calendar primary`）
 - [ ] 应用是否开启机器人能力（影响 send-file / 群消息）
 - [ ] App 是否有群管理 API 权限（影响 group create/dismiss/update-members）
 - [ ] 配置后正向验证通过：`lansenger health check`（个人机器人另可跑 `group list` 验证消息能力）
@@ -742,17 +747,12 @@ lansenger --version
 | 通讯录/员工 | `../lansenger-staff/SKILL.md` | 员工信息查询、搜索、ID映射 |
 | 部门 | `../lansenger-department/SKILL.md` | 组织架构导航、部门详情、部门员工 |
 | 日历/日程 | `../lansenger-calendar/SKILL.md` | 主日历、日程CRUD、参会人管理 |
-| 待办 | `../lansenger-todo/SKILL.md` | 创建/查询/更新/删除待办任务 |
-| 个人待办 | `../lansenger-personal-todo/SKILL.md` | 创建/编辑/查询个人待办及资源附件 |
 | OAuth2 | `../lansenger-oauth/SKILL.md` | 用户授权流程、userToken获取 |
 | 流式消息 | `../lansenger-streaming/SKILL.md` | AI Agent 实时消息推送 |
 | 回调事件 | `../lansenger-callback/SKILL.md` | Webhook 事件解析、AES解密、签名验证 |
 | 媒体文件 | `../lansenger-media/SKILL.md` | 上传/下载文件、图片、视频、音频 |
 | 机器人指令 | `../lansenger-bot-command/SKILL.md` | 管理机器人指令（4.37） |
 | 个人应用 | `../lansenger-personal-app/SKILL.md` | 管理个人应用/机器人（4.38） |
-| 通知 | `../lansenger-notice/SKILL.md` | 官方账号通知发送、官方账号列表查询 |
-| 问卷 | `../lansenger-questionnaire/SKILL.md` | 创建/发布/分析问卷（16 题型、答卷导出） |
-| 会议室 | `../lansenger-boardroom/SKILL.md` | 会议室检索、预订/修改/取消（需 gradingId） |
 | 视频会议 | `../lansenger-videoconference/SKILL.md` | 会议创建/取消/结束、主持人会控（唯一 admin 主持人）、录像下载 |
 | SDK 编程 | `../lansenger-sdk/SKILL.md` | 批量操作、并发控制、断点续传、连接复用 |
 | External模式 | 独立技能集（仓库 `lansenger-skills-external`） | 显式传入app_token/user_token的集成模式 |

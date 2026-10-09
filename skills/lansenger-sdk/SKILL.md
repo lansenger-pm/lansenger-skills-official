@@ -428,7 +428,7 @@ await shared_http.aclose()  # 手动关闭共享 client
 | 批量查 20 个员工详情 | **SDK 模式 1** | `fetch_staff_basic_info` 循环 |
 | 批量查 100+ 员工 | **SDK 模式 2** | `fetch_staff_basic_info` + asyncio.gather |
 | 查今日日程 | CLI `calendar list-schedules` | — |
-| 拉取多月日程 + 待办汇总 | **SDK 模式 1** | `fetch_schedule_list` + `fetch_todo_task_list` |
+| 拉取多月日程 | **SDK 模式 1** | `fetch_schedule_list` |
 | 批量上传 10 个文件 | **SDK 模式 2** | `upload_media` + asyncio.gather |
 | 断点续传拉取历史 | **SDK 模式 4** | `fetch_chat_messages` + JSON 进度文件 |
 

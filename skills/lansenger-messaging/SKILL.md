@@ -428,8 +428,8 @@ lansenger message update-approve-card msg123 \
 
 | 参数 | 说明 |
 |------|------|
-| `--body-title` | 卡片正文标题（必填） |
-| `--body-content` | 卡片正文内容（支持Markdown，必填） |
+| `{body_title}`（位置参数） | `message approve-card` 的卡片正文标题（必填） |
+| `{body_content}`（位置参数） | `message approve-card` 的卡片正文内容（支持 Markdown，必填） |
 | `--chat-id` | 接收人（用户或群组ID） |
 | `--group` | 发送到群组 |
 | `--head-title` | 卡片头部标题 |

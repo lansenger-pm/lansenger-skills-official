@@ -109,16 +109,11 @@ skills/
   lansenger-staff/SKILL.md              # 联系人与员工
   lansenger-department/SKILL.md         # 部门层级
   lansenger-calendar/SKILL.md           # 日历与日程 + references/
-  lansenger-todo/SKILL.md               # 统一待办
   lansenger-oauth/SKILL.md              # OAuth2 用户认证
   lansenger-streaming/SKILL.md          # 流式消息（AI-Agent SSE）
   lansenger-callback/SKILL.md           # 回调事件与 Webhook
   lansenger-media/SKILL.md              # 媒体文件上传/下载
-  lansenger-notice/SKILL.md             # 通知系统：官方账号通知
-  lansenger-questionnaire/SKILL.md       # 问卷系统
-  lansenger-boardroom/SKILL.md           # 会议室预定 V2
   lansenger-videoconference/SKILL.md     # 视频会议开放能力
-  lansenger-personal-todo/SKILL.md       # 个人待办
   lansenger-sdk/SKILL.md                 # SDK 编程指南（批量、并发、断点续传）
 skill_manifest.json                      # 所有 Skills 的索引
 skill-template/                          # 创建新 Skill 的模板
@@ -135,16 +130,11 @@ skill-template/                          # 创建新 Skill 的模板
 | `lansenger-staff` | 获取员工信息、ID 映射（手机/邮箱→staffId）、组织扩展字段、搜索 |
 | `lansenger-department` | 浏览组织层级、获取部门详情/子部门、列出部门员工 |
 | `lansenger-calendar` | 主日历、日程 CRUD、参会人管理、参会人元数据 |
-| `lansenger-todo` | 创建、更新、查询、删除待办任务，管理执行人，状态统计 |
 | `lansenger-oauth` | OAuth2 用户认证流程、授权 URL、Code 交换、Token 刷新、`local-callback` 命令、UserTokenManager 自动刷新 |
 | `lansenger-streaming` | 基于 SSE 的 AI Agent 实时消息推送 |
 | `lansenger-callback` | 25 种事件类型、结构化解析、AES 解密、签名验证 |
 | `lansenger-media` | 上传/下载文件、图片、视频、音频，获取媒体路径 |
-| `lansenger-notice` | 通过官方账号发送通知（文本/链接、两种投放、确认/提醒策略），查询官方账号 |
-| `lansenger-questionnaire` | 创建/发布/分析问卷（16 种题型、分页列表、答卷导出） |
-| `lansenger-boardroom` | 会议室预定 V2（检索、当日预订、预订/修改/取消、扫码确认） |
 | `lansenger-videoconference` | 视频会议开放能力（创建/取消/结束会议、主持人会控、录像下载） |
-| `lansenger-personal-todo` | 用户个人待办的创建/编辑/查询及附件管理，与应用待办分离 |
 | `lansenger-personal-app` | 创建/更新/查询/删除个人应用（4.38） |
 | `lansenger-bot-command` | 管理机器人指令（4.37） |
 | `lansenger-sdk` | SDK 编程指南 — 批量操作、并发拉取、深分页、断点续传、错误处理、连接复用 |
@@ -206,7 +196,7 @@ lansenger config set app_id xxx2 --profile "my-app"
 lansenger config set encoding_key yyy2 --profile "my-app"   # 此应用需要接收回调
 
 # 通过 --profile 切换身份
-lansenger message send-text staff123 "Hello" --profile "my-bot"
+lansenger --profile "my-bot" message send-text staff123 "Hello"
 lansenger callback parse-payload DATA --profile "my-app"
 ```
 

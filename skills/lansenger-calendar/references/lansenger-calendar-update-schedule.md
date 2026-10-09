@@ -53,7 +53,7 @@ lansenger calendar update-schedule \
 | --reminder | 否 | 提醒类型："yes" 或 "no" |
 | --permissions | 否 | 日程权限 |
 | --tz | 否 | 时区，如 "Asia/Shanghai" |
-| --op / --operation-type | 否 | 重复日程操作类型：modify_all（默认）, modify_current, modify_future |
+| --op | 否 | 重复日程操作类型：modify_all（默认）, modify_current, modify_current_after |
 | --current-time | 否 | 当前时间戳（秒），配合 modify_current 使用 |
 | --user-token | 否 | 用于认证的用户令牌 |
 | --user-id | 否 | 用于认证的用户 ID |

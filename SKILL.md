@@ -1,7 +1,7 @@
 ---
 name: lansenger
 version: 1.16.0
-description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、应用待办、个人待办、官方账号通知、问卷、会议室预定、视频会议、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、待办、通知、问卷、会议室、视频会议、开会、批量操作等功能时加载此技能。"
+description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、视频会议、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、视频会议、开会、批量操作等功能时加载此技能。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -12,7 +12,7 @@ metadata:
 
 **身份模型、认证、配置、安全规则、安装指南等通用内容见 [`lansenger-shared`](skills/lansenger-shared/SKILL.md)，本文件仅含分发表和场景指南。**
 
-`lansenger` 是蓝信平台的 CLI 工具和 SDK，通过命令行或编程方式完成消息发送、群组管理、通讯录查询、日历日程、待办任务、文件上传等操作。
+`lansenger` 是蓝信平台的 CLI 工具和 SDK，通过命令行或编程方式完成消息发送、群组管理、通讯录查询、日历日程、文件上传等操作。
 
 - **CLI**：适合快速任务（发一条消息、建个群、查个员工）— 逐条执行、逐条检查
 - **SDK**：适合复杂任务（批量拉取、并发操作、数据管道）— 单进程复用连接、支持 async 并发
@@ -43,17 +43,12 @@ metadata:
 | 查员工信息、通讯录搜索 | `lansenger-staff` | ID 映射、组织扩展字段 |
 | 浏览组织架构、查部门 | `lansenger-department` | 部门树、部门成员 |
 | 查日历、增删改日程 | `lansenger-calendar` | 日程 CRUD、参会人 |
-| 创建/管理应用待办 | `lansenger-todo` | 应用身份待办的任务生命周期 |
-| 创建/管理个人待办 | `lansenger-personal-todo` | 用户个人待办，与应用待办分属不同接口 |
 | OAuth2 登录、获取用户 Token | `lansenger-oauth` | 授权URL、code换token |
 | 上传/下载文件、图片、视频 | `lansenger-media` | 媒体文件上传下载 |
 | 接收蓝信 Webhook 回调 | `lansenger-callback` | 事件解析、AES解密 |
 | AI Agent 实时推送消息 | `lansenger-streaming` | SSE 流式消息 |
 | 管理机器人指令 | `lansenger-bot-command` | 创建/查询/删除机器人指令（4.37） |
 | 管理个人应用/机器人 | `lansenger-personal-app` | 创建/更新/查询/删除个人应用（4.38） |
-| 发送官方通知/公告 | `lansenger-notice` | 通知系统：官方账号发送，无撤回接口 |
-| 创建/发布/分析问卷 | `lansenger-questionnaire` | 问卷系统：16 题型、答卷导出 |
-| 预订/查询会议室 | `lansenger-boardroom` | 会议室预定 V2：检索、预订、取消 |
 | 开视频会议、会控、录像下载 | `lansenger-videoconference` | 视频会议开放能力：创建/取消/结束会议、主持人会控、录像 |
 | 批量操作、并发拉取、数据管道 | `lansenger-sdk` | SDK 编程指南：批量模式、并发控制、断点续传 |
 
@@ -86,11 +81,11 @@ metadata:
 | 优先级 | 规则 | 示例 |
 |--------|------|------|
 | **1** | 先获取数据，再操作 | 先 `lansenger-staff` 查 staffId → 再 `lansenger-calendar` 创建日程 |
-| **2** | 先完成写入，再通知 | 先完成日程/待办创建 → 再 `lansenger-messaging` 发送通知 |
+| **2** | 先完成写入，再通知 | 先完成日程创建 → 再 `lansenger-messaging` 发送通知 |
 | **3** | OAuth 前置 | 需要 userToken 时，`lansenger-oauth` 优先于任何需要用户身份的操作 |
 | **4** | 同类互斥，跨界协作 | 发消息 vs 看消息 → 只加载其中一个；查员工 + 查部门 → 可同时加载 |
 
-冲突裁决：当两个子 skill 的规则冲突时，按操作类型决定 — 写入操作（messaging/calendar/todo）的确认规则优先于读取操作（chat/staff/department）的宽松规则。
+冲突裁决：当两个子 skill 的规则冲突时，按操作类型决定 — 写入操作（messaging/calendar）的确认规则优先于读取操作（chat/staff/department）的宽松规则。
 
 ---
 
@@ -131,12 +126,8 @@ lansenger chat list --user-token "ut1"
 # Step 2：拉取今日日程
 lansenger -j calendar list-schedules calOpenId 1770912000 1770998400 --user-token "ut1"
 
-# Step 3：拉取今日待办
-lansenger -j todo list org123 --user-token "ut1"
-
-# Step 4：汇总数据，生成 Markdown 日报
+# Step 3：汇总数据，生成 Markdown 日报
 # - 今日日程：从 list-schedules 结果提取 summary + start_time
-# - 今日待办：从 todo list 结果提取待办状态（21=待办, 22=已办）
 # - 今日沟通：从 chat messages 结果汇总各聊天的消息主题
 ```
 
@@ -193,7 +184,7 @@ lansenger message send-text staff1 "您有一个新日程：项目评审会，�
 
 ```bash
 # Step 1：搜索员工（search 需 userToken，用 --as 自动加载）
-lansenger -j staff search "张三" --as staff_001
+lansenger -j --as staff_001 staff search "张三"
 # 返回唯一结果：staff_001，技术部
 
 # Step 2：确认收件人+内容+身份后发送
@@ -204,7 +195,7 @@ lansenger message send-text staff_001 "你好，这是消息内容"
 
 ```bash
 # Step 1：搜索返回多个"张三"
-lansenger -j staff search "张三" --as staff_001
+lansenger -j --as staff_001 staff search "张三"
 # 返回：张三-技术部-staff_001、张三-市场部-staff_078、张三-财务部-staff_156
 
 # Step 2：用 AskUserQuestion 让用户选择（展示姓名+部门+staffId）
@@ -218,12 +209,12 @@ lansenger message send-text staff_001 "你好"
 
 ```bash
 # Step 1：搜索返回 0 条
-lansenger -j staff search "张三" --as staff_001
+lansenger -j --as staff_001 staff search "张三"
 # 返回空
 
 # Step 2：追问用户"请问他在哪个部门？或知道手机号吗？"
 # 用户提供部门 → 用 --sector 限定重新搜索
-lansenger -j staff search "张三" --as staff_001 --sector dept_tech
+lansenger -j --as staff_001 staff search "张三" --sector dept_tech
 # 仍无结果 → 如实告知"未找到匹配的员工"
 ```
 

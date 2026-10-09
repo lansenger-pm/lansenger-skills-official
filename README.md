@@ -109,16 +109,11 @@ skills/
   lansenger-staff/SKILL.md              # Contacts & staff
   lansenger-department/SKILL.md         # Department hierarchy
   lansenger-calendar/SKILL.md           # Calendar & schedules + references/
-  lansenger-todo/SKILL.md               # Unified todo
   lansenger-oauth/SKILL.md              # OAuth2 user auth
   lansenger-streaming/SKILL.md          # Streaming messages (AI-Agent SSE)
   lansenger-callback/SKILL.md           # Callback events & webhook
   lansenger-media/SKILL.md              # Media file upload/download
-  lansenger-notice/SKILL.md             # Notice (通知系统) official-account notices
-  lansenger-questionnaire/SKILL.md       # Questionnaire (问卷系统)
-  lansenger-boardroom/SKILL.md           # Boardroom (会议室预定 V2)
   lansenger-videoconference/SKILL.md     # Videoconference (视频会议)
-  lansenger-personal-todo/SKILL.md       # Personal Todo (个人待办)
   lansenger-sdk/SKILL.md                  # SDK programming guide (batch, concurrency, checkpoint)
 skill_manifest.json                      # Index of all skills
 skill-template/                          # Templates for creating new skills
@@ -135,16 +130,11 @@ skill-template/                          # Templates for creating new skills
 | `lansenger-staff` | Fetch staff info, ID mapping (phone/email→staffId), org extra fields, search |
 | `lansenger-department` | Navigate org hierarchy, fetch department detail/children, list department staff |
 | `lansenger-calendar` | Primary calendar, schedule CRUD, attendee management, attendee metadata |
-| `lansenger-todo` | Create, update, query, delete todo tasks, manage executors, status counts |
 | `lansenger-oauth` | OAuth2 user auth flow, authorize URL, code exchange, token refresh, `local-callback` command, UserTokenManager auto-refresh |
 | `lansenger-streaming` | SSE-based real-time message delivery for AI agents |
 | `lansenger-callback` | 25 event types, structured parsing, AES decryption, signature verification |
 | `lansenger-media` | Upload/download files, images, videos, audio, get media path |
-| `lansenger-notice` | Send official-account notices (text/link, phone/staff targeting, confirm/reminder policies), query official accounts |
-| `lansenger-questionnaire` | Create/publish/analyze questionnaires (16 question types, paged lists, answer export) |
-| `lansenger-boardroom` | Meeting-room reservation V2 (lookup, daily schedule, reserve/edit/cancel, confirm) |
 | `lansenger-videoconference` | Videoconference APIs (create/cancel/stop meetings, host member control, recording downloads) |
-| `lansenger-personal-todo` | Create/edit/list user-owned personal todos and manage attachments (separate from application todos) |
 | `lansenger-sdk` | SDK programming guide: batch, concurrency, checkpoint resume |
 | `lansenger-personal-app` | Create/update/query/delete personal apps (4.38) |
 | `lansenger-bot-command` | Manage bot slash commands (4.37) |
@@ -206,7 +196,7 @@ lansenger config set app_id xxx2 --profile "my-app"
 lansenger config set encoding_key yyy2 --profile "my-app"  # this app needs callbacks
 
 # Switch identity via --profile
-lansenger message send-text staff123 "Hello" --profile "my-bot"
+lansenger --profile "my-bot" message send-text staff123 "Hello"
 lansenger callback parse-payload DATA --profile "my-app"
 ```
 

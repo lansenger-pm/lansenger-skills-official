@@ -85,7 +85,6 @@ Re-run with --yes to confirm and proceed.
 - `lansenger/skills/lansenger-messaging/SKILL.md` — `message revoke`
 - `lansenger/skills/lansenger-group/SKILL.md` — `group dismiss`、`group update-members`
 - `lansenger/skills/lansenger-calendar/SKILL.md` — `calendar delete-schedule`、`calendar delete-attendees`
-- `lansenger/skills/lansenger-todo/SKILL.md` — `todo delete`、`todo delete-executors`
 
 #### 建议加的文档段落（模板，可按各 SKILL.md 风格调整）
 

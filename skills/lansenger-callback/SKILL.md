@@ -104,14 +104,14 @@ lansenger -j callback decrypt-payload "ENCRYPTED_DATA" --encoding-key "your_key"
 ### 验证签名
 
 ```bash
-# 验证签名（仅位置参数，encoding_key 同时作为 token 和 key）
-lansenger callback verify-signature "1234567890" "nonce_value" "signature_value" "encoding_key"
+# 验证签名（encoding_key 经 --encoding-key 传入，同时作为 token 和 key）
+lansenger callback verify-signature "1234567890" "nonce_value" "signature_value" --encoding-key "encoding_key"
 
 # 验证签名（提供 data_encrypt 和 callback_token）
-lansenger callback verify-signature "1234567890" "nonce_value" "signature_value" "encoding_key" --data-encrypt "encrypted_data_value" --callback-token "your_callback_token"
+lansenger callback verify-signature "1234567890" "nonce_value" "signature_value" --encoding-key "encoding_key" --data-encrypt "encrypted_data_value" --callback-token "your_callback_token"
 
 # JSON 输出
-lansenger -j callback verify-signature "1234567890" "nonce_value" "signature_value" "encoding_key" --data-encrypt "encrypted_data_value"
+lansenger -j callback verify-signature "1234567890" "nonce_value" "signature_value" --encoding-key "encoding_key" --data-encrypt "encrypted_data_value"
 ```
 
 ### 查看事件类型映射

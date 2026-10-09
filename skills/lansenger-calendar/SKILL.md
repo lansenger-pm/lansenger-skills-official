@@ -19,7 +19,6 @@ metadata:
 | OAuth2 获取 userToken | `lansenger-oauth` | 日历操作需要 userToken |
 | 发送日程提醒到群/私聊 | `lansenger-messaging` | 日历只管日程数据，不管消息发送 |
 | 查询参会人详细信息 | `lansenger-staff` | staff 管员工信息查询 |
-| 创建参会人待办任务 | `lansenger-todo` | todo 管理任务
 
 **CRITICAL — 日历日程仅组织级应用可用，个人机器人不可用。** 详见 shared「身份能力矩阵」。
 
@@ -153,7 +152,7 @@ lansenger calendar update-attendees calOpenId schOpenId --add '["staff3"]' --op 
 
 | 参数 | 说明 | 可选值 |
 |------|------|--------|
-| `--op` / `--operation-type` | 操作类型 | `modify_all`（默认，影响所有实例）, `modify_current`（仅当前实例）, `modify_future`（当前及后续实例） |
+| `--op` | 操作类型 | `modify_all`（默认，影响所有实例）, `modify_current`（仅当前实例）, `modify_current_after`（当前及后续实例） |
 | `--current-time` | 当前时间戳（秒），配合 `modify_current` 使用 | Unix 秒级时间戳 |
 
 ### 更新参会人元数据

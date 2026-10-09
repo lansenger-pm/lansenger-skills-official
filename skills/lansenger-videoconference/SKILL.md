@@ -18,9 +18,7 @@ metadata:
 
 | 用户意图 | 正确技能 | 原因 |
 |---------|---------|------|
-| 预订线下会议室 | `lansenger-boardroom` | 会议室是物理资源占用，不是线上会议 |
-| 创建应用待办任务 | `lansenger-todo` | 待办是任务管理，不是会议 |
-| 发会议通知给参会人 | `lansenger-messaging` / `lansenger-notice` | 本模块只管理会议本身，不含消息发送 |
+| 发会议通知给参会人 | `lansenger-messaging` | 本模块只管理会议本身，不含消息发送 |
 | 查日历、创建日程 | `lansenger-calendar` | 日程是时间安排，视频会议是独立开放能力 |
 
 ## 核心概念
@@ -76,85 +74,88 @@ metadata:
 ## CLI 命令
 
 > videoconference 域随 CLI 同步发版；若本机 CLI 版本较旧提示找不到命令，升级 `lansenger` 或改用 SDK。
+> 下面示例按 **Python CLI**（`lansenger`）的真实参数形态编写：`{org_id}` `{mid}` `{operator}` 等是**位置参数**，`--start-time` / `--member` / `--mids` 等是选项。
+> **TS CLI 形态不同**（更多值走位置参数）：`create <subject> <startTime> <members> <orgId>`、`modify <mid> <subject> <startTime> <members> <orgId> <operator>`、`list <orgId> <startTime> <endTime>`、`fixroom-list <orgId> <operator>`；**Go CLI 相反**（几乎全走选项）：`create SUBJECT --org-id --start-time --member --type`、`fixroom-list --org-id --operator`、`conf ORG_ID`、`list ORG_ID START END`。以各自 `--help` 为准。
 
 ```bash
 # 组织会议配置（可用性探测，建议先执行；缺前提时报 105100/105106）
-lansenger videoconference org-conf --org-id 2285568
+lansenger videoconference org-conf 2285568
 
-# 创建即时会议（唯一 admin 主持人）
-lansenger videoconference create "项目评审会" 1770998400000 \
-  --org-id 2285568 --type 0 --auto-record 1 \
-  --members '[{"staffId":"st1","employeeName":"张三","role":"admin"},{"staffId":"st2","employeeName":"李四","role":"participant"}]'
+# 创建即时会议（--member 里必须恰有一个 role="admin"）
+lansenger videoconference create "项目评审会" 2285568 \
+  --start-time 1770998400000 --type 0 --auto-record 1 \
+  --member '[{"staffId":"st1","employeeName":"张三","role":"admin"},{"staffId":"st2","employeeName":"李四","role":"participant"}]'
 
-# 创建预约会议（startTime 必须为未来时间）
-lansenger videoconference create "项目评审会" 1771084800000 \
-  --org-id 2285568 --type 1 \
-  --members '[{"staffId":"st1","employeeName":"张三","role":"admin"}]'
+# 创建预约会议（--start-time 必须为未来时间）
+lansenger videoconference create "项目评审会" 2285568 \
+  --start-time 1771084800000 --type 1 \
+  --member '[{"staffId":"st1","employeeName":"张三","role":"admin"}]'
 
-# 修改未开始的会议
-lansenger videoconference modify mid1 "项目评审会（改期）" 1771171200000 \
-  --org-id 2285568 --operator st1 \
-  --members '[{"staffId":"st1","employeeName":"张三","role":"admin"}]'
+# 修改未开始的会议（mid / org_id / operator 是位置参数，主题与时间走选项）
+lansenger videoconference modify mid1 2285568 st1 \
+  --subject "项目评审会（改期）" --start-time 1771171200000 \
+  --member '[{"staffId":"st1","employeeName":"张三","role":"admin"}]'
 
 # 查询会议列表 / 批量状态 / 详情
-lansenger videoconference list --org-id 2285568 \
+lansenger videoconference list 2285568 \
   --start-time 1770912000000 --end-time 1770998400000 --fetch-range all
-lansenger videoconference status --org-id 2285568 --mids "mid1,mid2"
-lansenger videoconference detail mid1 --org-id 2285568 --operator st1
+lansenger videoconference status 2285568 --mids "mid1,mid2"
+lansenger videoconference detail mid1 2285568 st1
 
 # 会议号换 mid
-lansenger videoconference params 88001234 --org-id 2285568 --operator st1
+lansenger videoconference params 88001234 2285568 st1
 
-# 取消（仅未开始）/ 结束（已开始）
-lansenger videoconference cancel mid1 --org-id 2285568 --operator st1
-lansenger videoconference stop mid1 --org-id 2285568 --operator st1
+# 取消（仅未开始）/ 结束（已开始）—— 高风险操作需 --yes 确认
+lansenger videoconference cancel mid1 2285568 st1 --yes
+lansenger videoconference stop mid1 2285568 st1 --yes
 
 # 会控（opCode 原样透传，服务端校验）/ 邀请 / 成员列表 / 进出记录
-lansenger videoconference member-control mid1 st2 muteall --org-id 2285568 --operator st1
-lansenger videoconference invite 88001234 --org-id 2285568 --operator st1 \
-  --members '[{"staffId":"st2","employeeName":"李四","type":0,"video":1,"audio":1}]'
-lansenger videoconference member-list mid1 --org-id 2285568 --operator st1
-lansenger videoconference simplerecord mid1 --org-id 2285568 --operator st1
+lansenger videoconference member-control mid1 st2 muteall 2285568 st1
+lansenger videoconference invite 88001234 2285568 st1 \
+  --member '[{"staffId":"st2","employeeName":"李四","type":0,"video":1,"audio":1}]'
+lansenger videoconference member-list mid1 2285568 st1
+lansenger videoconference simplerecord mid1 2285568 st1
 
 # 录像：列表 + 下载链接（单次最多 3 个 vod）
-lansenger videoconference vod-list mid1 --org-id 2285568 --operator st1
-lansenger videoconference vod-download --org-id 2285568 --operator st1 \
+lansenger videoconference vod-list mid1 2285568 st1
+lansenger videoconference vod-download 2285568 st1 \
   --vods '[{"vodId":"v1"},{"vodId":"v2"}]'
 
 # 其他查询：操作记录 / 固定会议室 / 历史会议 / 进行中会议 / 事件订阅
-lansenger videoconference record-list --org-id 2285568 \
+lansenger videoconference record-list 2285568 \
   --start-time 1770912000000 --end-time 1770998400000
-lansenger videoconference fixroom --org-id 2285568 --operator st1
-lansenger videoconference history --org-id 2285568 --operator st1
-lansenger videoconference active --org-id 2285568 --operator st1
-lansenger videoconference subscribe mid1 --org-id 2285568 \
-  --events "meeting_status_change,member_join"
+lansenger videoconference fixroom-list 2285568 st1
+lansenger videoconference history 2285568 st1
+lansenger videoconference active 2285568 st1
+lansenger videoconference subscribe mid1 2285568 \
+  --events '[{"eventType":1,"callBackUrl":"https://example.com/callback"}]'
 ```
 
 ## 参数速查
 
 | 命令 | 必需参数 | 关键可选参数 |
 |------|---------|-------------|
-| `videoconference create` | `subject start_time` (位置参数) `--org-id --members` | `--type`(0/1) `--auto-record` `--group-new` `--conf-password` `--control-password` `--mask-type` `--ext-attr` `--join-mute` `--open-mute` `--enable-pre-join` `--user-stop-time` `--invite-admin` |
-| `videoconference modify` | `mid subject start_time` (位置参数) `--org-id --operator --members` | `--auto-record` `--type` `--group-new` `--conf-password` `--control-password` `--user-stop-time` |
-| `videoconference cancel` | `mid` (位置参数) `--org-id --operator` | 仅未开始的会议 |
-| `videoconference stop` | `mid` (位置参数) `--org-id --operator` | 已开始的会议用此结束 |
-| `videoconference detail` | `mid` (位置参数) `--org-id --operator` | — |
-| `videoconference list` | `--org-id --start-time --end-time` | `--fetch-range`(my/all/person) `--staff-id`(person 必填) `--limit` `--offset` |
-| `videoconference record-list` | `--org-id --start-time --end-time` | `--admin` `--create-source`(0/1) `--limit` `--offset` |
-| `videoconference simplerecord` | `mid` (位置参数) `--org-id --operator` | `--limit` `--offset` |
-| `videoconference fixroom` | `--org-id --operator` | `--limit` `--offset` |
-| `videoconference status` | `--org-id --mids`（逗号分隔，非空） | — |
-| `videoconference subscribe` | `mid` (位置参数) `--org-id --events` | `--call-back-info` |
-| `videoconference params` | `meeting_number` (位置参数) `--org-id --operator` | — |
-| `videoconference history` | `--org-id --operator` | `--limit` `--offset` |
-| `videoconference active` | `--org-id --operator` | `--limit` `--offset` |
-| `videoconference member-control` | `mid staff_id op_code` (位置参数) `--org-id --operator` | opCode 原样透传，取值见上文 |
-| `videoconference invite` | `meeting_number` (位置参数) `--org-id --operator --members` | member `type`: 0=平台用户 1=小鱼终端；`video`/`audio` |
-| `videoconference member-list` | `mid` (位置参数) `--org-id --operator` | `--limit` `--offset` |
-| `videoconference vod-list` | `mid` (位置参数) `--org-id --operator` | — |
-| `videoconference vod-download` | `--org-id --operator --vods` | 单次 vods ≤3 |
-| `videoconference org-conf` | `--org-id` | `--meeting-number` `--operator` |
+| `videoconference org-conf` | `{org_id}` (位置参数) | `--meeting-number` `--operator` |
+| `videoconference create` | `{subject} {org_id}` (位置参数) `--start-time --member` | `--type`(0/1) `--auto-record` `--group-new` `--conf-password` `--control-password` `--mask-type` `--ext-attr` `--join-mute` `--open-mute` `--enable-pre-join` `--user-stop-time` `--invite-admin` |
+| `videoconference modify` | `{mid} {org_id} {operator}` (位置参数) `--subject --start-time --member` | `--auto-record` `--type` `--group-new` `--conf-password` `--control-password` `--user-stop-time` |
+| `videoconference cancel` | `{mid} {org_id} {operator}` (位置参数) | `--yes`(确认执行) `--dry-run`；仅未开始的会议 |
+| `videoconference stop` | `{mid} {org_id} {operator}` (位置参数) | `--yes`(确认执行) `--dry-run`；已开始的会议用此结束 |
+| `videoconference detail` | `{mid} {org_id} {operator}` (位置参数) | — |
+| `videoconference list` | `{org_id}` (位置参数) `--start-time --end-time` | `--fetch-range`(my/all/person) `--staff-id`(person 必填) `--limit` `--offset` |
+| `videoconference record-list` | `{org_id}` (位置参数) `--start-time --end-time` | `--admin` `--create-source`(0/1) `--limit` `--offset` |
+| `videoconference simplerecord` | `{mid} {org_id} {operator}` (位置参数) | `--limit` `--offset` |
+| `videoconference fixroom-list` | `{org_id} {operator}` (位置参数) | `--limit` `--offset` |
+| `videoconference status` | `{org_id}` (位置参数) `--mids`（逗号分隔，非空） | — |
+| `videoconference subscribe` | `{mid} {org_id}` (位置参数) `--events`（JSON 数组） | `--call-back-info` |
+| `videoconference params` | `{meeting_number} {org_id} {operator}` (位置参数) | — |
+| `videoconference history` | `{org_id} {operator}` (位置参数) | `--limit` `--offset` |
+| `videoconference active` | `{org_id} {operator}` (位置参数) | `--limit` `--offset` |
+| `videoconference member-control` | `{mid} {staff_id} {op_code} {org_id} {operator}` (位置参数) | opCode 原样透传，取值见上文 |
+| `videoconference invite` | `{meeting_number} {org_id} {operator}` (位置参数) `--member` | member `type`: 0=平台用户 1=小鱼终端；`video`/`audio` |
+| `videoconference member-list` | `{mid} {org_id} {operator}` (位置参数) | `--limit` `--offset` |
+| `videoconference vod-list` | `{mid} {org_id} {operator}` (位置参数) | — |
+| `videoconference vod-download` | `{org_id} {operator}` (位置参数) `--vods` | 单次 vods ≤3 |
+
 
 ## 常见错误
 

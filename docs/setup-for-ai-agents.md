@@ -119,7 +119,7 @@ lansenger config show --profile "NAME"
 用一个轻量命令触发 appToken 获取并验证凭证：
 
 ```bash
-lansenger health check --profile "NAME"
+lansenger --profile "NAME" health check
 ```
 
 - 成功 → 凭证有效，继续 Step 6
@@ -217,7 +217,7 @@ pgrep -f "lansenger.*local-callback"
 Step 1 — 构建授权 URL：
 
 ```bash
-lansenger -j oauth authorize-url --profile "NAME"
+lansenger -j --profile "NAME" oauth authorize-url "https://myapp.com/oauth/callback"
 ```
 
 提取 `authorize_url`，以 Markdown 自动链接形式呈现给用户：`<AUTH_URL>`。Agent 自动打开浏览器。
@@ -233,7 +233,7 @@ Step 2 — **等待用户提供 code**：
 Step 3 — 兑换 token：
 
 ```bash
-lansenger -j oauth exchange-code "CODE" --profile "NAME"
+lansenger -j --profile "NAME" oauth exchange-code "CODE"
 ```
 
 成功 → 继续 6d。失败 → 授权码有效期仅 5 分钟，重新执行方式二。

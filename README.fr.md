@@ -109,16 +109,11 @@ skills/
   lansenger-staff/SKILL.md              # Contacts & personnel
   lansenger-department/SKILL.md         # Hiérarchie des départements
   lansenger-calendar/SKILL.md           # Calendrier & planifications + references/
-  lansenger-todo/SKILL.md               # Todo unifié
   lansenger-oauth/SKILL.md              # Authentification utilisateur OAuth2
   lansenger-streaming/SKILL.md          # Messages streaming (SSE Agent IA)
   lansenger-callback/SKILL.md           # Événements callback & webhook
   lansenger-media/SKILL.md              # Upload/download de fichiers médias
-  lansenger-notice/SKILL.md             # Notifications via comptes officiels (通知系统)
-  lansenger-questionnaire/SKILL.md       # Questionnaires (问卷系统)
-  lansenger-boardroom/SKILL.md           # Boardroom (会议室预定 V2)
   lansenger-videoconference/SKILL.md     # Videoconference (视频会议)
-  lansenger-personal-todo/SKILL.md       # Personal Todo (个人待办)
 skill_manifest.json                      # Index de tous les skills
 skill-template/                          # Templates pour créer de nouveaux skills
 ```
@@ -134,16 +129,11 @@ skill-template/                          # Templates pour créer de nouveaux ski
 | `lansenger-staff` | Récupérer les infos du personnel, mapping d'ID (téléphone/email→staffId), champs org supplémentaires, recherche |
 | `lansenger-department` | Naviguer la hiérarchie org, récupérer détail/enfants de département, lister le personnel d'un département |
 | `lansenger-calendar` | Calendrier principal, CRUD de planifications, gestion des participants, métadonnées des participants |
-| `lansenger-todo` | Créer, mettre à jour, interroger, supprimer des tâches todo, gérer les exécutants, compter les statuts |
 | `lansenger-oauth` | Flux d'authentification utilisateur OAuth2, URL d'autorisation, échange de code, renouvellement de token, commande `local-callback`, auto-refresh UserTokenManager |
 | `lansenger-streaming` | Diffusion de messages en temps réel via SSE pour les Agents IA |
 | `lansenger-callback` | 25 types d'événements, parsing structuré, décryptage AES, vérification de signature |
 | `lansenger-media` | Upload/download de fichiers, images, vidéos, audio, récupérer le chemin média |
-| `lansenger-notice` | Envoyer des notifications via un compte officiel (texte/lien, ciblage téléphone/staff, confirmation/rappels), lister les comptes officiels |
-| `lansenger-questionnaire` | Créer/publier/analyser des questionnaires (16 types de questions, listes paginées, export des réponses) |
-| `lansenger-boardroom` | Réservation de salles V2 (recherche, planning, réserver/modifier/annuler, confirmation) |
 | `lansenger-videoconference` | Visioconférence (créer/annuler/terminer des réunions, contrôle hôte, téléchargement d'enregistrements) |
-| `lansenger-personal-todo` | Créer/modifier/lister les todos personnels et gérer les pièces jointes, séparément des todos d'application |
 | `lansenger-sdk` | Guide de programmation SDK : lots, concurrence, reprise |
 | `lansenger-personal-app` | Créer/mettre à jour/interroger/supprimer des applications personnelles (4.38) |
 | `lansenger-bot-command` | Gérer les commandes slash du bot (4.37) |
@@ -205,7 +195,7 @@ lansenger config set app_id xxx2 --profile "my-app"
 lansenger config set encoding_key yyy2 --profile "my-app"
 
 # Changer d'identité via --profile
-lansenger message send-text staff123 "Hello" --profile "my-bot"
+lansenger --profile "my-bot" message send-text staff123 "Hello"
 lansenger callback parse-payload DATA --profile "my-app"
 ```
 
