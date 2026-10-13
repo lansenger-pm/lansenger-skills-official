@@ -43,7 +43,7 @@ metadata:
 | 查员工信息、通讯录搜索 | `lansenger-staff` | ID 映射、组织扩展字段 |
 | 浏览组织架构、查部门 | `lansenger-department` | 部门树、部门成员 |
 | 查日历、增删改日程 | `lansenger-calendar` | 日程 CRUD、参会人 |
-| OAuth2 登录、获取用户 Token | `lansenger-oauth` | 授权URL、code换token |
+| OAuth2 登录、获取用户 Token | `lansenger-oauth` | 设备码登录（无头/远程首选）、授权URL、code换token |
 | 上传/下载文件、图片、视频 | `lansenger-media` | 媒体文件上传下载 |
 | 接收蓝信 Webhook 回调 | `lansenger-callback` | 事件解析、AES解密 |
 | AI Agent 实时推送消息 | `lansenger-streaming` | SSE 流式消息 |

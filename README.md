@@ -130,7 +130,7 @@ skill-template/                          # Templates for creating new skills
 | `lansenger-staff` | Fetch staff info, ID mapping (phone/email→staffId), org extra fields, search |
 | `lansenger-department` | Navigate org hierarchy, fetch department detail/children, list department staff |
 | `lansenger-calendar` | Primary calendar, schedule CRUD, attendee management, attendee metadata |
-| `lansenger-oauth` | OAuth2 user auth flow, authorize URL, code exchange, token refresh, `local-callback` command, UserTokenManager auto-refresh |
+| `lansenger-oauth` | OAuth2 user auth flow, device code login (headless/remote), authorize URL, code exchange, token refresh, `local-callback` command (legacy fallback), UserTokenManager auto-refresh |
 | `lansenger-streaming` | SSE-based real-time message delivery for AI agents |
 | `lansenger-callback` | 25 event types, structured parsing, AES decryption, signature verification |
 | `lansenger-media` | Upload/download files, images, videos, audio, get media path |

@@ -1,5 +1,5 @@
 {
-  "version": "1.17.0",
+  "version": "1.18.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK",
@@ -102,7 +102,7 @@
       "id": "lansenger-oauth",
       "name": "Lansenger OAuth2 & User Authentication",
       "category": "auth",
-      "description": "Lansenger OAuth2 user authentication flow — build authorize URL, exchange code for userToken, refresh userToken, fetch user info, local callback server, UserTokenManager auto-refresh, and the appToken/userToken hierarchy",
+      "description": "Lansenger OAuth2 user authentication flow — device code login (headless/remote, no callback server), build authorize URL, exchange code for userToken, refresh userToken, fetch user info, local callback server (legacy fallback), UserTokenManager auto-refresh, and the appToken/userToken hierarchy",
       "path": "lansenger-oauth/SKILL.md"
     },
     {

@@ -129,7 +129,7 @@ skill-template/                          # Templates pour créer de nouveaux ski
 | `lansenger-staff` | Récupérer les infos du personnel, mapping d'ID (téléphone/email→staffId), champs org supplémentaires, recherche |
 | `lansenger-department` | Naviguer la hiérarchie org, récupérer détail/enfants de département, lister le personnel d'un département |
 | `lansenger-calendar` | Calendrier principal, CRUD de planifications, gestion des participants, métadonnées des participants |
-| `lansenger-oauth` | Flux d'authentification utilisateur OAuth2, URL d'autorisation, échange de code, renouvellement de token, commande `local-callback`, auto-refresh UserTokenManager |
+| `lansenger-oauth` | Flux d'authentification utilisateur OAuth2, connexion par code d'appareil (headless/remote), URL d'autorisation, échange de code, renouvellement de token, commande `local-callback` (repli), auto-refresh UserTokenManager |
 | `lansenger-streaming` | Diffusion de messages en temps réel via SSE pour les Agents IA |
 | `lansenger-callback` | 25 types d'événements, parsing structuré, décryptage AES, vérification de signature |
 | `lansenger-media` | Upload/download de fichiers, images, vidéos, audio, récupérer le chemin média |

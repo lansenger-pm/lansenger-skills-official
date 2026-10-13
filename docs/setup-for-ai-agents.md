@@ -151,7 +151,8 @@ lansenger --profile "NAME" health check
 
 > 你的 OAuth2 回调地址（`redirect_uri`）想在本地还是用已配置的可信域名？
 >
-> - **本地回调（推荐）**：用 `http://localhost:8765`，CLI 自动启动本地服务器接收回调，完全自动化。但需在开发者中心把此地址加入可信域名（约 10 分钟生效）。
+> - **设备码登录（推荐，无头/远程首选）**：不需要回调地址，也不需要把 `localhost` 加入可信域名；CLI 一轮完成（申请设备码 → 用户在手机端确认 → 自动换 token）。前提是服务端支持设备码端点（旧版会返回 `deviceflow_unsupported`，自动回退到下面两种）。
+> - **本地回调**：用 `http://localhost:8765`，CLI 自动启动本地服务器接收回调，完全自动化。但需在开发者中心把此地址加入可信域名（约 10 分钟生效）。
 > - **已有可信域名**：用你已在开发者中心配置好的域名（如 `https://myapp.com/callback`）。授权后需手动从浏览器地址栏复制 `code` 参数。
 
 根据用户选择设置 `redirect_uri`：
@@ -174,7 +175,20 @@ lansenger config set --profile "NAME" passport_url PASSPORT_URL
 
 根据 6b 的选择走对应的流程：
 
-#### 方式一：本地回调（`redirect_uri == http://localhost:8765`，推荐）
+#### 方式一：设备码登录（推荐，无需回调域名）
+
+一条命令完成全流程，不需要后台进程、不需要回调地址，也不需要把 localhost 配进信任域名：
+
+```bash
+lansenger -j --profile "NAME" oauth device-login
+```
+
+- `-j` 下先输出一条 `device_authorization` 事件（`user_code` + `verification_uri_complete`）到 stderr；Agent 用 `open`/`xdg-open` 打开该地址，并把 `user_code` 呈现给用户。
+- 用户在蓝信手机端确认后，命令自行按服务端 `interval` 轮询并兑换、按 staff_id 保存 token，完成后进入 6d。
+- 无头/远程主机（没有浏览器、端口不可达）优先用这个方式；`--no-browser` 让 Agent 自己决定怎么打开。
+- **服务端未实现设备码端点 → 退出码 1，`error.type == "deviceflow_unsupported"`** → 改用方式二或方式三，不要重试。
+
+#### 方式二：本地回调（`redirect_uri == http://localhost:8765`）
 
 **CRITICAL — 必须在后台执行**，`local-callback` 会阻塞等待回调。
 
@@ -212,7 +226,7 @@ pgrep -f "lansenger.*local-callback"
 
 完成后跳到 6d。
 
-#### 方式二：手动 code 兑换（有已有可信域名时）
+#### 方式三：手动 code 兑换（有已有可信域名时）
 
 Step 1 — 构建授权 URL：
 

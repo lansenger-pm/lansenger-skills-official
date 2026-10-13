@@ -1,7 +1,7 @@
 ---
 name: lansenger-oauth
-version: 1.6.0
-description: "蓝信OAuth2用户授权：构建授权URL、兑换授权码、刷新Token、获取用户信息、解析回调、验证State、本地回调服务器、自动刷新Token。当用户需要获取userToken或进行OAuth2授权流程时使用。"
+version: 1.7.0
+description: "蓝信OAuth2用户授权：设备码登录（无头/远程，一轮完成）、构建授权URL、兑换授权码、刷新Token、获取用户信息、解析回调、验证State、本地回调服务器、自动刷新Token。当用户需要获取userToken或进行OAuth2授权流程时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -26,7 +26,7 @@ metadata:
 
 **CRITICAL — 授权码（code）有效期 5 分钟且只能使用一次。刷新 Token 后旧 refreshToken 立即失效，必须使用新返回的 refreshToken。**
 
-**CRITICAL — Agent MUST 优先使用 `local-callback` 模式，并用 `open` 命令自动在浏览器中打开授权 URL。禁止让用户手动复制 URL 到浏览器（复制时容易带入空格/回车导致失败）。**
+**CRITICAL — Agent MUST 优先使用 `device-login`（设备码一轮完成，不需要本地回调服务器、不需要把 localhost 配进信任域名；无头/远程主机唯一可行方案），服务端不支持（`deviceflow_unsupported`）时才回退 `local-callback`。两种方式都由 Agent 自动打开授权 URL；禁止让用户手动复制 URL 到浏览器（复制时容易带入空格/回车导致失败）。**
 
 ## 核心概念
 
@@ -101,9 +101,47 @@ NEW_REFRESH_TOKEN=$(echo "$NEW_TOKENS" | jq -r '.refresh_token')
 
 ### OAuth2 授权流程对 Agent 场景
 
-有两种方式完成授权：
+有三种方式完成授权，按下列优先级选择：
 
-**方式一：本地回调服务器（推荐，Agent MUST 优先使用）**
+**方式一：设备码登录（首选，无头/远程友好）**
+
+一条命令完成全流程，不需要本地 HTTP 服务器，也不需要把 `http://localhost:<port>` 配到信任域名：
+
+```bash
+# 申请设备码 → 自动打开授权页 → 轮询 → 兑换并按 staff_id 保存 userToken + refreshToken
+lansenger -j oauth device-login
+
+# 不自动开浏览器（Agent 自己决定如何呈现 user_code / verification_uri_complete）
+lansenger oauth device-login --no-browser
+
+# 轮询上限（默认 600 秒）
+lansenger oauth device-login --timeout 900
+```
+
+流程：
+
+```
+# → POST {passport_url}/oauth2/device_authorization 拿 device_code + user_code + verification_uri_complete
+# → Agent 用 open/xdg-open 打开 verification_uri_complete（或把 user_code 呈现给用户）
+# → 用户在蓝信手机端确认授权
+# → CLI 按服务端 interval 轮询 POST {passport_url}/oauth2/device_token，approved 后自动兑换并保存 token
+```
+
+**前提**：CLI ≥ 0.15.0（SDK ≥ 1.12.0）+ 服务端已支持设备码端点。**旧版服务端返回 `deviceflow_unsupported`**（退出码 1；`-j` 时 `error.type == "deviceflow_unsupported"`），此时按方式二回退，不要重复重试：
+
+```bash
+lansenger -j oauth device-login    # 失败 → error.type == "deviceflow_unsupported" → 走方式二
+```
+
+需要自己控制节奏的脚本/Agent 用低层三步：
+
+```bash
+lansenger -j oauth device-authorize               # 返回 device_code / user_code / verification_uri_complete / interval / expires_in
+lansenger -j oauth device-poll DEVICE_CODE         # 查一次状态（pending 也算成功，退出码 0）
+lansenger -j oauth device-poll DEVICE_CODE --wait --timeout 600   # 轮询到 approved / denied / expired
+```
+
+**方式二：本地回调服务器（服务端不支持设备码时）**
 
 ```bash
 # Agent 应自动执行以下两步，无需用户手动复制链接：
@@ -122,7 +160,7 @@ open "$(lansenger -j oauth local-callback --port 8765 | jq -r '.authorize_url')"
 # → 自动兑换 code 获取 userToken + refreshToken
 ```
 
-**方式二：手动复制 code**
+**方式三：手动复制 code**
 
 蓝信 OAuth2 需要用户在浏览器手动操作：
 
@@ -144,6 +182,42 @@ open "$(lansenger -j oauth local-callback --port 8765 | jq -r '.authorize_url')"
 - `api_gateway_url`：API 调用域名（因私有部署而异）
 
 ## CLI 命令
+
+### 设备码登录（v0.15.0+，无头/远程首选）
+
+```bash
+# 一条命令完成：申请设备码 → 打开授权页 → 轮询 → 兑换并按 staff_id 保存
+lansenger oauth device-login
+
+# 不自动打开浏览器（Agent 自行呈现 user_code / verification_uri_complete）
+lansenger oauth device-login --no-browser
+
+# 轮询上限（默认 600 秒）
+lansenger oauth device-login --timeout 900
+
+# 指定设备来源（AutoClaw / CLI / OpenClaw / MCP，默认 CLI）
+lansenger oauth device-login --from MCP
+
+# JSON 输出
+lansenger -j oauth device-login
+```
+
+服务端未实现设备码端点时退出码 1、`error_type == "deviceflow_unsupported"`，应回退 `local-callback` 而不是重试。
+
+### 设备码低层步骤（脚本 / Agent 自己控制轮询）
+
+```bash
+# 申请设备码（返回 device_code / user_code / verification_uri_complete / interval / expires_in / open_api_domain）
+lansenger -j oauth device-authorize
+
+# 轮询一次状态：pending / approved / denied / expired
+lansenger -j oauth device-poll DEVICE_CODE
+
+# 持续轮询直到出结果（固定 5 秒一次；approved 时结果里带 oauth2_code）
+lansenger -j oauth device-poll DEVICE_CODE --wait --timeout 600
+```
+
+`device-login` = `device-authorize` + 轮询 + 兑换 + 保存一步到位；需要自定义交互（如把 user_code 发到聊天里等用户确认）时才拆开用。
 
 ### 构建授权 URL
 
@@ -257,6 +331,33 @@ lansenger config list-users --show-tokens
 
 ## 参数说明
 
+### oauth device-login
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `--client-id` | str | "" | OAuth2 clientId（默认取 profile 的 app_id） |
+| `--from` | str | "CLI" | 设备来源标识（AutoClaw / CLI / OpenClaw / MCP） |
+| `--no-browser` | bool | False | 不自动用 open/xdg-open 打开授权页 |
+| `--timeout` / `-t` | int | 600 | 等待用户确认的最长秒数 |
+
+### oauth device-authorize
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `--client-id` | str | "" | OAuth2 clientId（默认取 profile 的 app_id） |
+| `--from` | str | "CLI" | 设备来源标识（白名单同上） |
+
+### oauth device-poll
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `device_code` (位置参数) | str | — | device-authorize 返回的设备码（必需） |
+| `--client-id` | str | "" | OAuth2 clientId（默认取 profile 的 app_id） |
+| `--wait` | bool | False | 每 5 秒轮询一次直到 approved / denied / expired |
+| `--timeout` / `-t` | int | 600 | `--wait` 的最长秒数 |
+
+> 退出码：0 = pending / approved（approved 时结果含 `oauth2_code`），1 = denied / expired / error。脚本建议自己单次轮询，只有 `--wait` 才由 CLI 阻塞。
+
 ### oauth authorize-url
 
 | 参数 | 类型 | 默认值 | 说明 |
@@ -322,6 +423,9 @@ lansenger config list-users --show-tokens
 | 只保存 userToken 不保存 refreshToken | refreshToken 是续期的唯一途径，必须同时保存；SDK UserTokenManager 自动保存 |
 | 批量脚本不考虑 token 中途过期 | SDK 用户用 `get_user_token()` 自动刷新；CLI 用户手动 `refresh-token` |
 | 刷新后继续用旧 refreshToken | 刷新后旧 refreshToken 立即失效，必须用新返回的 |
+| 在无头/远程主机上只会用 local-callback | 优先 `device-login`（不需要回调服务器与信任域名）；服务端不支持时才回退 local-callback |
+| 把 `deviceflow_unsupported` 当凭证错误反复重试 | 它表示服务端未实现设备码端点（旧版开平），重试无用，直接回退 local-callback |
+| 用 personal-bot 身份跑设备码登录 | 设备码登录属 OAuth2，只有组织级应用（应用/组织机器人）可用 |
 
 ## SDK 用法
 
@@ -345,6 +449,26 @@ user_token = await client.get_user_token(staff_id="staff_001")
 
 # 获取用户信息
 user_info = await client.fetch_user_info(user_token=user_token)
+
+# 设备码登录（SDK 1.12.0+，无头/远程主机；CLI device-login 的等效实现）
+auth = await client.request_device_authorization()        # DeviceAuthorizationResult
+if not auth.success:
+    if auth.error_type == "deviceflow_unsupported":
+        ...                                              # 旧版服务端 → 回退上面的 local-callback 流程
+    raise RuntimeError(auth.error)
+
+print(f"Open {auth.verification_uri_complete} and enter {auth.user_code}")   # 有效期 auth.expires_in
+
+while True:
+    poll = await client.poll_device_token(auth.device_code)   # DevicePollResult
+    if poll.state == "access_approved":
+        token_result = await client.exchange_code(code=poll.oauth2_code)
+        break
+    if not poll.success:                                 # access_denied / expired_token / 真实 API 错误
+        raise RuntimeError(poll.error)
+    await asyncio.sleep(auth.interval)
 ```
+
+`state` 取值：`authorization_pending` / `access_approved` / `access_denied` / `expired_token`；只有 `access_approved` 带 `oauth2_code`。`LansengerSyncClient` 上同名方法是阻塞版。
 
 **关键优势**：SDK 的 `exchange_code()` 内部自动调用 `set_user_tokens()`，后续 `get_user_token()` 会在过期前自动刷新，无需手动管理 token 生命周期。
