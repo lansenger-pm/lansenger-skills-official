@@ -130,7 +130,7 @@ skill-template/                          # 创建新 Skill 的模板
 | `lansenger-staff` | 获取员工信息、ID 映射（手机/邮箱→staffId）、组织扩展字段、搜索 |
 | `lansenger-department` | 浏览组织层级、获取部门详情/子部门、列出部门员工 |
 | `lansenger-calendar` | 主日历、日程 CRUD、参会人管理、参会人元数据 |
-| `lansenger-oauth` | OAuth2 用户认证流程、授权 URL、Code 交换、Token 刷新、`local-callback` 命令、UserTokenManager 自动刷新 |
+| `lansenger-oauth` | OAuth2 用户认证流程、设备码登录（无头/远程首选）、授权 URL、Code 交换、Token 刷新、`local-callback` 命令、UserTokenManager 自动刷新 |
 | `lansenger-streaming` | 基于 SSE 的 AI Agent 实时消息推送 |
 | `lansenger-callback` | 25 种事件类型、结构化解析、AES 解密、签名验证 |
 | `lansenger-media` | 上传/下载文件、图片、视频、音频，获取媒体路径 |

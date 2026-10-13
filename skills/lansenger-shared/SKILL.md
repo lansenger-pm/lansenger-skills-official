@@ -547,7 +547,8 @@ CLI 支持在同一个 profile 下为多个用户（staff_id）存储独立的 u
 
 ```bash
 # OAuth2 授权后会按 staff_id 自动存入当前 profile（参见 lansenger-oauth）
-lansenger oauth local-callback
+lansenger oauth device-login        # 首选：设备码登录，无头/远程友好（CLI ≥ 0.15.0，服务端需支持设备码端点）
+lansenger oauth local-callback      # 回退：服务端不支持设备码时（需先把 http://localhost:8765 配进信任域名）
 
 # 列出当前 profile 下所有已授权用户
 lansenger config list-users

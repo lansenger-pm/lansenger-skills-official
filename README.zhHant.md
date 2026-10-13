@@ -130,7 +130,7 @@ skill-template/                          # 建立新 Skills 的模板
 | `lansenger-staff` | 取得員工資訊、ID 映射（手機/信箱→staffId）、組織額外欄位、搜尋 |
 | `lansenger-department` | 瀏覽組織層級、取得部門詳情/子部門、列出部門員工 |
 | `lansenger-calendar` | 主要行事曆、排程 CRUD、參與者管理、參與者元資料 |
-| `lansenger-oauth` | OAuth2 使用者認證流程、授權 URL、程式碼交換、憑證刷新、`local-callback` 命令、UserTokenManager 自動刷新 |
+| `lansenger-oauth` | OAuth2 使用者認證流程、裝置碼登入（無頭/遠端首選）、授權 URL、程式碼交換、憑證刷新、`local-callback` 命令、UserTokenManager 自動刷新 |
 | `lansenger-streaming` | SSE 即時訊息傳遞，適用於 AI Agent |
 | `lansenger-callback` | 25 種事件類型、結構化解析、AES 解密、簽章驗證 |
 | `lansenger-media` | 上傳/下載檔案、圖片、影片、音訊，取得媒體路徑 |
