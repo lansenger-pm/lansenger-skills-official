@@ -272,7 +272,7 @@ lansenger message revoke msg123 --chat-type bot --yes       # 确认后执行
 # 表情回复（4.6.17）
 lansenger message reply msg123 --emoji TYPE_OK      # 收到
 lansenger message reply msg123 --emoji TYPE_THUMB   # 点赞
-lansenger message reply msg123 --cancel             # 取消表情回复
+lansenger message reply msg123 --emoji TYPE_OK --cancel   # 取消该表情回复（取消也要带 --emoji）
 
 # 更新动态卡片
 lansenger message update-dynamic-card msg123 --last --status-desc "Approved ✓" --status-colour "#00FF00"
@@ -282,10 +282,10 @@ lansenger message update-dynamic-card msg123 --last --status-desc "Approved ✓"
 
 ```bash
 # 向员工发送授权请求消息（4.6.4.14，当前仅位置请求授权）
-lansenger message send-authorization-request --chat-id staff123
+lansenger message send-authorization-request staff123
 ```
 
-> 表情回复需要 CLI ≥ 0.17.0；`reply` 的 `--emoji` 取值与错误码见 [`references/lansenger-messaging-reply.md`](references/lansenger-messaging-reply.md)。授权请求的完整参数以 `lansenger message send-authorization-request --help` 为准（Help-First）。
+> 表情回复需要 CLI ≥ 0.17.0；`reply` 的 `--emoji` 取值与错误码见 [`references/lansenger-messaging-reply.md`](references/lansenger-messaging-reply.md)。授权请求只支持机器人 → 员工私聊单人发放；命令与 SDK 用法见 [`references/lansenger-messaging-send-authorization-request.md`](references/lansenger-messaging-send-authorization-request.md)。
 
 ### 公号私聊
 
@@ -382,7 +382,7 @@ lansenger -j message send-reminder msg123 --type 1 --user staff456
 
 ## 授权请求消息（4.6.4.14）
 
-授权请求是独立的消息体类型 `authorizationReq`，用于向用户或部门申请授权。
+授权请求是独立的消息体类型 `authorizationReq`，用于向**某位员工**申请授权（平台只支持机器人 → 员工私聊通道）。
 
 | 字段 | 类型 | 说明 |
 |------|------|------|
@@ -523,8 +523,8 @@ lansenger message update-approve-card msg123 \
 | `send_user_message` | 人→人私聊发消息 | `receiver_id`, `msg_type`, `msg_data`, `user_token`, `common`, `uuid` |
 | `send_group_message` | 群聊发消息（完整能力） | `group_id`, `msg_type`, `msg_data`, `user_token`, `sender_id`, `reminder_all`, `reminder_user_ids`, `reminder_bot_ids`, `ref_msg_id` |
 | `send_bot_message` | Bot 批量发消息 | `msg_type`, `msg_data`, `chat_ids`, `user_token`, `entry_id`, `is_group`, `ref_msg_id` |
-| `reply_message` | 表情回复/取消表情回复（4.6.17） | `msg_id`, `emoji_id`, `reply_type`(1=回复，2=取消回复) |
-| `send_authorization_request` | 发送授权请求消息（4.6.4.14） | `chat_ids`(List[str]), `department_ids`(List[str]) |
+| `reply_message` | 表情回复/取消表情回复（4.6.17） | `msg_id`, `emoji_id`(必填，取消也需), `reply_type`(1=回复，2=取消回复) |
+| `send_authorization_request` | 发送授权请求消息（4.6.4.14，仅机器人 → 员工私聊） | `chat_id`(str) |
 | `send_reminder` | 发送弹窗/SMS/电话提醒 | `msg_id`, `reminder_types`(List[int]), `user_id_list`(List[str]) |
 
 > **注意**：SDK 参数使用 `reminder_*` 命名（如 `reminder_all`、`reminder_user_ids`），对应 CLI 的 `--mention-all`、`--mention`。这是 @提及功能，与 `send_reminder`（弹窗提醒）不同。

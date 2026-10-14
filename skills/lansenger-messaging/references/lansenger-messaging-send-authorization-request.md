@@ -1,6 +1,6 @@
 # lansenger message send-authorization-request
 
-向用户或部门发送授权请求消息（OpenAPI 4.6.4.14）。当前唯一授权类型为**位置请求授权**。
+向**某位员工**发送授权请求消息（OpenAPI 4.6.4.14）。该消息体类型**只支持「机器人 → 员工私聊」通道**；当前唯一授权类型为**位置请求授权**。
 
 **继承** [`../../lansenger-shared/SKILL.md`](../../lansenger-shared/SKILL.md) 中的所有规则（Shell 规范、帮助优先、认证、权限）。
 
@@ -12,18 +12,18 @@
 
 | 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| --chat-id | option | 是 | 收件人 staffId（员工） |
+| chat_id | 位置参数 | 是 | 收件人 staffId（员工）；该 msgType 只支持机器人 → 员工私聊 |
 
-> 完整参数（如按部门发送）以 `lansenger message send-authorization-request --help` 为准（Help-First）。
+> 没有「按部门发送」：真机实测走账号通道会被平台拒绝（`50084 非法的msgType||authorizationReq msgType only support bot-to-staff private chat`），因此只接受一个员工 `chatId`。
 
 ## 示例
 
 ```bash
-# 向单个员工发送位置请求授权
-lansenger message send-authorization-request --chat-id staff_001
+# 向单个员工发送位置请求授权（仅机器人 → 员工私聊）
+lansenger message send-authorization-request staff_001
 
 # JSON 输出
-lansenger -j message send-authorization-request --chat-id staff_001
+lansenger -j message send-authorization-request staff_001
 ```
 
 ## 消息体
@@ -52,11 +52,8 @@ from lansenger_sdk import LansengerClient
 
 client = LansengerClient(...)
 
-# 按人发送
-await client.send_authorization_request(chat_ids=["staff_001"])
-
-# 按部门发送
-await client.send_authorization_request(department_ids=["dept_001"])
+# 机器人 → 员工私聊（唯一可用通道；返回 SendMessageResult）
+await client.send_authorization_request("staff_001")
 ```
 
 ## 常见错误
@@ -66,6 +63,8 @@ await client.send_authorization_request(department_ids=["dept_001"])
 - 给个人机器人也去配订阅 — 个人机器人无需订阅，直接通过长连接接收 `report_location`。
 - 传入其它 `authorizationType` — 目前仅 `1`（位置请求授权）有效。
 - 未经确认直接群发授权请求 — 该消息会打扰收件人，先确认收件人与用途。
+- 想发给部门/多人 — 平台只支持机器人 → 员工私聊单人私发，账号通道会回 `50084`；需要多人时逐个发（或先建群再发群消息）。
+- 服务端版本过低 — 真机实测部分测试租户回 `40060 …invalid authorizationType` 或 `50084 …invalid message type: authorizationReq`（服务端尚未部署该消息体类型），参数写法本身没错，换到已部署的线上环境再试。
 - CLI/SDK 版本过低 — 需要 CLI ≥ 0.17.0、Python SDK ≥ 1.13.0。
 
 ## 返回值

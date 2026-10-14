@@ -12,7 +12,7 @@
 |-----------|------|----------|-------------|
 | msg_id | arg | 是 | 要回复的消息 ID |
 | --emoji | option | 回复时必填 | 表情标识，取值见下方「可用表情」 |
-| --cancel | flag | 否 | 取消已有表情回复（对应 `replyType=2`），与 `--emoji` 互斥 |
+| --cancel | flag | 否 | 取消已有表情回复（对应 `replyType=2`）；**取消也必须同时给 `--emoji`**——平台靠它判断取消哪一个（缺失回 `40060 …emojiId is empty`） |
 
 ### 可用表情（emojiId）
 
@@ -35,7 +35,7 @@ lansenger message reply msg_abc123 --emoji TYPE_THUMB
 lansenger message reply msg_abc123 --emoji TYPE_OK
 
 # 取消表情回复
-lansenger message reply msg_abc123 --cancel
+lansenger message reply msg_abc123 --emoji TYPE_OK --cancel
 ```
 
 ## 接口对应关系
@@ -85,7 +85,7 @@ await reply_message(msg_id="msg_abc123", emoji_id="TYPE_OK")
 | `40060` | 消息为空或格式错误 |
 
 - 传入列表外的 `emojiId` — 仅支持 `TYPE_THUMB` / `TYPE_OK` / `TYPE_ADD_ONE` / `TYPE_FIREWORK` / `TYPE_LOVE` / `TYPE_DOUBT`。
-- 想取消回复却只换一个 emoji — 取消必须走 `replyType=2`（CLI 为 `--cancel`），换 emoji 只是改回复内容。
+- 想取消回复却只换一个 emoji — 取消必须走 `replyType=2`（CLI 为 `--emoji … --cancel`），且取消同样要带 `emojiId`；只给 `--cancel` 会被平台拒绝（`40060`）。
 - 消息 ID 为空或格式不对 — 返回 `40060`，务必从回调/发消息结果中取真实 `msgId`。
 - 不带 APP_TOKEN 调用 — 返回 `-1`，先确认认证配置（见 shared「认证」）。
 - CLI/SDK 版本过低 — 需要 CLI ≥ 0.17.0、Python SDK ≥ 1.13.0。
