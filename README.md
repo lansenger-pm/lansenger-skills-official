@@ -139,6 +139,19 @@ skill-template/                          # Templates for creating new skills
 | `lansenger-personal-app` | Create/update/query/delete personal apps (4.38) |
 | `lansenger-bot-command` | Manage bot slash commands (4.37) |
 
+## What's New
+
+Recent OpenAPI additions covered by the Skills in this repo:
+
+| OpenAPI | Addition | Skill |
+|---------|----------|-------|
+| 4.6.17 | Emoji reply — `POST /v1/messages/reply/create`; `replyType` 1 = reply / 2 = cancel, `emojiId` one of `TYPE_THUMB` (like) / `TYPE_OK` (ok) / `TYPE_ADD_ONE` (+1) / `TYPE_FIREWORK` (firework) / `TYPE_LOVE` (love) / `TYPE_DOUBT` (question) | `lansenger-messaging` |
+| 4.10.1.3 | New bot message callback fields `fromName` + `osType` on `bot_private_message` / `bot_group_message` (server prs5.10.0+; both may be absent — mapped to SDK `from_name` / `os_type`, consumers must tolerate their absence) | `lansenger-callback` |
+| 4.6.4.14 | Authorization request message — new body type `authorizationReq` (`authorizationType` = 1, location authorization), plus the two location-reporting channels after consent | `lansenger-messaging` |
+| 4.5.1 | Media upload — `POST /v1/medias/create` (`type` = `VIDEO` / `IMAGE` / `AUDIO`, multipart field `media`, ≤ 1M) now requires the Upload Media permission to be enabled in the developer console | `lansenger-media` |
+
+The new emoji-reply and authorization-request commands require **Python SDK ≥ 1.13.0** and **CLI ≥ 0.17.0**.
+
 ## CLI Compatibility
 
 **Recommended**: Python SDK and CLI. Go and TypeScript as alternatives.

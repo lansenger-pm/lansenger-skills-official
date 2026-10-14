@@ -1,7 +1,7 @@
 ---
 name: lansenger-messaging
-version: 1.4.6
-description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles/approveCard），@mention规则，提醒，CLI命令选择。当用户需要发消息、回消息、撤回消息、更新卡片、发提醒时使用。"
+version: 1.4.7
+description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles/approveCard/authorizationReq），@mention规则，提醒，表情回复，授权请求，CLI命令选择。当用户需要发消息、回消息、撤回消息、表情回复、发授权请求、更新卡片、发提醒时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -190,6 +190,8 @@ metadata:
 | `send-user-message` | 人→人私聊发消息（需userToken） | [`references/lansenger-messaging-send-user-message.md`](references/lansenger-messaging-send-user-message.md) |
 | `update-dynamic-card` | 更新动态卡片 | [`references/lansenger-messaging-update-dynamic-card.md`](references/lansenger-messaging-update-dynamic-card.md) |
 | `revoke` | 撤回消息 | [`references/lansenger-messaging-revoke.md`](references/lansenger-messaging-revoke.md) |
+| `reply` | 表情回复/取消表情回复（4.6.17） | [`references/lansenger-messaging-reply.md`](references/lansenger-messaging-reply.md) |
+| `send-authorization-request` | 发送授权请求消息（4.6.4.14） | [`references/lansenger-messaging-send-authorization-request.md`](references/lansenger-messaging-send-authorization-request.md) |
 | `send-reminder` | 对消息发送提醒（弹窗/SMS/电话） | 见下方「CLI 命令速查」→ `send-reminder` |
 | `approve-card` | 发送审批卡片（4.6.4.13） | 见下方「审批卡片」章节 |
 | `update-approve-card` | 更新审批卡片状态（4.6.4.12） | 见下方「审批卡片」章节 |
@@ -267,9 +269,23 @@ lansenger message send-app-articles staff123 '{"title":"News","url":"https://...
 lansenger message revoke msg123 --chat-type bot --dry-run   # 先预览
 lansenger message revoke msg123 --chat-type bot --yes       # 确认后执行
 
+# 表情回复（4.6.17）
+lansenger message reply msg123 --emoji TYPE_OK      # 收到
+lansenger message reply msg123 --emoji TYPE_THUMB   # 点赞
+lansenger message reply msg123 --cancel             # 取消表情回复
+
 # 更新动态卡片
 lansenger message update-dynamic-card msg123 --last --status-desc "Approved ✓" --status-colour "#00FF00"
 ```
+
+### 授权请求
+
+```bash
+# 向员工发送授权请求消息（4.6.4.14，当前仅位置请求授权）
+lansenger message send-authorization-request --chat-id staff123
+```
+
+> 表情回复需要 CLI ≥ 0.17.0；`reply` 的 `--emoji` 取值与错误码见 [`references/lansenger-messaging-reply.md`](references/lansenger-messaging-reply.md)。授权请求的完整参数以 `lansenger message send-authorization-request --help` 为准（Help-First）。
 
 ### 公号私聊
 
@@ -363,6 +379,25 @@ lansenger -j message send-reminder msg123 --type 1 --user staff456
 | headStatusInfo.colour 用于文字颜色 | colour 是状态圆点颜色（如 #FFB116）；文字颜色由 description 内的 div style 控制，二者独立 |
 | AppArticles 用 `description` 字段 | 用 `summary` 字段。`description` 会被 API 静默忽略 |
 | 消息内容超过 ~4000 字符 | 拆分为多条消息发送 |
+
+## 授权请求消息（4.6.4.14）
+
+授权请求是独立的消息体类型 `authorizationReq`，用于向用户或部门申请授权。
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `authorizationType` | int | 授权类型；`1` = 位置请求授权（当前唯一取值） |
+
+**CRITICAL — 授权不等于数据已到账。** 发送授权请求只是向收件人发起授权；位置数据需用户授权后，才能通过下方两条通道之一上报。
+
+### 授权后的位置上报通道
+
+| 机器人形态 | 位置上报通道 |
+|------------|--------------|
+| 个人机器人 | 无需订阅，直接通过长连接接收位置回调事件（`report_location`） |
+| 组织机器人 | 需在开发者中心订阅「位置上报事件」并配置回调地址，否则收不到位置回调 |
+
+回调事件的解析见 [`../lansenger-callback/SKILL.md`](../lansenger-callback/SKILL.md)（事件类别 `location` → `report_location`）。命令与 SDK 用法见 [`references/lansenger-messaging-send-authorization-request.md`](references/lansenger-messaging-send-authorization-request.md)。
 
 ## 审批卡片（4.6.4.13）
 
@@ -488,6 +523,8 @@ lansenger message update-approve-card msg123 \
 | `send_user_message` | 人→人私聊发消息 | `receiver_id`, `msg_type`, `msg_data`, `user_token`, `common`, `uuid` |
 | `send_group_message` | 群聊发消息（完整能力） | `group_id`, `msg_type`, `msg_data`, `user_token`, `sender_id`, `reminder_all`, `reminder_user_ids`, `reminder_bot_ids`, `ref_msg_id` |
 | `send_bot_message` | Bot 批量发消息 | `msg_type`, `msg_data`, `chat_ids`, `user_token`, `entry_id`, `is_group`, `ref_msg_id` |
+| `reply_message` | 表情回复/取消表情回复（4.6.17） | `msg_id`, `emoji_id`, `reply_type`(1=回复，2=取消回复) |
+| `send_authorization_request` | 发送授权请求消息（4.6.4.14） | `chat_ids`(List[str]), `department_ids`(List[str]) |
 | `send_reminder` | 发送弹窗/SMS/电话提醒 | `msg_id`, `reminder_types`(List[int]), `user_id_list`(List[str]) |
 
 > **注意**：SDK 参数使用 `reminder_*` 命名（如 `reminder_all`、`reminder_user_ids`），对应 CLI 的 `--mention-all`、`--mention`。这是 @提及功能，与 `send_reminder`（弹窗提醒）不同。

@@ -1,7 +1,7 @@
 ---
 name: lansenger-media
-version: 1.4.0
-description: "蓝信媒体文件管理：上传文件/图片/视频/音频、下载媒体文件、获取媒体路径。当用户需要上传附件、下载媒体、获取媒体URL时使用。"
+version: 1.4.1
+description: "蓝信媒体文件管理：上传文件/图片/视频/音频（需「上传素材」权限）、下载媒体文件、获取媒体路径。当用户需要上传附件、下载媒体、获取媒体URL时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -31,6 +31,14 @@ metadata:
 | 通用上传 (4.5.3) | `upload` | 上传文件供消息附件使用（需 userToken） |
 | App/Bot上传 (4.5.4) | `upload-app` | 机器人/应用身份上传文件/图片/视频/音频 |
 | App/Bot上传V2 (4.5.5) | `upload-app-v2` | 跨平台上传，**必须提供 userToken**（以用户身份上传） |
+
+### 上传素材权限（4.5.1）
+
+素材上传接口：`POST /v1/medias/create?type=VIDEO|IMAGE|AUDIO`（multipart/form-data，文件字段名 `media`，单文件 ≤ 1M）。
+
+**CRITICAL — 应用必须先在该组织的开发者中心开通「上传素材」权限，否则平台直接拒绝上传**（与文件本身是否合法无关）。未开通时的表现是上传被拒，而不是参数报错，别误判成文件格式问题。
+
+该接口错误码 `50052` / `50053` / `50054` 不变。
 
 ### media_type 类型
 
@@ -232,8 +240,9 @@ lansenger media path media123 --user-token "ut1"
 | 上传图片不指定 --media-type | 默认为 file，图片需 `--media-type image` |
 | 上传视频不传 width/height/duration | 视频和音频建议传尺寸和时长参数 |
 | 下载大文件用 `download` 而非 `download-to-file` | `download-to-file` 直接写入磁盘，避免内存占用 |
+| 未开通「上传素材」权限就调用 4.5.1 素材上传 | 4.5.1（`/v1/medias/create`）要求应用先在开发者中心开通「上传素材」权限，未开通会被平台直接拒绝 |
 
-**上传端点区分**：消息附件上传使用 `/v1/app/medias/create`（4.5.4 V1，无 userToken）或 `/v2/app/medias/create`（4.5.5 V2，需 userToken，跨平台）。`/v1/medias/create` 是头像上传接口（1MB 限制），不可用于消息附件。CLI 的 `upload` / `upload-app` / `upload-app-v2` 命令已正确选择端点，但使用 SDK 时需注意区分。
+**上传端点区分**：消息附件上传使用 `/v1/app/medias/create`（4.5.4 V1，无 userToken）或 `/v2/app/medias/create`（4.5.5 V2，需 userToken，跨平台）。`/v1/medias/create` 是素材上传接口（4.5.1，`type=VIDEO|IMAGE|AUDIO`、multipart 字段名 `media`、单文件 ≤ 1M，且需应用在开发者中心开通「上传素材」权限），**不可用于消息附件**。CLI 的 `upload` / `upload-app` / `upload-app-v2` 命令已正确选择端点，但使用 SDK 时需注意区分。
 
 ## SDK 用法
 

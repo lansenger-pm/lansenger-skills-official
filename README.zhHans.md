@@ -139,6 +139,19 @@ skill-template/                          # 创建新 Skill 的模板
 | `lansenger-bot-command` | 管理机器人指令（4.37） |
 | `lansenger-sdk` | SDK 编程指南 — 批量操作、并发拉取、深分页、断点续传、错误处理、连接复用 |
 
+## 近期新增
+
+本仓库 Skills 已覆盖的近期 OpenAPI 变更：
+
+| OpenAPI | 变更内容 | 所属技能 |
+|---------|----------|----------|
+| 4.6.17 | 表情回复 — `POST /v1/messages/reply/create`；`replyType` 1 = 回复 / 2 = 取消回复，`emojiId` 取值 `TYPE_THUMB`（点赞）/ `TYPE_OK`（收到）/ `TYPE_ADD_ONE`（+1）/ `TYPE_FIREWORK`（烟火）/ `TYPE_LOVE`（爱心）/ `TYPE_DOUBT`（问号） | `lansenger-messaging` |
+| 4.10.1.3 | 机器人消息回调新增字段 `fromName` + `osType`（`bot_private_message` / `bot_group_message`，服务端 prs5.10.0+；两字段均可能缺省，SDK 映射为 `from_name` / `os_type`，消费端必须容错） | `lansenger-callback` |
+| 4.6.4.14 | 授权请求消息 — 新消息体类型 `authorizationReq`（`authorizationType` = 1，位置请求授权），以及授权后位置上报的两条通道 | `lansenger-messaging` |
+| 4.5.1 | 上传素材 — `POST /v1/medias/create`（`type` 为 `VIDEO` / `IMAGE` / `AUDIO`，multipart 字段名 `media`，≤ 1M）需应用先在开发者中心开通「上传素材」权限，否则平台拒绝上传 | `lansenger-media` |
+
+新增的表情回复与授权请求命令需要 **Python SDK ≥ 1.13.0**、**CLI ≥ 0.17.0**。
+
 ## CLI 和 SDK 兼容性
 
 **推荐**：Python SDK 和 CLI。Go 和 TypeScript 作为备选。
