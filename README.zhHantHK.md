@@ -138,6 +138,19 @@ skill-template/                          # 建立新 Skills 的範本
 | `lansenger-personal-app` | 建立/更新/查詢/刪除個人應用（4.38） |
 | `lansenger-bot-command` | 管理機器人指令（4.37） |
 
+## 近期新增
+
+本倉庫 Skills 已覆蓋的近期 OpenAPI 變更：
+
+| OpenAPI | 變更內容 | 所屬技能 |
+|---------|----------|----------|
+| 4.6.17 | 表情回覆 — `POST /v1/messages/reply/create`；`replyType` 1 = 回覆 / 2 = 取消回覆，`emojiId` 取值 `TYPE_THUMB`（讚好）/ `TYPE_OK`（收到）/ `TYPE_ADD_ONE`（+1）/ `TYPE_FIREWORK`（煙火）/ `TYPE_LOVE`（愛心）/ `TYPE_DOUBT`（問號） | `lansenger-messaging` |
+| 4.10.1.3 | 機械人訊息回撥新增欄位 `fromName` + `osType`（`bot_private_message` / `bot_group_message`，伺服器端 prs5.10.0+；兩個欄位均可能缺省，SDK 對映為 `from_name` / `os_type`，消費端必須容錯） | `lansenger-callback` |
+| 4.6.4.14 | 授權請求訊息 — 新訊息體類型 `authorizationReq`（`authorizationType` = 1，位置請求授權），以及授權後位置上報的兩條通道 | `lansenger-messaging` |
+| 4.5.1 | 上載素材 — `POST /v1/medias/create`（`type` 為 `VIDEO` / `IMAGE` / `AUDIO`，multipart 欄位名 `media`，≤ 1M）需應用先在開發者中心開通「上載素材」權限，否則平台拒絕上載 | `lansenger-media` |
+
+新增的表情回覆及授權請求指令需要 **Python SDK ≥ 1.13.0**、**CLI ≥ 0.17.0**。
+
 ## CLI 及 SDK 相容性
 
 **推薦**：Python SDK 和 CLI。Go 和 TypeScript 作為備選。

@@ -138,6 +138,19 @@ skill-template/                          # Templates pour créer de nouveaux ski
 | `lansenger-personal-app` | Créer/mettre à jour/interroger/supprimer des applications personnelles (4.38) |
 | `lansenger-bot-command` | Gérer les commandes slash du bot (4.37) |
 
+## Nouveautés
+
+Ajouts OpenAPI récents couverts par les Skills de ce dépôt :
+
+| OpenAPI | Ajout | Skill |
+|---------|-------|-------|
+| 4.6.17 | Réponse par emoji — `POST /v1/messages/reply/create` ; `replyType` 1 = répondre / 2 = annuler, `emojiId` parmi `TYPE_THUMB` (like) / `TYPE_OK` (reçu) / `TYPE_ADD_ONE` (+1) / `TYPE_FIREWORK` (feu d'artifice) / `TYPE_LOVE` (cœur) / `TYPE_DOUBT` (point d'interrogation) | `lansenger-messaging` |
+| 4.10.1.3 | Nouveaux champs de callback des messages de bot `fromName` + `osType` (`bot_private_message` / `bot_group_message`, serveur prs5.10.0+ ; les deux peuvent être absents — mappés vers `from_name` / `os_type` côté SDK, à gérer avec tolérance) | `lansenger-callback` |
+| 4.6.4.14 | Message de demande d'autorisation — nouveau type de corps `authorizationReq` (`authorizationType` = 1, autorisation de localisation), plus les deux canaux de remontée de position après consentement | `lansenger-messaging` |
+| 4.5.1 | Upload de médias — `POST /v1/medias/create` (`type` = `VIDEO` / `IMAGE` / `AUDIO`, champ multipart `media`, ≤ 1M) exige désormais l'activation de la permission « Upload Media » dans la console développeur | `lansenger-media` |
+
+Les nouvelles commandes de réponse par emoji et de demande d'autorisation nécessitent le **SDK Python ≥ 1.13.0** et la **CLI ≥ 0.17.0**.
+
 ## Compatibilité CLI & SDK
 
 **Recommandé** : Python SDK et CLI. Go et TypeScript comme alternatives.

@@ -1,7 +1,7 @@
 ---
 name: lansenger-callback
-version: 1.1.3
-description: "蓝信回调事件解析：解析加密/明文回调数据、AES解密、验证签名、查看事件类型映射。当用户需要处理蓝信 Webhook 回调、解析或解密事件数据时使用。"
+version: 1.1.4
+description: "蓝信回调事件解析：解析加密/明文回调数据、AES解密、验证签名、查看事件类型映射、机器人消息回调新增字段。当用户需要处理蓝信 Webhook 回调、解析或解密事件数据时使用。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -43,6 +43,19 @@ metadata:
 | **data_scope** | data_scope |
 | **workbench** | wb_visible_config |
 | **calendar** | schedule_modify, schedule_delete |
+
+### 机器人消息回调字段（4.10.1.3）
+
+服务端 **prs5.10.0+** 起，机器人私聊（`bot_private_message`）与机器人群聊（`bot_group_message`）回调体新增两个字段：
+
+| 字段（回调原始） | SDK 字段 | 类型 | 说明 |
+|------------------------|----------|--------|------|
+| `fromName` | `from_name` | string | 消息发送者名称 |
+| `osType` | `os_type` | string | 机器人发送设备的操作系统类型 |
+
+`osType` 取值：`Android` / `ios` / `iPad` / `Android Pad` / `Harmony Phone` / `Harmony Pad` / `Windows PC` / `Mac Pc` / `browser` / `Harmony Pc`。
+
+**CRITICAL — 这两个字段都可能缺省。** 低于 prs5.10.0 的服务端不返回它们，SDK 也不会补默认值。消费端必须按「可能不存在」处理（如 `event.get("from_name")` 并容忍 `None`），**不得直接下标访问**（`event["from_name"]` 会 KeyError）。
 
 ### Payload 格式
 
@@ -176,6 +189,7 @@ lansenger -j callback event-types
 | 签名验证缺少 callback-token | 若开发者中心配置了回调 token，需通过 `--callback-token` 传入；否则回退到 encoding_key |
 | 解密后 orgId/appId 混在一起 | 提供 `--known-app-id` 可帮助正确拆分 |
 | 把回调当 API 调用 | 回调解析是本地数据处理，不发送 HTTP 请求 |
+| 直接下标访问 `from_name` / `os_type` | 4.10.1.3 新增字段在旧服务端（< prs5.10.0）缺省，须容错读取（`.get()` 并容忍 `None`） |
 
 ## SDK 用法
 

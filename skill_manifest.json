@@ -1,5 +1,5 @@
 {
-  "version": "1.18.0",
+  "version": "1.19.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK",
@@ -32,7 +32,7 @@
       "id": "lansenger-messaging",
       "name": "Lansenger Messaging Strategy",
       "category": "messaging",
-      "description": "Lansenger messaging strategy — understand 4 messaging channels (bot/private/account/group), text/formatText/appCard/linkCard/appArticles capability boundaries, @mention rules, reminder, and CLI method selection",
+      "description": "Lansenger messaging strategy — understand 4 messaging channels (bot/private/account/group), text/formatText/appCard/linkCard/appArticles/authorizationReq capability boundaries, @mention rules, reminder, emoji reply (4.6.17), authorization request (4.6.4.14), and CLI method selection",
       "path": "lansenger-messaging/SKILL.md",
       "references": [
         "lansenger-messaging/references/lansenger-messaging-send-text.md",
@@ -49,6 +49,8 @@
         "lansenger-messaging/references/lansenger-messaging-send-user-message.md",
         "lansenger-messaging/references/lansenger-messaging-update-dynamic-card.md",
         "lansenger-messaging/references/lansenger-messaging-revoke.md",
+        "lansenger-messaging/references/lansenger-messaging-reply.md",
+        "lansenger-messaging/references/lansenger-messaging-send-authorization-request.md",
         "lansenger-messaging/references/lansenger-messaging-send-reminder.md",
         "lansenger-messaging/references/lansenger-messaging-approve-card.md",
         "lansenger-messaging/references/lansenger-messaging-update-approve-card.md"
@@ -116,14 +118,14 @@
       "id": "lansenger-callback",
       "name": "Lansenger Callback Events (Webhook)",
       "category": "callbacks",
-      "description": "Lansenger callback event parsing — 25 event types across 14 categories, structured dataclass parsing, AES decryption, payload parsing, signature verification",
+      "description": "Lansenger callback event parsing — 25 event types across 14 categories, structured dataclass parsing, AES decryption, payload parsing, signature verification, plus new bot message fields fromName/osType (4.10.1.3)",
       "path": "lansenger-callback/SKILL.md"
     },
     {
       "id": "lansenger-media",
       "name": "Lansenger Media Files",
       "category": "media",
-      "description": "Lansenger media APIs — upload files/images/videos/audio, download media files, get media file path",
+      "description": "Lansenger media APIs — upload files/images/videos/audio (requires the Upload Media permission enabled in the developer console for 4.5.1), download media files, get media file path",
       "path": "lansenger-media/SKILL.md"
     },
     {
