@@ -5,7 +5,7 @@
 蓝信 CLI 和 SDK 的 AI Agent Skills — 为 Python、Go 和 TypeScript CLI/SDK 提供结构化 Markdown Skill 文档，涵盖消息、日历、群组、联系人、部门、待办、流式消息、回调、OAuth、批量操作等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.16.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.16.1-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## 什么是 Skills？
 
@@ -25,25 +25,25 @@ Skills 是结构化的 Markdown 文档，用于教会 AI Agent 如何使用 `lan
 
 ```bash
 # 安装所有 Skills 到所有检测到的 Agent（交互式）
-npx skills add lansenger-pm/lansenger-skills-official
+npx skills add lansenger-pm/lansenger-skills-official --full-depth
 
 # 安装到指定 Agent（例如 opencode）
-npx skills add lansenger-pm/lansenger-skills-official -a opencode
+npx skills add lansenger-pm/lansenger-skills-official --full-depth -a opencode
 
 # 全局安装到 Claude Code
-npx skills add lansenger-pm/lansenger-skills-official -a claude-code -g
+npx skills add lansenger-pm/lansenger-skills-official --full-depth -a claude-code -g
 
 # 安装到多个 Agent
-npx skills add lansenger-pm/lansenger-skills-official -a opencode -a claude-code -a cursor
+npx skills add lansenger-pm/lansenger-skills-official --full-depth -a opencode -a claude-code -a cursor
 
 # 只安装指定的 Skills
-npx skills add lansenger-pm/lansenger-skills-official --skill lansenger-messaging --skill lansenger-calendar
+npx skills add lansenger-pm/lansenger-skills-official --full-depth --skill lansenger-messaging --skill lansenger-calendar
 
 # 安装前查看可用 Skills 列表
-npx skills add lansenger-pm/lansenger-skills-official --list
+npx skills add lansenger-pm/lansenger-skills-official --full-depth --list
 
 # 非交互式 / CI 友好
-npx skills add lansenger-pm/lansenger-skills-official --all -y
+npx skills add lansenger-pm/lansenger-skills-official --full-depth --all -y
 ```
 
 ### 方法 2 — opencode `.opencode/skills/`

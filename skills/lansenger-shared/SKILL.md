@@ -77,6 +77,16 @@ go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
 npm install -g lansenger-cli
 ```
 
+### 安装/更新技能文档本身
+
+CLI 装好后，把技能文档装进宿主 skills 目录（`npx` 走 skills 安装器，适合 Agent 直接执行）：
+
+```bash
+npx -y skills add lansenger-pm/lansenger-skills-official --full-depth --skill '*' -y
+```
+
+或 `git clone` 后把 `skills/` 下各目录链接到宿主 skills 目录。
+
 ## 配置初始化
 
 首次使用需运行 `lansenger config set` 完成应用凭证配置。

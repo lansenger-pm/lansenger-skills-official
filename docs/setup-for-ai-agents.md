@@ -21,11 +21,13 @@
 ## Step 1 — 安装
 
 ```bash
-# 安装 CLI
-pip install lansenger-cli
+# 首选：跑随包脚本（幂等，已装则秒退；按 pip → pipx → npm → go 顺序尝试并验证）
+bash scripts/setup.sh                      # macOS / Linux
+powershell -ExecutionPolicy Bypass -File scripts/setup.ps1   # Windows
 
 # 安装技能（Agent 需要技能才能正确使用 CLI）
-npx -y skills add lansenger-pm/lansenger-skills-official -y
+# 注意：仓库根有 SKILL.md，默认只会装根技能 1 个；必须加 --full-depth --skill '*' 才会装全部 16 个子技能
+npx -y skills add lansenger-pm/lansenger-skills-official --full-depth --skill '*' -y
 ```
 
 验证：
@@ -34,15 +36,44 @@ npx -y skills add lansenger-pm/lansenger-skills-official -y
 lansenger --version
 ```
 
-备选 CLI（任选其一）：
+手动安装（脚本不可用时，任选其一）：
 
 ```bash
+pip install lansenger-cli
+
 # Go CLI
 go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest
 
 # TypeScript CLI
 npm install -g lansenger-cli
 ```
+
+### 1a — 真正自动：会话启动时自检安装（推荐）
+
+上面的命令仍需 agent「记得去跑」。要做到**宿主一开新会话就自动补齐 CLI**，用宿主平台的 hook 机制在会话启动时执行安装脚本。
+
+**Claude Code** — 在项目的 `.claude/settings.json` 加：
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "command -v lansenger >/dev/null 2>&1 || pip install --quiet lansenger-cli >/dev/null 2>&1 || pipx install --quiet lansenger-cli >/dev/null 2>&1 || npm install -g --silent lansenger-cli >/dev/null 2>&1; true"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+`command -v` 先探测，已装则秒退；`|| pip/pipx/npm` 依次尝试兜底；末尾 `; true` 保证任何失败都不阻塞会话。命令自包含，不依赖技能安装到哪个目录，因此无论 `npx skills add` 装到 `~/.claude/skills/` 还是项目 `.claude/skills/` 都能工作。
+
+**其它平台** — 若宿主支持「加载技能前/会话启动」钩子，用同样的自包含探测+安装命令（或直接跑 `scripts/setup.sh`，它含 Go 兜底）；不支持钩子的宿主，退化为让 agent 按根 `SKILL.md` 的安装小节在首次调用时执行脚本。
 
 ---
 
