@@ -5,7 +5,7 @@
 AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK, covering messaging, calendar, groups, contacts, departments, todos, streaming, callbacks, OAuth, batch operations, and more.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.16.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.16.1-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## What are Skills?
 
@@ -25,25 +25,25 @@ The fastest way to install. Works with **OpenCode**, **Claude Code**, **Cursor**
 
 ```bash
 # Install all Skills to all detected agents (interactive)
-npx skills add lansenger-pm/lansenger-skills-official
+npx skills add lansenger-pm/lansenger-skills-official --full-depth
 
 # Install to a specific agent (e.g. opencode)
-npx skills add lansenger-pm/lansenger-skills-official -a opencode
+npx skills add lansenger-pm/lansenger-skills-official --full-depth -a opencode
 
 # Install to Claude Code globally
-npx skills add lansenger-pm/lansenger-skills-official -a claude-code -g
+npx skills add lansenger-pm/lansenger-skills-official --full-depth -a claude-code -g
 
 # Install to multiple agents
-npx skills add lansenger-pm/lansenger-skills-official -a opencode -a claude-code -a cursor
+npx skills add lansenger-pm/lansenger-skills-official --full-depth -a opencode -a claude-code -a cursor
 
 # Install only specific Skills
-npx skills add lansenger-pm/lansenger-skills-official --skill lansenger-messaging --skill lansenger-calendar
+npx skills add lansenger-pm/lansenger-skills-official --full-depth --skill lansenger-messaging --skill lansenger-calendar
 
 # List available Skills before installing
-npx skills add lansenger-pm/lansenger-skills-official --list
+npx skills add lansenger-pm/lansenger-skills-official --full-depth --list
 
 # Non-interactive / CI-friendly
-npx skills add lansenger-pm/lansenger-skills-official --all -y
+npx skills add lansenger-pm/lansenger-skills-official --full-depth --all -y
 ```
 
 ### Method 2 — opencode `.opencode/skills/`
@@ -85,6 +85,17 @@ Many agents (Amp, Cline, Codex, Cursor, Gemini CLI, etc.) share `.agents/skills/
 ```bash
 ln -s $(pwd)/skills .agents/skills/lansenger-skills-official
 ```
+
+### Method 6 — Zip delivery (package & hand to users)
+
+Ship the whole repo as a zip. The zip bundles the install script (`scripts/setup.sh`); after the user unzips it into a skills directory, the agent auto-installs the CLI on first use and walks through credential setup.
+
+```bash
+zip -r lansenger-skills-official.zip . -x '*.git*'
+# User side: unzip into the host skills dir, e.g. ~/.claude/skills/lansenger/
+```
+
+For packaging layout, hand-off wording, the credentials reminder, and the optional hook, see [`docs/delivery.md`](docs/delivery.md).
 
 ## Updating Skills
 

@@ -5,7 +5,7 @@
 Skills pour Agent IA Lansenger CLI — documents Markdown structurés pour CLI Python, Go et TypeScript, couvrant la messagerie, les calendriers, les groupes, les contacts, les départements, les todos, le streaming, les callbacks, OAuth et plus encore.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.16.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.16.1-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## Qu'est-ce que les Skills ?
 
@@ -25,25 +25,25 @@ La méthode la plus rapide. Compatible avec **OpenCode**, **Claude Code**, **Cur
 
 ```bash
 # Installer tous les Skills sur tous les agents détectés (interactif)
-npx skills add lansenger-pm/lansenger-skills-official
+npx skills add lansenger-pm/lansenger-skills-official --full-depth
 
 # Installer sur un agent spécifique (ex. opencode)
-npx skills add lansenger-pm/lansenger-skills-official -a opencode
+npx skills add lansenger-pm/lansenger-skills-official --full-depth -a opencode
 
 # Installer sur Claude Code globalement
-npx skills add lansenger-pm/lansenger-skills-official -a claude-code -g
+npx skills add lansenger-pm/lansenger-skills-official --full-depth -a claude-code -g
 
 # Installer sur plusieurs agents
-npx skills add lansenger-pm/lansenger-skills-official -a opencode -a claude-code -a cursor
+npx skills add lansenger-pm/lansenger-skills-official --full-depth -a opencode -a claude-code -a cursor
 
 # Installer uniquement certains Skills
-npx skills add lansenger-pm/lansenger-skills-official --skill lansenger-messaging --skill lansenger-calendar
+npx skills add lansenger-pm/lansenger-skills-official --full-depth --skill lansenger-messaging --skill lansenger-calendar
 
 # Liste des Skills disponibles avant installation
-npx skills add lansenger-pm/lansenger-skills-official --list
+npx skills add lansenger-pm/lansenger-skills-official --full-depth --list
 
 # Non-interactif / compatible CI
-npx skills add lansenger-pm/lansenger-skills-official --all -y
+npx skills add lansenger-pm/lansenger-skills-official --full-depth --all -y
 ```
 
 ### Méthode 2 — opencode `.opencode/skills/`

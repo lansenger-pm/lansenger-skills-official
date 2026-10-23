@@ -1,6 +1,6 @@
 ---
 name: lansenger
-version: 1.16.0
+version: 1.16.1
 description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、视频会议、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、视频会议、开会、批量操作等功能时加载此技能。"
 metadata:
   requires:
@@ -16,6 +16,39 @@ metadata:
 
 - **CLI**：适合快速任务（发一条消息、建个群、查个员工）— 逐条执行、逐条检查
 - **SDK**：适合复杂任务（批量拉取、并发操作、数据管道）— 单进程复用连接、支持 async 并发
+
+---
+
+## 安装（首次使用 / Agent 自动安装）
+
+**本技能套件依赖 `lansenger` CLI。** 首次使用先自检，缺失就跑随包脚本（已装则秒退，装完自动验证）：
+
+```bash
+# macOS / Linux
+bash scripts/setup.sh
+
+# Windows
+powershell -ExecutionPolicy Bypass -File scripts/setup.ps1
+```
+
+脚本按 `pip → pipx → npm → go` 顺序尝试安装并处理 PATH，是首选路径。若宿主环境禁止执行脚本，退回手动安装（逐条执行，逐条检查）：
+
+```bash
+lansenger --version || pip install lansenger-cli
+lansenger --version
+```
+
+备选：Go `go install github.com/lansenger-pm/lansenger-sdk-go/cmd/lansenger@latest`；npm `npm install -g lansenger-cli`；走 L3 SDK 时另装 `pip install lansenger-sdk`。
+
+**安装/更新技能文档本身**（装进宿主 skills 目录）：
+
+```bash
+npx -y skills add lansenger-pm/lansenger-skills-official --full-depth --skill '*' -y
+```
+
+或 `git clone` 本仓库后，把 `skills/` 下各技能目录链接到宿主 skills 目录（如 `~/.workbuddy/skills/`）。
+
+**装完 CLI 还不能直接调用**——需先配置应用凭证，见 [`lansenger-shared`](skills/lansenger-shared/SKILL.md) 的「配置初始化」。完整流程（身份确认 → 凭证获取 → `config set` → `lansenger health` 自检）见 [`docs/setup-for-ai-agents.md`](docs/setup-for-ai-agents.md)。
 
 ---
 
