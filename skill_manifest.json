@@ -1,5 +1,5 @@
 {
-  "version": "1.19.0",
+  "version": "1.20.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK",
@@ -38,6 +38,7 @@
         "lansenger-messaging/references/lansenger-messaging-send-text.md",
         "lansenger-messaging/references/lansenger-messaging-send-markdown.md",
         "lansenger-messaging/references/lansenger-messaging-send-file.md",
+        "lansenger-messaging/references/lansenger-messaging-send-file-as-user.md",
         "lansenger-messaging/references/lansenger-messaging-send-link-card.md",
         "lansenger-messaging/references/lansenger-messaging-send-app-card.md",
         "lansenger-messaging/references/lansenger-messaging-send-oacard.md",

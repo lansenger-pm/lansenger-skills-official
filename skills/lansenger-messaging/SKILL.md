@@ -1,6 +1,6 @@
 ---
 name: lansenger-messaging
-version: 1.4.7
+version: 1.4.8
 description: "蓝信消息策略：4种消息通道（bot私聊/公号私聊/人→人私聊/群聊），消息类型矩阵（text/formatText/appCard/linkCard/oacard/appArticles/approveCard/authorizationReq），@mention规则，提醒，表情回复，授权请求，CLI命令选择。当用户需要发消息、回消息、撤回消息、表情回复、发授权请求、更新卡片、发提醒时使用。"
 metadata:
   requires:
@@ -179,6 +179,7 @@ metadata:
 | `send-text` | 发文本消息（私聊/群聊） | [`references/lansenger-messaging-send-text.md`](references/lansenger-messaging-send-text.md) |
 | `send-markdown` | 发Markdown消息（私聊/群聊） | [`references/lansenger-messaging-send-markdown.md`](references/lansenger-messaging-send-markdown.md) |
 | `send-file` | 发文件消息 | [`references/lansenger-messaging-send-file.md`](references/lansenger-messaging-send-file.md) |
+| `send-user-message` 带附件 | 应用无机器人能力时以用户身份发「文字 + 附件」（4.5.5 上传 + 4.6.3 私聊） | [`references/lansenger-messaging-send-file-as-user.md`](references/lansenger-messaging-send-file-as-user.md) |
 | `send-image-url` | 从URL发图片 | [`references/lansenger-messaging-send-image-url.md`](references/lansenger-messaging-send-image-url.md) |
 | `send-link-card` | 发链接卡片 | [`references/lansenger-messaging-send-link-card.md`](references/lansenger-messaging-send-link-card.md) |
 | `send-app-card` | 发应用卡片（支持动态更新） | [`references/lansenger-messaging-send-app-card.md`](references/lansenger-messaging-send-app-card.md) |
@@ -329,11 +330,20 @@ lansenger message send-file staff456 /path/to/screenshot.png --media-type image 
 
 # 发视频（必须提供封面图）
 lansenger message send-file staff456 /path/to/demo.mp4 --media-type video --cover-image /path/to/cover.jpg --user-token $TOKEN
+
+# 应用无机器人能力时：以用户身份上传（4.5.5）+ 私聊带附件（4.6.3）
+# ① -j JSON 的 message_id 字段值就是 mediaId（历史命名，不是消息 ID）
+lansenger -j media upload-app-v2 /path/to/report.pdf --media-type file --user-token "$TOKEN"
+# ② 一条消息同时带文字 + 附件
+lansenger message send-user-message staff456 text \
+  '{"text":{"content":"随附文件说明","mediaType":3,"mediaIds":["<mediaId>"]}}' --user-token "$TOKEN"
 ```
 
-> **前置条件**：`send-file` 内部通过 Bot 通道上传文件（`upload-app`），即使以助理身份发送（传 `--user-token`），应用也**必须开启机器人能力**。如未开启，将返回 `errCode=-10: 应用需要开启机器人能力`。
+> **前置条件**：`send-file` 的**发送步骤**走 Bot 消息通道 —— 私聊发送要求应用**开启机器人能力**（否则 `errCode=-10: 应用需要开启机器人能力`）；群聊传 `--user-token` 时按 4.6.2 身份规则以用户本人身份发送。**上传步骤**：不带 `--user-token` 走 `upload-app`（4.5.4），带 `--user-token` 走 `upload-app-v2`（4.5.5，以用户身份上传）；应用未开通「上传素材」/媒体上传权限时返回 `errCode=10005: API服务 无权限`（4.5.4/4.5.5 同样需要该权限，换接口版本不能绕过）。
 
-> **注意**：`send-user-message` 用于发文本和 Markdown，`send-file` 用于发文件/图片/视频附件。两者不支持合并为一条消息 — 如需同时发 Markdown + 文件，分两条消息发送。
+> **应用无机器人能力时 →「用户身份 + 4.5.5 上传」**：`media upload-app-v2 --user-token` 拿 mediaId（在返回的 `message_id` 字段），再用 `message send-user-message` 的 `msgData.text` 带 `mediaType` + `mediaIds`，**一条消息可同时带文字和附件**，不依赖机器人能力；群聊改用 `send-group-message`。该通道以**用户本人名义**发出，发送前须确认身份与内容。见 [`references/lansenger-messaging-send-file-as-user.md`](references/lansenger-messaging-send-file-as-user.md)。
+
+> **注意**：`send-user-message` 不只能发文本/Markdown —— `msgData.text` 还支持 `mediaType`（1 视频 / 2 图片 / 3 文件，音频也走 3）+ `mediaIds`，一条消息可同时带文字和附件；`send-file` 是机器人通道的便捷封装（自动上传附件、视频自动处理封面）。
 
 ### 发送提醒
 
@@ -359,6 +369,7 @@ lansenger -j message send-reminder msg123 --type 1 --user staff456
 | `send-text` 发Markdown内容 | 用 `send-markdown` 发Markdown |
 | `send-markdown` 带附件 | 分两步：先 `send-markdown`，再 `send-file` |
 | `send-user-message` 不传 userToken | 4.6.3 通道必须传 `--user-token` |
+| `send-file` 报 `-10 未开启机器人能力` / 上传报 `10005 API服务 无权限` | 前者：应用无机器人能力，改用 `media upload-app-v2`（`--user-token`）+ `send-user-message`（群聊用 `send-group-message`）；后者：应用未开通「上传素材」/媒体上传权限，先去开发者中心开通（换接口版本不能绕过）。见 [`references/lansenger-messaging-send-file-as-user.md`](references/lansenger-messaging-send-file-as-user.md) |
 | appCard 群聊中用 --mention-all | appCard/linkCard/appArticles **不支持** @mention，reminder参数被静默忽略 |
 | Bot发群聊消息但Bot不在群里 | Bot必须先加入群聊才能发消息 |
 | 群聊不加 `--group` 参数 | 群聊必须加 `--group` 或使用 `send-group-message` |

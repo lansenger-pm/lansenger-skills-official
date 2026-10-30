@@ -1,6 +1,6 @@
 ---
 name: lansenger-media
-version: 1.4.1
+version: 1.4.2
 description: "蓝信媒体文件管理：上传文件/图片/视频/音频（需「上传素材」权限）、下载媒体文件、获取媒体路径。当用户需要上传附件、下载媒体、获取媒体URL时使用。"
 metadata:
   requires:
@@ -28,8 +28,8 @@ metadata:
 
 | 通道 | CLI命令 | 说明 |
 |------|---------|------|
-| 通用上传 (4.5.3) | `upload` | 上传文件供消息附件使用（需 userToken） |
-| App/Bot上传 (4.5.4) | `upload-app` | 机器人/应用身份上传文件/图片/视频/音频 |
+| 素材上传 (4.5.1) | `upload` | 上传素材（`/v1/medias/create`，≤1M，需「上传素材」权限，无 file 类型）；**不能用于消息附件**，见下方「上传端点区分」 |
+| App/Bot上传 (4.5.4) | `upload-app` | 应用/Bot 身份上传文件/图片/视频/音频（无需 userToken） |
 | App/Bot上传V2 (4.5.5) | `upload-app-v2` | 跨平台上传，**必须提供 userToken**（以用户身份上传） |
 
 ### 上传素材权限（4.5.1）
@@ -39,6 +39,21 @@ metadata:
 **CRITICAL — 应用必须先在该组织的开发者中心开通「上传素材」权限，否则平台直接拒绝上传**（与文件本身是否合法无关）。未开通时的表现是上传被拒，而不是参数报错，别误判成文件格式问题。
 
 该接口错误码 `50052` / `50053` / `50054` 不变。
+
+同理，**消息附件上传（4.5.4 / 4.5.5）也要求应用已开通素材/媒体上传权限**；权限未开通时同样返回 `errCode=10005: API服务 无权限`，换接口版本不能绕过（2026-10-30 实机）。
+
+### 上传结果字段（`message_id` 即 mediaId）
+
+SDK 公共方法（`upload_media` / `upload_app_media` / `upload_app_media_v2`）与 CLI `-j` JSON 都把上传返回的素材 ID 放在 **`message_id`** 字段（历史命名，**不是消息 ID**）；SDK 内部 `media.py` 的 `UploadMediaResult.media_id` 不对外暴露。拿到后只能用于消息体 `mediaIds`，或下载/路径接口的 `media_id` 参数。
+
+### 消息附件选型判据
+
+| 情况 | 选择 |
+|------|------|
+| 应用/Bot 身份上传（无需 userToken） | `upload-app`（4.5.4） |
+| 需要以用户身份上传 | `upload-app-v2`（4.5.5，必须 userToken，跨平台） |
+| 上传报 `10005 API服务 无权限`（4.5.4 / 4.5.5 都一样） | 应用未开通「上传素材」/媒体上传权限：先去开发者中心开通；换接口版本不能绕过 |
+| 需要一条消息同时带文字 + 附件（应用无机器人能力） | 用 `upload-app-v2` 取 mediaId（`message_id` 字段）→ `message send-user-message` 的 `msgData.text.mediaType/mediaIds`（群聊用 `send-group-message`），见 [messaging 的 send-file-as-user reference](../lansenger-messaging/references/lansenger-messaging-send-file-as-user.md) |
 
 ### media_type 类型
 
@@ -62,7 +77,7 @@ metadata:
 
 ## CLI 命令
 
-### 上传文件（通用通道）
+### 上传素材（4.5.1 通用通道）
 
 ```bash
 # 上传文件（需 userToken）
@@ -235,12 +250,14 @@ lansenger media path media123 --user-token "ut1"
 
 | 错误 | 正确做法 |
 |------|---------|
-| 用 `upload` 不传 --user-token | 通用上传需要 userToken，Bot上传用 `upload-app`，跨平台上传用 `upload-app-v2`（也需 userToken） |
+| 用 `upload` 不传 --user-token | `upload` 是 4.5.1 素材上传（需 userToken，不能发消息附件）；消息附件用 `upload-app`（4.5.4）或 `upload-app-v2`（4.5.5，需 userToken） |
 | `upload-app-v2` 不传 --user-token | V2 接口 userToken 必填，与 V1 不同 |
 | 上传图片不指定 --media-type | 默认为 file，图片需 `--media-type image` |
 | 上传视频不传 width/height/duration | 视频和音频建议传尺寸和时长参数 |
 | 下载大文件用 `download` 而非 `download-to-file` | `download-to-file` 直接写入磁盘，避免内存占用 |
 | 未开通「上传素材」权限就调用 4.5.1 素材上传 | 4.5.1（`/v1/medias/create`）要求应用先在开发者中心开通「上传素材」权限，未开通会被平台直接拒绝 |
+| 上传返回 `10005 API服务 无权限`（4.5.4 / 4.5.5） | 应用未开通「上传素材」/媒体上传权限，先去开发者中心开通；换 `upload-app-v2` 不能绕过权限（2026-10-30 实机） |
+| 按 `media_id` 字段取上传返回 | 素材 ID 在 **`message_id`** 字段（历史命名，不是消息 ID），见「上传结果字段」；SDK 内部 `UploadMediaResult.media_id` 不对外暴露 |
 
 **上传端点区分**：消息附件上传使用 `/v1/app/medias/create`（4.5.4 V1，无 userToken）或 `/v2/app/medias/create`（4.5.5 V2，需 userToken，跨平台）。`/v1/medias/create` 是素材上传接口（4.5.1，`type=VIDEO|IMAGE|AUDIO`、multipart 字段名 `media`、单文件 ≤ 1M，且需应用在开发者中心开通「上传素材」权限），**不可用于消息附件**。CLI 的 `upload` / `upload-app` / `upload-app-v2` 命令已正确选择端点，但使用 SDK 时需注意区分。
 
@@ -281,7 +298,7 @@ async def batch_upload_files(file_paths: list[str], user_token: str, max_concurr
 
     for fp, result in zip(file_paths, results):
         if result.success:
-            print(f"{fp}: 上传成功 -> {result.media_id}")
+            print(f"{fp}: 上传成功 -> {result.message_id}")
         else:
             print(f"{fp}: 上传失败 -> {result.error}")
     return results

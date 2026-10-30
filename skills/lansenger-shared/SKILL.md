@@ -1,6 +1,6 @@
 ---
 name: lansenger-shared
-version: 1.8.1
+version: 1.8.2
 description: "认证与配置：身份识别与双身份模式（组织应用/个人机器人）、appToken/secret 配置、权限处理、安全规则、错误处理、SDK 客户端初始化 — 所有技能自动加载。首次设置 CLI、config set、Token 或权限报错时使用。"
 metadata:
   requires:
@@ -254,9 +254,10 @@ lansenger config set app_secret "YOUR_APP_SECRET" --profile "new-app-name"
 | `todo *` (待办) | N | **Y** | **Y** | 仅组织级应用 |
 | `chat list/messages` (聊天记录) | N | **Y** | **Y** | 仅组织级应用 |
 | `group *` (群管理 V2) | N | N | **Y** | 只有机器人能进群，应用无法管理群组 |
-| `media upload` | **Y** | **Y** | **Y** | 通用上传 |
+| `media upload` | **Y** | **Y** | **Y** | 素材上传（4.5.1，需「上传素材」权限；不能用于消息附件） |
 | `media upload-app` | **Y** | **Y** | **Y** | App/Bot 上传仅自建应用，ISV 不支持 |
 | `media upload-app-v2` | **Y** | **Y** | **Y** | V2 需 userToken，跨平台上传，仅自建应用 |
+| `message send-user-message` 带附件（用户身份发文件） | N | **Y** | **Y** | 应用无机器人能力时：4.5.5 `upload-app-v2` + 4.6.3 私聊（群聊用 `send-group-message`） |
 | `media download/path` | **Y** | **Y** | **Y** | 通用下载 |
 | `media download-share` | **Y** | **Y** | **Y** | 按分享 ID 下载（4.5.6） |
 | `oauth *` (OAuth2) | N | **Y** | **Y** | 仅组织级应用可发起 OAuth2 |
@@ -367,7 +368,9 @@ lansenger --app-token "$LANSENGER_BOT_APP_TOKEN" message send-text "$LANSENGER_S
 | 操作 | 身份 | 所需权限/能力 | 常见错误 |
 |------|------|-------------|---------|
 | 发消息（bot私聊） | 机器人 | Bot 消息发送 | — |
-| 发文件/图片/视频 | 机器人/助理 | Bot 消息发送 + **机器人能力**（send-file 内部走 Bot 通道上传） | errCode=-10: 应用需要开启机器人能力 |
+| 发文件/图片/视频（`send-file`） | 机器人/助理 | Bot 消息发送 + **机器人能力**（私聊发送步骤走 Bot 私聊通道；上传步骤带 `--user-token` 时走 4.5.5） | errCode=-10: 应用需要开启机器人能力 |
+| 发文件（应用无机器人能力） | 助理 | userToken：4.5.5 `media upload-app-v2` + 4.6.3 人→人私聊（群聊用 `send-group-message`） | — |
+| 上传素材/媒体（4.5.4 / 4.5.5） | 机器人/助理 | 应用已开通「上传素材」/媒体上传权限 | errCode=10005: API服务 无权限 |
 | 发群消息（机器人） | 机器人 | Bot 消息发送 + 机器人在群内 | — |
 | 发群消息（用户身份） | 助理 | Bot 消息发送（底层依赖） | errCode=-10（但消息可能已投递） |
 | 人→人私聊 | 助理 | userToken | — |
@@ -678,7 +681,7 @@ lansenger -j --as staff_001 staff search "test"
 - [ ] `api_gateway_url` 配置正确（测试: `lansenger health check`）
 - [ ] appID/appSecret 有效（测试: `lansenger health check`）
 - [ ] userToken 有效（测试: `lansenger --as staff_001 calendar primary`）
-- [ ] 应用是否开启机器人能力（影响 send-file / 群消息）
+- [ ] 应用是否开启机器人能力（影响 send-file 私聊 / 群消息）；未开启时发文件走用户身份通道（`media upload-app-v2` + `message send-user-message`）
 - [ ] App 是否有群管理 API 权限（影响 group create/dismiss/update-members）
 - [ ] 配置后正向验证通过：`lansenger health check`（个人机器人另可跑 `group list` 验证消息能力）
 - [ ] 双身份场景：确认区分组织应用与个人机器人两套凭证（见「身份识别与双身份模式」）

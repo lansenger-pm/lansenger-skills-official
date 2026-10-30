@@ -6,6 +6,8 @@
 
 **安全提醒：** 发送前务必与用户确认收件人和文件内容。请勿发送用户未明确批准的文件。
 
+> **应用无机器人能力时（`send-file` 私聊发送报 `errCode=-10`）**：改用用户身份通道 [`lansenger-messaging-send-file-as-user.md`](lansenger-messaging-send-file-as-user.md)（`media upload-app-v2` + `message send-user-message`；群聊用 `send-group-message`）。
+
 ## 参数
 
 | 参数 | 类型 | 必填 | 描述 |
