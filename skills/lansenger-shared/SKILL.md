@@ -613,6 +613,8 @@ LANSENGER_JSON=1 lansenger calendar primary
 - `calendar delete-attendees`（删除参会人）
 - `todo delete`（删除待办）
 - `todo delete-executors`（删除执行人）
+- `recording transcribe`（提交录音转写任务，真实写并扣减配额）
+- `recording summary`（提交会议纪要任务，真实写并扣减配额）
 
 **处理流程（MUST 遵守）：**
 
@@ -758,5 +760,6 @@ lansenger --version
 | 机器人指令 | `../lansenger-bot-command/SKILL.md` | 管理机器人指令（4.37） |
 | 个人应用 | `../lansenger-personal-app/SKILL.md` | 管理个人应用/机器人（4.38） |
 | 视频会议 | `../lansenger-videoconference/SKILL.md` | 会议创建/取消/结束、主持人会控（唯一 admin 主持人）、录像下载 |
+| 智能录音 | `../lansenger-recording/SKILL.md` | 录音列表/详情、转写与纪要提交、标签、模板（4.60） |
 | SDK 编程 | `../lansenger-sdk/SKILL.md` | 批量操作、并发控制、断点续传、连接复用 |
 | External模式 | 独立技能集（仓库 `lansenger-skills-external`） | 显式传入app_token/user_token的集成模式 |

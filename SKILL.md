@@ -1,7 +1,7 @@
 ---
 name: lansenger
-version: 1.20.0
-description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、视频会议、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、视频会议、开会、批量操作等功能时加载此技能。"
+version: 1.21.0
+description: "蓝信 CLI/SDK 技能套件 — 使用 lansenger CLI 或 SDK 操作蓝信平台：发消息、管理群组、查通讯录、日历日程、视频会议、智能录音、OAuth2 认证、文件上传下载、机器人指令、个人应用。CLI 适合快速任务，SDK 适合批量/并发/数据管道。触发条件：用户提到蓝信、lansenger、发消息、群组、日程、员工查询、视频会议、智能录音、转写、会议纪要、开会、批量操作等功能时加载此技能。"
 metadata:
   requires:
     bins: ["lansenger"]
@@ -50,6 +50,7 @@ metadata:
 | 管理机器人指令 | `lansenger-bot-command` | 创建/查询/删除机器人指令（4.37） |
 | 管理个人应用/机器人 | `lansenger-personal-app` | 创建/更新/查询/删除个人应用（4.38） |
 | 开视频会议、会控、录像下载 | `lansenger-videoconference` | 视频会议开放能力：创建/取消/结束会议、主持人会控、录像 |
+| 查智能录音、转写录音、生成会议纪要 | `lansenger-recording` | 智能录音开放能力：录音列表/详情、转写与纪要任务、标签、纪要模板（4.60） |
 | 批量操作、并发拉取、数据管道 | `lansenger-sdk` | SDK 编程指南：批量模式、并发控制、断点续传 |
 
 > **External Token模式**：如需显式传入app_token和user_token的集成模式，请使用独立的 lansenger-skills-external 技能套件。
@@ -65,7 +66,8 @@ metadata:
 | `lansenger-staff` | 查员工信息 | 浏览组织架构 → 用 `lansenger-department` |
 | `lansenger-department` | 查部门信息 | 查员工 → 用 `lansenger-staff` |
 | `lansenger-oauth` | 用户授权登录 | 配置 appID/appSecret → `lansenger config set` |
-| `lansenger-media` | 上传/下载媒体文件 | 发文件到聊天 → 用 `lansenger-messaging` |
+| `lansenger-media` | 上传/下载媒体文件 | 发文件到聊天 → 用 `lansenger-messaging`；录音转写/纪要 → 用 `lansenger-recording` |
+| `lansenger-recording` | 查智能录音、提交转写/纪要 | 视频会议录像列表/下载 → 用 `lansenger-videoconference` |
 
 ---
 

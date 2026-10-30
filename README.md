@@ -5,7 +5,7 @@
 AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK, covering messaging, calendar, groups, contacts, departments, todos, streaming, callbacks, OAuth, batch operations, and more.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.20.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.21.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## What are Skills?
 
@@ -114,6 +114,7 @@ skills/
   lansenger-callback/SKILL.md           # Callback events & webhook
   lansenger-media/SKILL.md              # Media file upload/download
   lansenger-videoconference/SKILL.md     # Videoconference (视频会议)
+  lansenger-recording/SKILL.md           # Smart recording (transcription, meeting summary)
   lansenger-sdk/SKILL.md                  # SDK programming guide (batch, concurrency, checkpoint)
 skill_manifest.json                      # Index of all skills
 skill-template/                          # Templates for creating new skills
@@ -135,6 +136,7 @@ skill-template/                          # Templates for creating new skills
 | `lansenger-callback` | 25 event types, structured parsing, AES decryption, signature verification |
 | `lansenger-media` | Upload/download files, images, videos, audio, get media path |
 | `lansenger-videoconference` | Videoconference APIs (create/cancel/stop meetings, host member control, recording downloads) |
+| `lansenger-recording` | Smart recording APIs (4.60) — recording list/detail, submit transcription (ASR) and meeting-summary (LLM) tasks, recording tags, summary templates; async tasks polled via recording detail, each submission deducts quota |
 | `lansenger-sdk` | SDK programming guide: batch, concurrency, checkpoint resume |
 | `lansenger-personal-app` | Create/update/query/delete personal apps (4.38) |
 | `lansenger-bot-command` | Manage bot slash commands (4.37) |
@@ -149,8 +151,11 @@ Recent OpenAPI additions covered by the Skills in this repo:
 | 4.10.1.3 | New bot message callback fields `fromName` + `osType` on `bot_private_message` / `bot_group_message` (server prs5.10.0+; both may be absent — mapped to SDK `from_name` / `os_type`, consumers must tolerate their absence) | `lansenger-callback` |
 | 4.6.4.14 | Authorization request message — new body type `authorizationReq` (`authorizationType` = 1, location authorization), plus the two location-reporting channels after consent | `lansenger-messaging` |
 | 4.5.1 | Media upload — `POST /v1/medias/create` (`type` = `VIDEO` / `IMAGE` / `AUDIO`, multipart field `media`, ≤ 1M) now requires the Upload Media permission to be enabled in the developer console | `lansenger-media` |
+| 4.60 | Smart recording — 6 OpenAPIs: recording list (`POST /v1/smart_recording/recordings/fetch`), recording detail (`GET .../recordings/{recording_id}/fetch`), submit transcription (`POST .../transcribe/create`), submit meeting summary (`POST .../summary/create`), recording tags (`GET .../tags/fetch`), summary templates (`GET .../templates/fetch`); async tasks must be polled via detail, each transcribe/summary submission regenerates the result and deducts quota | `lansenger-recording` |
 
 The new emoji-reply and authorization-request commands require **Python SDK ≥ 1.13.0** and **CLI ≥ 0.17.0**.
+
+The new smart-recording commands require **Python SDK ≥ 1.14.0**, **TypeScript SDK ≥ 1.10.0**, **Go SDK ≥ 0.18.0**, and the matching CLI releases (Python CLI ≥ 0.18.0 / TypeScript CLI ≥ 1.8.0 / Go CLI ≥ 0.18.0).
 
 ## CLI Compatibility
 

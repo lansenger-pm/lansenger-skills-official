@@ -1,5 +1,5 @@
 {
-  "version": "1.20.0",
+  "version": "1.21.0",
   "format": "cli-agent-skills",
   "cli": "lansenger",
   "description": "AI Agent Skills for Lansenger CLI & SDK — structured Markdown skill docs for Python, Go, and TypeScript CLI/SDK",
@@ -149,6 +149,16 @@
       "category": "videoconference",
       "description": "Lansenger videoconference APIs — create/modify/cancel/stop meetings (exactly one admin host), meeting lists and batch status, host member control (opCode passed through), member invite/list/records, recordings (max 3 download URLs per call), org config probe",
       "path": "lansenger-videoconference/SKILL.md"
+    },
+    {
+      "id": "lansenger-recording",
+      "name": "Lansenger Smart Recording (智能录音)",
+      "category": "recording",
+      "description": "Lansenger smart recording APIs (4.60) — recording list/detail, submit transcription (ASR) and meeting-summary (LLM) tasks, recording tags, summary templates. Tasks are async (no callback, poll recording detail); each transcribe/summary submission regenerates the result and deducts quota",
+      "path": "lansenger-recording/SKILL.md",
+      "references": [
+        "lansenger-recording/references/lansenger-recording-endpoints.md"
+      ]
     }
   ]
 }

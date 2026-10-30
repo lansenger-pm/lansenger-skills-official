@@ -5,7 +5,7 @@
 Lansenger CLI 及 SDK 的 AI Agent Skills — 結構化 Markdown Skills 文件，適用於 Python、Go 及 TypeScript CLI/SDK，涵蓋訊息、行事曆、群組、聯絡人、部門、待辦事項、串流訊息、回呼事件、OAuth、批次操作等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.20.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.21.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## 甚麼是 Skills？
 
@@ -114,6 +114,7 @@ skills/
   lansenger-callback/SKILL.md           # 回呼事件及 webhook
   lansenger-media/SKILL.md              # 媒體檔案上載/下載
   lansenger-videoconference/SKILL.md     # 視訊會議開放能力
+  lansenger-recording/SKILL.md           # 智能錄音（轉寫、會議紀要）
 skill_manifest.json                      # 所有 Skills 的索引
 skill-template/                          # 建立新 Skills 的範本
 ```
@@ -134,6 +135,7 @@ skill-template/                          # 建立新 Skills 的範本
 | `lansenger-callback` | 25 種事件類型、結構化解析、AES 解密、簽名驗證 |
 | `lansenger-media` | 上載/下載檔案、圖片、影片、音訊，取得媒體路徑 |
 | `lansenger-videoconference` | 視訊會議開放能力（建立/取消/結束會議、主持人會控、錄影下載） |
+| `lansenger-recording` | 智能錄音開放能力（4.60）— 錄音列表/詳情、提交轉寫（ASR）及會議紀要（LLM）任務、錄音標籤、紀要範本；非同步任務需輪詢詳情，每次提交重新生成並扣減配額 |
 | `lansenger-sdk` | SDK 編程指南：批次操作、並行控制、斷點續傳 |
 | `lansenger-personal-app` | 建立/更新/查詢/刪除個人應用（4.38） |
 | `lansenger-bot-command` | 管理機器人指令（4.37） |
@@ -148,8 +150,11 @@ skill-template/                          # 建立新 Skills 的範本
 | 4.10.1.3 | 機械人訊息回撥新增欄位 `fromName` + `osType`（`bot_private_message` / `bot_group_message`，伺服器端 prs5.10.0+；兩個欄位均可能缺省，SDK 對映為 `from_name` / `os_type`，消費端必須容錯） | `lansenger-callback` |
 | 4.6.4.14 | 授權請求訊息 — 新訊息體類型 `authorizationReq`（`authorizationType` = 1，位置請求授權），以及授權後位置上報的兩條通道 | `lansenger-messaging` |
 | 4.5.1 | 上載素材 — `POST /v1/medias/create`（`type` 為 `VIDEO` / `IMAGE` / `AUDIO`，multipart 欄位名 `media`，≤ 1M）需應用先在開發者中心開通「上載素材」權限，否則平台拒絕上載 | `lansenger-media` |
+| 4.60 | 智能錄音 — 6 個 OpenAPI：錄音列表（`POST /v1/smart_recording/recordings/fetch`）、錄音詳情（`GET .../recordings/{recording_id}/fetch`）、提交轉寫（`POST .../transcribe/create`）、提交會議紀要（`POST .../summary/create`）、錄音標籤（`GET .../tags/fetch`）、紀要範本（`GET .../templates/fetch`）；任務非同步需輪詢詳情，每次提交轉寫/紀要都會重新生成並扣減配額 | `lansenger-recording` |
 
 新增的表情回覆及授權請求指令需要 **Python SDK ≥ 1.13.0**、**CLI ≥ 0.17.0**。
+
+新增的智能錄音指令需要 **Python SDK ≥ 1.14.0**、**TypeScript SDK ≥ 1.10.0**、**Go SDK ≥ 0.18.0**，以及對應 CLI 版本（Python CLI ≥ 0.18.0 / TypeScript CLI ≥ 1.8.0 / Go CLI ≥ 0.18.0）。
 
 ## CLI 及 SDK 相容性
 

@@ -5,7 +5,7 @@
 蓝信 CLI 和 SDK 的 AI Agent Skills — 为 Python、Go 和 TypeScript CLI/SDK 提供结构化 Markdown Skill 文档，涵盖消息、日历、群组、联系人、部门、待办、流式消息、回调、OAuth、批量操作等。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.20.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
+[![Version](https://img.shields.io/badge/version-1.21.0-blue)](https://github.com/lansenger-pm/lansenger-skills-official)
 
 ## 什么是 Skills？
 
@@ -114,6 +114,7 @@ skills/
   lansenger-callback/SKILL.md           # 回调事件与 Webhook
   lansenger-media/SKILL.md              # 媒体文件上传/下载
   lansenger-videoconference/SKILL.md     # 视频会议开放能力
+  lansenger-recording/SKILL.md           # 智能录音（转写、会议纪要）
   lansenger-sdk/SKILL.md                 # SDK 编程指南（批量、并发、断点续传）
 skill_manifest.json                      # 所有 Skills 的索引
 skill-template/                          # 创建新 Skill 的模板
@@ -135,6 +136,7 @@ skill-template/                          # 创建新 Skill 的模板
 | `lansenger-callback` | 25 种事件类型、结构化解析、AES 解密、签名验证 |
 | `lansenger-media` | 上传/下载文件、图片、视频、音频，获取媒体路径 |
 | `lansenger-videoconference` | 视频会议开放能力（创建/取消/结束会议、主持人会控、录像下载） |
+| `lansenger-recording` | 智能录音开放能力（4.60）— 录音列表/详情、提交转写（ASR）与会议纪要（LLM）任务、录音标签、纪要模板；异步任务需轮询详情，每次提交重新生成并扣减配额 |
 | `lansenger-personal-app` | 创建/更新/查询/删除个人应用（4.38） |
 | `lansenger-bot-command` | 管理机器人指令（4.37） |
 | `lansenger-sdk` | SDK 编程指南 — 批量操作、并发拉取、深分页、断点续传、错误处理、连接复用 |
@@ -149,8 +151,11 @@ skill-template/                          # 创建新 Skill 的模板
 | 4.10.1.3 | 机器人消息回调新增字段 `fromName` + `osType`（`bot_private_message` / `bot_group_message`，服务端 prs5.10.0+；两字段均可能缺省，SDK 映射为 `from_name` / `os_type`，消费端必须容错） | `lansenger-callback` |
 | 4.6.4.14 | 授权请求消息 — 新消息体类型 `authorizationReq`（`authorizationType` = 1，位置请求授权），以及授权后位置上报的两条通道 | `lansenger-messaging` |
 | 4.5.1 | 上传素材 — `POST /v1/medias/create`（`type` 为 `VIDEO` / `IMAGE` / `AUDIO`，multipart 字段名 `media`，≤ 1M）需应用先在开发者中心开通「上传素材」权限，否则平台拒绝上传 | `lansenger-media` |
+| 4.60 | 智能录音 — 6 个 OpenAPI：录音列表（`POST /v1/smart_recording/recordings/fetch`）、录音详情（`GET .../recordings/{recording_id}/fetch`）、提交转写（`POST .../transcribe/create`）、提交会议纪要（`POST .../summary/create`）、录音标签（`GET .../tags/fetch`）、纪要模板（`GET .../templates/fetch`）；任务异步需轮询详情，每次提交转写/纪要都会重新生成并扣减配额 | `lansenger-recording` |
 
 新增的表情回复与授权请求命令需要 **Python SDK ≥ 1.13.0**、**CLI ≥ 0.17.0**。
+
+新增的智能录音命令需要 **Python SDK ≥ 1.14.0**、**TypeScript SDK ≥ 1.10.0**、**Go SDK ≥ 0.18.0**，以及对应 CLI 版本（Python CLI ≥ 0.18.0 / TypeScript CLI ≥ 1.8.0 / Go CLI ≥ 0.18.0）。
 
 ## CLI 和 SDK 兼容性
 
